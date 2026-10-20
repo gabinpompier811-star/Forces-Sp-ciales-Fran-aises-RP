@@ -9,38 +9,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Variables dynamiques pour la luminosité et les thèmes */
-        :root {
-            --site-brightness: 100%;
-        }
-
-        body {
-            filter: brightness(var(--site-brightness));
-            transition: filter 0.15s ease-out;
-        }
-
-        /* Personnalisation des barres de défilement */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #090d16;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
+        :root { --site-brightness: 100%; }
+        body { filter: brightness(var(--site-brightness)); transition: filter 0.15s ease-out; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- 1. PAGE DE CONNEXION / INSCRIPTION -->
+    <!-- 1. PAGE DE CONNEXION -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-        <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6 hover:border-slate-700/80 transition-all duration-300">
-            
+        <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-3">
                 <div class="inline-flex p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 shadow-inner">
                     <i class="fa-solid fa-shield-halved text-4xl"></i>
@@ -54,24 +35,24 @@
                     <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Identifiant / Email</label>
                     <div class="relative">
                         <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
-                        <input type="email" id="user-email" required placeholder="operateur@fsf.fr" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-100 transition-all">
+                        <input type="email" id="user-email" required placeholder="operateur@fsf.fr" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-100">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Mot de passe</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
-                        <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-100 transition-all">
+                        <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-100">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-950/60 transition duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold py-3.5 rounded-xl shadow-lg cursor-pointer">
                     Connexion au Système <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- 2. MODAL : CONFIGURATION INITIALE DU PSEUDO -->
+    <!-- 2. MODAL : CONFIGURATION DU PSEUDO (PREMIÈRE CONNEXION) -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
@@ -79,7 +60,7 @@
                     <i class="fa-solid fa-user-gear text-3xl"></i>
                 </div>
                 <h2 class="text-xl font-bold text-white">Initialisation de votre Identité</h2>
-                <p class="text-xs text-slate-400">Choisissez votre nom d'affichage et vos informations d'opérateur</p>
+                <p class="text-xs text-slate-400">Choisissez votre nom d'affichage et votre matricule</p>
             </div>
 
             <form id="profile-form" class="space-y-4 text-xs">
@@ -88,10 +69,10 @@
                     <input type="text" id="input-username" required placeholder="ex: Capitaine N. VELMONT" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:border-emerald-500 outline-none">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur (Optionnel)</label>
+                    <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur</label>
                     <input type="text" id="input-matricule" placeholder="ex: FS-027-FR" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 focus:border-emerald-500 outline-none">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">
                     Valider mon Profil <i class="fa-solid fa-check ml-2"></i>
                 </button>
             </form>
@@ -101,7 +82,7 @@
     <!-- 3. TABLEAU DE BORD PRINCIPAL -->
     <div id="main-dashboard" class="hidden flex-1 flex flex-col">
         
-        <!-- Barre Supérieure de Navigation -->
+        <!-- Navbar -->
         <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-3">
                 <div class="p-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400">
@@ -114,181 +95,142 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <!-- Informations Profil -->
                 <div class="hidden sm:flex flex-col text-right border-r border-slate-800 pr-4">
                     <span id="display-username" class="text-xs font-bold text-slate-100">---</span>
                     <span id="display-matricule" class="text-[10px] text-blue-400 font-mono">FS-000-FR</span>
                 </div>
 
-                <!-- Bouton Ouvrir Paramètres -->
                 <button id="open-settings-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
                     <i class="fa-solid fa-sliders text-blue-400"></i>
                     <span class="hidden md:inline">Paramètres</span>
                 </button>
 
-                <!-- Bouton Déconnexion -->
                 <button id="logout-btn" class="p-2.5 bg-red-950/50 hover:bg-red-900/80 border border-red-800/60 text-red-300 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
                     <i class="fa-solid fa-power-off"></i>
                 </button>
             </div>
         </header>
 
-        <!-- Contenu : Grille des Catégories -->
+        <!-- Zone de Contenu Dynamique -->
         <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
-                <div>
-                    <h2 class="text-2xl font-black text-white tracking-wide">SÉLECTIONNEZ VOTRE ESPACE</h2>
-                    <p class="text-xs text-slate-400 mt-1">Chaque module exécute son propre environnement et script dédié</p>
+            
+            <!-- VUE ACCUEIL : Grille des Catégories -->
+            <div id="view-home" class="space-y-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-white tracking-wide">SÉLECTIONNEZ VOTRE ESPACE</h2>
+                        <p class="text-xs text-slate-400 mt-1">Accès direct aux différents départements opérationnels</p>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 text-xs font-mono text-slate-400 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Système Opérationnel
-                </div>
-            </div>
 
-            <!-- Grille interactive des 6 catégories -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- 1. ENA -->
-                <button onclick="runCategoryScript('ENA')" class="group text-left bg-slate-900/80 backdrop-blur-md border border-slate-800 hover:border-blue-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl hover:shadow-blue-950/20 hover:-translate-y-1 cursor-pointer flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 group-hover:scale-110 transition duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <button onclick="openCategory('ENA')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-blue-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-graduation-cap text-2xl"></i>
                             </div>
-                            <span class="text-[10px] font-mono bg-blue-950 text-blue-400 border border-blue-800/50 px-2.5 py-1 rounded-full">Module ENA</span>
-                        </div>
-                        <div>
                             <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition">ENA &amp; Formations</h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">École Nationale d'Apprentissage, examens, attestations et suivi des compétences.</p>
+                            <p class="text-xs text-slate-400">École Nationale d'Apprentissage, examens et attestations.</p>
                         </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-blue-400 font-semibold">
-                        <span>Lancer l'environnement</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
-                </button>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-blue-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
 
-                <!-- 2. Forces Spéciales Françaises -->
-                <button onclick="runCategoryScript('FSF')" class="group text-left bg-slate-900/80 backdrop-blur-md border border-slate-800 hover:border-red-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl hover:shadow-red-950/20 hover:-translate-y-1 cursor-pointer flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 group-hover:scale-110 transition duration-300">
+                    <button onclick="openCategory('FSF')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-red-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-user-ninja text-2xl"></i>
                             </div>
-                            <span class="text-[10px] font-mono bg-red-950 text-red-400 border border-red-800/50 px-2.5 py-1 rounded-full">Module FSF</span>
-                        </div>
-                        <div>
                             <h3 class="font-bold text-lg text-white group-hover:text-red-400 transition">Forces Spéciales Françaises</h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">Dossiers opérateurs, aptitude médicale VMA, tir et suivi tactique du personnel.</p>
+                            <p class="text-xs text-slate-400">Dossiers opérateurs, aptitude médicale VMA et tirs.</p>
                         </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-red-400 font-semibold">
-                        <span>Lancer l'environnement</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
-                </button>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-red-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
 
-                <!-- 3. COS / EMA -->
-                <button onclick="runCategoryScript('COS_EMA')" class="group text-left bg-slate-900/80 backdrop-blur-md border border-slate-800 hover:border-amber-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl hover:shadow-amber-950/20 hover:-translate-y-1 cursor-pointer flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 group-hover:scale-110 transition duration-300">
+                    <button onclick="openCategory('COS_EMA')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-amber-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-star text-2xl"></i>
                             </div>
-                            <span class="text-[10px] font-mono bg-amber-950 text-amber-400 border border-amber-800/50 px-2.5 py-1 rounded-full">Commandement</span>
-                        </div>
-                        <div>
                             <h3 class="font-bold text-lg text-white group-hover:text-amber-400 transition">COS / EMA</h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">Commandement des Opérations Spéciales, État-Major et ordres de mission.</p>
+                            <p class="text-xs text-slate-400">Commandement des Opérations &amp; État-Major.</p>
                         </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-amber-400 font-semibold">
-                        <span>Lancer l'environnement</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
-                </button>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-amber-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
 
-                <!-- 4. Administration -->
-                <button onclick="runCategoryScript('ADMINISTRATION')" class="group text-left bg-slate-900/80 backdrop-blur-md border border-slate-800 hover:border-emerald-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl hover:shadow-emerald-950/20 hover:-translate-y-1 cursor-pointer flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 group-hover:scale-110 transition duration-300">
+                    <button onclick="openCategory('ADMINISTRATION')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-folder-tree text-2xl"></i>
                             </div>
-                            <span class="text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800/50 px-2.5 py-1 rounded-full">Registre</span>
-                        </div>
-                        <div>
                             <h3 class="font-bold text-lg text-white group-hover:text-emerald-400 transition">Administration</h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">Gestion des fichiers officiels, whitelist, hiérarchie et archives.</p>
+                            <p class="text-xs text-slate-400">Gestion des dossiers officiels, fichiers et registres.</p>
                         </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-emerald-400 font-semibold">
-                        <span>Lancer l'environnement</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
-                </button>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-emerald-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
 
-                <!-- 5. Fondation (Staff & Modération) -->
-                <button onclick="runCategoryScript('FONDATION')" class="group text-left bg-slate-900/80 backdrop-blur-md border border-slate-800 hover:border-purple-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl hover:shadow-purple-950/20 hover:-translate-y-1 cursor-pointer flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-purple-400 group-hover:scale-110 transition duration-300">
+                    <button onclick="openCategory('FONDATION')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-purple-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-purple-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-shield-cat text-2xl"></i>
                             </div>
-                            <span class="text-[10px] font-mono bg-purple-950 text-purple-400 border border-purple-800/50 px-2.5 py-1 rounded-full">Staff &amp; Modération</span>
+                            <h3 class="font-bold text-lg text-white group-hover:text-purple-400 transition">Fondation (Staff)</h3>
+                            <p class="text-xs text-slate-400">Espace modérateurs, rôles et paramètres globaux.</p>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-purple-400 transition">Fondation &amp; Staff</h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">Panneau de contrôle global, modération, rôles administrateurs et paramètres système.</p>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-purple-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
                         </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-purple-400 font-semibold">
-                        <span>Lancer l'environnement</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
-                </button>
+                    </button>
 
-                <!-- 6. Régiments -->
-                <button onclick="runCategoryScript('REGIMENTS')" class="group text-left bg-slate-900/80 backdrop-blur-md border border-slate-800 hover:border-cyan-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl hover:shadow-cyan-950/20 hover:-translate-y-1 cursor-pointer flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="p-3.5 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 group-hover:scale-110 transition duration-300">
+                    <button onclick="openCategory('REGIMENTS')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-cyan-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-person-military-rifle text-2xl"></i>
                             </div>
-                            <span class="text-[10px] font-mono bg-cyan-950 text-cyan-400 border border-cyan-800/50 px-2.5 py-1 rounded-full">Effectifs</span>
+                            <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition">Régiments</h3>
+                            <p class="text-xs text-slate-400">Répertoire des effectifs (CPA 10, 13e RDP, Jaubert, GCP, 4e RHFS).</p>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition">Régiments &amp; Unités</h3>
-                            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">Répertoire des régiments (CPA 10, 13e RDP, Commandos Jaubert, GCP, 4e RHFS).</p>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-cyan-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
                         </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-cyan-400 font-semibold">
-                        <span>Lancer l'environnement</span>
-                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                    </div>
-                </button>
-
+                    </button>
+                </div>
             </div>
+
+            <!-- VUE DYNAMIQUE DES CATEGORIES (S'affiche sans changer de page) -->
+            <div id="view-category" class="hidden space-y-6">
+                <button onclick="goHome()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
+                </button>
+                
+                <div id="category-content-container" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+                    <!-- Le contenu injecté dynamiquement s'affichera ici -->
+                </div>
+            </div>
+
         </main>
     </div>
 
-    <!-- 4. PANNEAU LATÉRAL : PARAMÈTRES D'AFFICHAGE & LUMINOSITÉ -->
+    <!-- 4. PANNEAU DES PARAMÈTRES -->
     <div id="settings-drawer" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex justify-end">
         <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between">
             <div class="space-y-6">
-                
-                <!-- Entête Paramètres -->
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
                         <i class="fa-solid fa-sliders text-blue-400"></i> Paramètres d'Interface
                     </h3>
-                    <button id="close-settings-btn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
+                    <button id="close-settings-btn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition cursor-pointer">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
 
-                <!-- Réglage Luminosité -->
                 <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
                     <div class="flex justify-between items-center">
                         <label class="text-xs font-bold text-slate-300 flex items-center gap-2">
@@ -297,36 +239,32 @@
                         <span id="brightness-value" class="text-xs font-mono font-bold text-blue-400">100%</span>
                     </div>
                     <input type="range" id="brightness-range" min="30" max="100" value="100" class="w-full accent-blue-500 cursor-pointer">
-                    <p class="text-[10px] text-slate-500">Ajustez le niveau d'éclairage selon votre confort visuel.</p>
                 </div>
 
-                <!-- Profil connecté -->
                 <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
                     <h4 class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-user text-blue-400"></i> Profil Utilisateur
                     </h4>
-                    <button id="edit-profile-btn" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-2">
+                    <button id="edit-profile-btn" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-2 cursor-pointer">
                         <i class="fa-solid fa-pen-to-square"></i> Modifier mon Pseudo
                     </button>
                 </div>
-
-            </div>
-
-            <div class="pt-4 border-t border-slate-800 text-center">
-                <p class="text-[10px] text-slate-500 font-mono">Portail FSF / ENA • Version 1.0.0</p>
             </div>
         </div>
     </div>
 
-    <!-- 5. JAVASCRIPT DE L'APPLICATION -->
+    <!-- 5. JAVASCRIPT -->
     <script>
-        // DOM Elements
         const authScreen = document.getElementById('auth-screen');
         const mainDashboard = document.getElementById('main-dashboard');
         const authForm = document.getElementById('auth-form');
         const profileModal = document.getElementById('profile-modal');
         const profileForm = document.getElementById('profile-form');
         const settingsDrawer = document.getElementById('settings-drawer');
+
+        const viewHome = document.getElementById('view-home');
+        const viewCategory = document.getElementById('view-category');
+        const categoryContentContainer = document.getElementById('category-content-container');
 
         const displayUsername = document.getElementById('display-username');
         const displayMatricule = document.getElementById('display-matricule');
@@ -336,43 +274,31 @@
         const brightnessRange = document.getElementById('brightness-range');
         const brightnessValue = document.getElementById('brightness-value');
 
-        // État de l'utilisateur
         let userProfile = JSON.parse(localStorage.getItem('fsf_user_profile')) || null;
         let savedBrightness = localStorage.getItem('fsf_brightness') || "100";
 
-        // Application de la luminosité sauvegardée au démarrage
         document.documentElement.style.setProperty('--site-brightness', `${savedBrightness}%`);
         brightnessRange.value = savedBrightness;
         brightnessValue.textContent = `${savedBrightness}%`;
 
-        // 1. Soumission du Formulaire de Connexion
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             authScreen.classList.add('hidden');
-
             if (!userProfile) {
-                // Si c'est la première fois, ouvrir le modal de pseudo
                 profileModal.classList.remove('hidden');
             } else {
-                // Sinon charger directement le dashboard
                 loadDashboard();
             }
         });
 
-        // 2. Soumission du Formulaire Profil / Pseudo
         profileForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = inputUsername.value;
-            const matricule = inputMatricule.value || "FS-027-FR";
-
-            userProfile = { username, matricule };
+            userProfile = { username: inputUsername.value, matricule: inputMatricule.value || "FS-027-FR" };
             localStorage.setItem('fsf_user_profile', JSON.stringify(userProfile));
-
             profileModal.classList.add('hidden');
             loadDashboard();
         });
 
-        // Charger le Dashboard
         function loadDashboard() {
             if (userProfile) {
                 displayUsername.textContent = userProfile.username;
@@ -381,7 +307,63 @@
             mainDashboard.classList.remove('hidden');
         }
 
-        // 3. Gestion de la Luminosité
+        // Navigation interne par catégorie (sans changer de site ni message d'alerte)
+        function openCategory(categoryKey) {
+            viewHome.classList.add('hidden');
+            viewCategory.classList.remove('hidden');
+
+            // Affichage du contenu dynamique selon le choix
+            switch(categoryKey) {
+                case 'ENA':
+                    categoryContentContainer.innerHTML = `
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-graduation-cap text-blue-400 mr-2"></i> ENA & Formations</h2>
+                        <p class="text-xs text-slate-400 mb-6">Module de gestion des examens et cursus militaires.</p>
+                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Ici s'affichera le script complet et les formulaires de l'ENA.</div>
+                    `;
+                    break;
+                case 'FSF':
+                    categoryContentContainer.innerHTML = `
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> Forces Spéciales Françaises</h2>
+                        <p class="text-xs text-slate-400 mb-6">Dossiers opérateurs, aptitudes médicales VMA et tirs.</p>
+                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Ici s'affichera le script complet des dossiers FSF.</div>
+                    `;
+                    break;
+                case 'COS_EMA':
+                    categoryContentContainer.innerHTML = `
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2>
+                        <p class="text-xs text-slate-400 mb-6">Commandement des Opérations & État-Major.</p>
+                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Ici s'affichera le script des ordres de mission du COS.</div>
+                    `;
+                    break;
+                case 'ADMINISTRATION':
+                    categoryContentContainer.innerHTML = `
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-emerald-400 mr-2"></i> Administration</h2>
+                        <p class="text-xs text-slate-400 mb-6">Registre officiel et gestion des fichiers.</p>
+                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Ici s'affichera l'interface d'administration.</div>
+                    `;
+                    break;
+                case 'FONDATION':
+                    categoryContentContainer.innerHTML = `
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-shield-cat text-purple-400 mr-2"></i> Fondation & Staff</h2>
+                        <p class="text-xs text-slate-400 mb-6">Panneau de contrôle modérateur et sécurité globale.</p>
+                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Ici s'affichera le script de la Fondation.</div>
+                    `;
+                    break;
+                case 'REGIMENTS':
+                    categoryContentContainer.innerHTML = `
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments & Unités</h2>
+                        <p class="text-xs text-slate-400 mb-6">Répertoire des effectifs par régiment spécialisé.</p>
+                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Ici s'affichera l'annuaire des régiments.</div>
+                    `;
+                    break;
+            }
+        }
+
+        function goHome() {
+            viewCategory.classList.add('hidden');
+            viewHome.classList.remove('hidden');
+        }
+
         brightnessRange.addEventListener('input', (e) => {
             const val = e.target.value;
             brightnessValue.textContent = `${val}%`;
@@ -389,15 +371,8 @@
             localStorage.setItem('fsf_brightness', val);
         });
 
-        // 4. Gestion du Tiroir de Paramètres
-        document.getElementById('open-settings-btn').addEventListener('click', () => {
-            settingsDrawer.classList.remove('hidden');
-        });
-
-        document.getElementById('close-settings-btn').addEventListener('click', () => {
-            settingsDrawer.classList.add('hidden');
-        });
-
+        document.getElementById('open-settings-btn').addEventListener('click', () => settingsDrawer.classList.remove('hidden'));
+        document.getElementById('close-settings-btn').addEventListener('click', () => settingsDrawer.classList.add('hidden'));
         document.getElementById('edit-profile-btn').addEventListener('click', () => {
             settingsDrawer.classList.add('hidden');
             if (userProfile) {
@@ -407,39 +382,10 @@
             profileModal.classList.remove('hidden');
         });
 
-        // Déconnexion
         document.getElementById('logout-btn').addEventListener('click', () => {
             mainDashboard.classList.add('hidden');
             authScreen.classList.remove('hidden');
         });
-
-        // ==========================================
-        //  FONCTIONS DES SCRIPTS SPÉCIFIQUES
-        // ==========================================
-        function runCategoryScript(categoryKey) {
-            console.log("Exécution du script : " + categoryKey);
-
-            switch(categoryKey) {
-                case 'ENA':
-                    alert("🎓 [SCRIPT ENA] Chargement du catalogue des formations et examens.");
-                    break;
-                case 'FSF':
-                    alert("🪖 [SCRIPT FSF] Ouverture du dossier tactique, tirs et suivi VMA.");
-                    break;
-                case 'COS_EMA':
-                    alert("⭐ [SCRIPT COS/EMA] Accès aux ordres de mission et état-major.");
-                    break;
-                case 'ADMINISTRATION':
-                    alert("📁 [SCRIPT ADMIN] Ouverture des registres et de la whitelist.");
-                    break;
-                case 'FONDATION':
-                    alert("🛡️ [SCRIPT FONDATION] Accès aux panneaux de modération et staff.");
-                    break;
-                case 'REGIMENTS':
-                    alert("🎖️ [SCRIPT RÉGIMENTS] Consultation des effectifs par régiment.");
-                    break;
-            }
-        }
     </script>
 </body>
 </html>
