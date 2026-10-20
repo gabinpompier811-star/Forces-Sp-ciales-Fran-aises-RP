@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fondation - Commandement Staff</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        body { background-color: #090d16; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col p-6 max-w-7xl mx-auto space-y-6">
 
+    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <a href="index.html" class="px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Accueil</a>
+        <h1 class="text-lg font-black text-purple-400"><i class="fa-solid fa-shield-cat mr-2"></i> Fondation - Commandement Staff</h1>
+    </div>
+
+    <div class="space-y-4">
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Validations en Attente</h2>
+        <div id="pending-list" class="space-y-3"></div>
+    </div>
+
+    <div class="space-y-4 pt-6 border-t border-slate-800">
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Membres Actifs &amp; Exclusions</h2>
+        <div id="users-list" class="space-y-3"></div>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
+        if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('FONDATION'))) {
+            alert("Accès strictement réservé à la Fondation !");
+            window.location.href = "index.html";
+        }
+
+        const db = firebase.database();
+
+        // Écouter les demandes en attente
+        db.ref('pending_requests').on('value', snap => {
+            const container = document.getElementById('pending-list');
+            const data = snap.val();
+            if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune demande en attente.</p>`; return; }
+
+            container.innerHTML = Object.keys(data).map(key => {
+                const req = data[key];
+                return `
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-white text-sm block">${req.username} (${req.email})</span>
+                            <span class="text-blue-400 font-mono">Matricule : ${req.matricule}</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-900 p-2 rounded-xl">
+                                <label><input type="checkbox" checked id="p-${key}-ENA" class="accent-purple-500"> ENA</label>
+                                <label><input type="checkbox" checked id="p-${key}-MEDICAL" class="accent-purple-500"> Médical</label>
+                                <label><input type="checkbox" checked id="p-${key}-CHAT" class="accent-purple-500"> Chat</label>
+                                <label><input type="checkbox" checked id="p-${key}-FONDATION" class="accent-purple-500"> Fondation</label>
+                            </div>
+                            <button onclick="approveUser('${key}', '${req.email}', '${req.username}', '${req.matricule}')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl cursor-pointer">Accepter</button>
+                            <button onclick="refuseUser('${key}')" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl cursor-pointer">Refuser</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+
+        function approveUser(reqKey, email, username, matricule) {
+            const perms = [];
+            ['ENA', 'MEDICAL', 'CHAT', 'FONDATION'].forEach(m => {
+                if (document.getElementById(`p-${reqKey}-${m}`)?.checked) perms.push(m);
+            });
+            db.ref('users').push({ email: email, username: username, matricule: matricule, perms: perms });
+            db.ref('pending_requests/' + reqKey).remove();
+            db.ref('logs').push({ action: "Approbation de " + username, date: new Date().toLocaleString('fr-FR') });
+        }
+
+        function refuseUser(key) { db.ref('pending_requests/' + key).remove(); }
+
+        // Écouter les membres validés (pour exclusion / bannissement)
+        db.ref('users').on('value', snap => {
+            const container = document.getElementById('users-list');
+            const data = snap.val();
+            if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucun membre enregistré.</p>`; return; }
+
+            container.innerHTML = Object.keys(data).map(key => {
+                const u = data[key];
+                return `
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-white text-sm block">${u.username} (${u.email})</span>
+                            <span class="text-emerald-400 font-mono text-[11px]">Permis : ${(u.perms || []).join(', ')}</span>
+                        </div>
+                        <button onclick="excludeUser('${key}', '${u.username}')" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg font-bold cursor-pointer">Exclure / Bannir</button>
+                    </div>
+                `;
+            }).join('');
+        });
+
+        function excludeUser(key, username) {
+            if (confirm("Voulez-vous vraiment exclure et bannir " + username + " ?")) {
+                db.ref('users/' + key).remove();
+                db.ref('logs').push({ action: "Exclusion / Bannissement de " + username, date: new Date().toLocaleString('fr-FR') });
+            }
+        }
+    </script>
+</body>
+</html>
