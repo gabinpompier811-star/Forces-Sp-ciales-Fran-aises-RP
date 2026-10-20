@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Stratégique FSF / ENA - Système Avancé</title>
+    <title>Portail Stratégique FSF - Accueil</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,59 +17,48 @@
         body[data-theme="dark"] { --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
         body[data-theme="deep-night"] { --bg-main: #020408; --bg-card: #090d16; --border-card: #131c2e; }
         body[data-theme="neon"] { --bg-main: #05050a; --bg-card: #0d0e1b; --border-card: #1f2347; }
-        
         body { background-color: var(--bg-main); filter: brightness(var(--site-brightness)); transition: filter 0.15s ease-out, background-color 0.3s ease; }
         .custom-card { background-color: var(--bg-card); border-color: var(--border-card); }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #090d16; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-        
-        /* Style fidèle à l'interface Firebase RTDB de la capture */
-        .rtdb-tree { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-        .rtdb-node-title { color: #e2e8f0; font-weight: 600; cursor: pointer; user-select: none; }
-        .rtdb-node-title:hover { color: #60a5fa; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- 1. CONNEXION -->
+    <!-- CONNEXION -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <div class="w-full max-w-md custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-3">
-                <div class="inline-flex p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 shadow-inner">
+                <div class="inline-flex p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400">
                     <i class="fa-solid fa-shield-halved text-4xl"></i>
                 </div>
-                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL DE COMMANDEMENT</h1>
+                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL SÉCURISÉ</h1>
                 <p class="text-xs text-slate-400">Authentification Réseau Realtime DB</p>
             </div>
-
             <form id="auth-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Adresse E-mail</label>
-                    <input type="email" id="user-email" required placeholder="gabinpompier811@gmail.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-slate-100">
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase">Adresse E-mail</label>
+                    <input type="email" id="user-email" required placeholder="gabinpompier811@gmail.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Mot de passe</label>
-                    <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-slate-100">
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase">Mot de passe</label>
+                    <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-white">
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg cursor-pointer">
-                    Connexion au Réseau <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                    Connexion <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- 2. PROFIL MODAL -->
+    <!-- MODAL CRÉATION DE PROFIL (DEMANDE) -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-lg custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
                 <div class="inline-flex p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 mb-1">
                     <i class="fa-solid fa-user-gear text-3xl"></i>
                 </div>
-                <h2 class="text-xl font-bold text-white">Création du Profil Opérateur</h2>
-                <p class="text-xs text-slate-400">Renseignez vos identifiants pour soumission à la Fondation</p>
+                <h2 class="text-xl font-bold text-white">Création de la Demande d'Accès</h2>
+                <p class="text-xs text-slate-400">Soumettez vos informations à la Fondation</p>
             </div>
-
             <form id="profile-form" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-300 mb-1.5">Pseudo / Nom d'affichage *</label>
@@ -79,35 +68,33 @@
                     <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur</label>
                     <input type="text" id="input-matricule" placeholder="ex: FS-027-FR" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 outline-none">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">
-                    Soumettre à la Fondation <i class="fa-solid fa-paper-plane ml-2"></i>
-                </button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">Envoyer à la Fondation <i class="fa-solid fa-paper-plane ml-2"></i></button>
             </form>
         </div>
     </div>
 
-    <!-- 3. PAGE D'ATTENTE FONDATION -->
+    <!-- ÉCRAN D'ATTENTE DE VALIDATION -->
     <div id="pending-approval-screen" class="hidden flex-1 flex items-center justify-center p-4 bg-slate-950">
         <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-6">
             <div class="inline-flex p-4 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 animate-pulse">
                 <i class="fa-solid fa-clock-rotate-left text-4xl"></i>
             </div>
             <div class="space-y-2">
-                <h2 class="text-2xl font-black text-white">ACCÈS EN ATTENTE DE VALIDATION</h2>
+                <h2 class="text-2xl font-black text-white">COMPTE EN ATTENTE DE VALIDATION</h2>
                 <p class="text-xs text-slate-400 leading-relaxed">
-                    Votre demande d'accès est examinée par la <span class="text-purple-400 font-bold">Fondation</span>.<br>
-                    Vous serez débloqué automatiquement dès validation des permissions.
+                    Votre demande d'accès est en cours d'examen par la <span class="text-purple-400 font-bold">Fondation</span>.<br>
+                    Cette page se débloquera automatiquement dès validation.
                 </p>
             </div>
             <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-left space-y-1 font-mono text-[11px] text-slate-400">
                 <div class="flex justify-between"><span>E-mail:</span> <span id="pending-user-email" class="text-white">---</span></div>
-                <div class="flex justify-between"><span>Statut:</span> <span class="text-amber-400 font-bold">En attente d'attribution</span></div>
+                <div class="flex justify-between"><span>Statut:</span> <span class="text-amber-400 font-bold">En attente d'approbation Staff</span></div>
             </div>
-            <button onclick="logout()" class="px-4 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 rounded-xl text-xs font-bold transition cursor-pointer">Déconnexion</button>
+            <button onclick="logout()" class="px-4 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 rounded-xl text-xs font-bold cursor-pointer">Déconnexion</button>
         </div>
     </div>
 
-    <!-- 4. DASHBOARD PRINCIPAL -->
+    <!-- TABLEAU DE BORD PRINCIPAL (INDEX) -->
     <div id="main-dashboard" class="hidden flex-1 flex flex-col">
         <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-3">
@@ -117,84 +104,34 @@
                 <div>
                     <span class="font-black tracking-widest text-sm text-white block">PORTAIL DE COMMANDEMENT</span>
                     <span class="text-[10px] text-emerald-400 uppercase tracking-wide flex items-center gap-1 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Realtime DB Synced
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Synchronisé Realtime DB
                     </span>
                 </div>
             </div>
-
             <div class="flex items-center gap-3">
                 <div class="hidden sm:flex flex-col text-right border-r border-slate-800 pr-4">
                     <span id="display-username" class="text-xs font-bold text-slate-100">---</span>
                     <span id="display-matricule" class="text-[10px] text-blue-400 font-mono">FS-000-FR</span>
                 </div>
-                <button id="open-settings-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
-                    <i class="fa-solid fa-gear text-blue-400"></i>
-                    <span class="hidden md:inline">Paramètres</span>
-                </button>
-                <button onclick="logout()" class="p-2.5 bg-red-950/50 hover:bg-red-900/80 border border-red-800/60 text-red-300 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <button onclick="logout()" class="p-2.5 bg-red-950/50 hover:bg-red-900/80 border border-red-800/60 text-red-300 rounded-xl transition cursor-pointer">
                     <i class="fa-solid fa-power-off"></i>
                 </button>
             </div>
         </header>
 
         <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
-            <div id="view-home" class="space-y-8">
-                <div class="flex justify-between items-center border-b border-slate-800/80 pb-6">
-                    <div>
-                        <h2 class="text-2xl font-black text-white tracking-wide">VOS ESPACES AUTORISÉS</h2>
-                        <p class="text-xs text-slate-400 mt-1">Accès restreint aux modules validés par la Fondation</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="categories-grid">
-                    <!-- Généré dynamiquement -->
+            <div class="flex justify-between items-center border-b border-slate-800/80 pb-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white tracking-wide">VOS ESPACES AUTORISÉS</h2>
+                    <p class="text-xs text-slate-400 mt-1">Modules sécurisés validés par la Fondation</p>
                 </div>
             </div>
-
-            <div id="view-category" class="hidden space-y-6">
-                <button onclick="goHome()" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
-                </button>
-                <div id="category-content-container" class="custom-card border rounded-3xl p-8 shadow-2xl"></div>
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="categories-grid"></div>
         </main>
     </div>
 
-    <!-- 5. PANNEAU DE PARAMÈTRES -->
-    <div id="settings-drawer" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex justify-end">
-        <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between overflow-y-auto">
-            <div class="space-y-6">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-sliders text-blue-400"></i> Paramètres</h3>
-                    <button id="close-settings-btn" class="p-2 text-slate-400 hover:text-white rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
-                </div>
-
-                <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <div class="flex justify-between items-center">
-                        <label class="text-xs font-bold text-slate-300"><i class="fa-solid fa-sun text-amber-400 mr-2"></i>Luminosité</label>
-                        <span id="brightness-value" class="text-xs font-mono font-bold text-blue-400">100%</span>
-                    </div>
-                    <input type="range" id="brightness-range" min="30" max="100" value="100" class="w-full accent-blue-500 cursor-pointer">
-                </div>
-
-                <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <label class="text-xs font-bold text-slate-300 block">Thème Graphique</label>
-                    <div class="grid grid-cols-3 gap-2 text-xs">
-                        <button onclick="setTheme('dark')" class="p-2.5 bg-slate-900 border border-slate-700 hover:border-blue-500 rounded-xl font-bold">Sombre</button>
-                        <button onclick="setTheme('deep-night')" class="p-2.5 bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl font-bold">Nuit</button>
-                        <button onclick="setTheme('neon')" class="p-2.5 bg-indigo-950/40 border border-indigo-800 hover:border-indigo-500 rounded-xl font-bold">Néon</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. LOGIQUE JAVASCRIPT ET FIREBASE INTEGRÉE -->
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app"
-        };
-
+        const firebaseConfig = { databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -206,12 +143,7 @@
         const authForm = document.getElementById('auth-form');
         const profileModal = document.getElementById('profile-modal');
         const profileForm = document.getElementById('profile-form');
-        const settingsDrawer = document.getElementById('settings-drawer');
-        const viewHome = document.getElementById('view-home');
-        const viewCategory = document.getElementById('view-category');
-        const categoryContentContainer = document.getElementById('category-content-container');
 
-        // CONNEXION
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('user-email').value.trim().toLowerCase();
@@ -223,28 +155,22 @@
 
         profileForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = document.getElementById('input-username').value;
-            const matricule = document.getElementById('input-matricule').value || 'FS-001-FR';
-            
             db.ref('pending_requests').push({
                 email: currentUser.email,
-                username: username,
-                matricule: matricule,
+                username: document.getElementById('input-username').value,
+                matricule: document.getElementById('input-matricule').value || 'FS-001-FR',
                 date: new Date().toLocaleString('fr-FR')
             });
-
             profileModal.classList.add('hidden');
             checkUserApprovalState();
         });
 
-        // APPROBATION TEMPS RÉEL
         function checkUserApprovalState() {
             if (!currentUser) return;
-
             if (currentUser.isOwner) {
                 currentUser.username = "Fondateur Suprême";
                 currentUser.matricule = "FS-001-OWNER";
-                currentUser.perms = ['ENA', 'FSF', 'MEDICAL', 'CHAT', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'];
+                currentUser.perms = ['ENA', 'MEDICAL', 'CHAT', 'FONDATION'];
                 pendingApprovalScreen.classList.add('hidden');
                 loadDashboard();
                 return;
@@ -255,12 +181,9 @@
             db.ref('users').on('value', snapshot => {
                 const users = snapshot.val();
                 let foundUser = null;
-
                 if (users) {
                     Object.keys(users).forEach(k => {
-                        if (users[k].email && users[k].email.toLowerCase() === currentUser.email.toLowerCase()) {
-                            foundUser = users[k];
-                        }
+                        if (users[k].email && users[k].email.toLowerCase() === currentUser.email.toLowerCase()) foundUser = users[k];
                     });
                 }
 
@@ -268,7 +191,7 @@
                     currentUser.username = foundUser.username || currentUser.email;
                     currentUser.matricule = foundUser.matricule || 'FS-000-FR';
                     currentUser.perms = foundUser.perms || [];
-                    
+                    localStorage.setItem('fsf_user_session', JSON.stringify(currentUser));
                     pendingApprovalScreen.classList.add('hidden');
                     profileModal.classList.add('hidden');
                     loadDashboard();
@@ -282,7 +205,6 @@
                                 if (p.email && p.email.toLowerCase() === currentUser.email.toLowerCase()) isPending = true;
                             });
                         }
-
                         if (!isPending) {
                             profileModal.classList.remove('hidden');
                             pendingApprovalScreen.classList.add('hidden');
@@ -298,40 +220,26 @@
         function loadDashboard() {
             document.getElementById('display-username').textContent = currentUser.username;
             document.getElementById('display-matricule').textContent = currentUser.matricule;
-            renderCategoryGrid();
-            mainDashboard.classList.remove('hidden');
-        }
-
-        function renderCategoryGrid() {
+            
             const grid = document.getElementById('categories-grid');
-            const userPerms = currentUser.perms || [];
+            const perms = currentUser.perms || [];
 
-            const allCategories = [
-                { key: 'ENA', title: 'ENA & Formations', desc: 'Interface Realtime DB, documents, instructeurs, unités, plannings, notes.', icon: 'fa-graduation-cap', color: 'blue' },
-                { key: 'MEDICAL', title: 'Service Médical & Santé', desc: 'Fiches médicales, bilans VMA, aptitudes TAP, suivi des blessures.', icon: 'fa-notes-medical', color: 'rose' },
-                { key: 'CHAT', title: 'Salon de Chat Opérationnel', desc: 'Canaux de discussion sécurisés entre opérateurs autorisés.', icon: 'fa-comments', color: 'emerald' },
-                { key: 'FSF', title: 'Forces Spéciales Françaises', desc: 'Dossiers opérateurs et spécialités.', icon: 'fa-user-ninja', color: 'red' },
-                { key: 'COS_EMA', title: 'COS / EMA', desc: 'Commandement des Opérations & État-Major.', icon: 'fa-star', color: 'amber' },
-                { key: 'ADMINISTRATION', title: 'Administration', desc: 'Gestion des dossiers et registres officiels.', icon: 'fa-folder-tree', color: 'teal' },
-                { key: 'FONDATION', title: 'Fondation (Staff)', desc: 'Validations, gestion des membres, messagerie staff & logs.', icon: 'fa-shield-cat', color: 'purple' },
-                { key: 'REGIMENTS', title: 'Régiments', desc: 'Répertoire des unités spécialisées.', icon: 'fa-person-military-rifle', color: 'cyan' }
+            const allCats = [
+                { key: 'ENA', title: 'ENA & Formations', desc: 'Arborescence RTDB Live, documents, instructeurs, unités et notes.', icon: 'fa-graduation-cap', color: 'blue', link: 'ENA.html' },
+                { key: 'MEDICAL', title: 'Service Médical & Santé', desc: 'Fiches médicales, bilans VMA et aptitudes TAP.', icon: 'fa-notes-medical', color: 'rose', link: 'Medical.html' },
+                { key: 'CHAT', title: 'Salon de Chat Opérationnel', desc: 'Canaux de discussion sécurisés entre opérateurs.', icon: 'fa-comments', color: 'emerald', link: 'Chat.html' },
+                { key: 'FONDATION', title: 'Fondation (Staff)', desc: 'Validations, gestion des membres, exclusions et logs.', icon: 'fa-shield-cat', color: 'purple', link: 'Fondation.html' }
             ];
 
-            const allowedCategories = allCategories.filter(c => currentUser.isOwner || userPerms.includes(c.key));
+            const allowed = allCats.filter(c => currentUser.isOwner || perms.includes(c.key));
 
-            if (allowedCategories.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-3 p-8 bg-slate-950 border border-slate-800 rounded-3xl text-center space-y-3">
-                        <i class="fa-solid fa-lock text-amber-400 text-3xl"></i>
-                        <h3 class="font-bold text-white text-base">Aucun module attribué</h3>
-                        <p class="text-xs text-slate-400">La Fondation ne vous a attribué aucun module pour le moment.</p>
-                    </div>
-                `;
+            if (allowed.length === 0) {
+                grid.innerHTML = `<div class="col-span-3 p-8 bg-slate-950 border border-slate-800 rounded-3xl text-center space-y-3"><i class="fa-solid fa-lock text-amber-400 text-3xl"></i><h3 class="font-bold text-white">Aucun module attribué</h3><p class="text-xs text-slate-400">Veuillez patienter que la Fondation valide vos accès.</p></div>`;
                 return;
             }
 
-            grid.innerHTML = allowedCategories.map(c => `
-                <button onclick="openCategory('${c.key}')" class="group text-left custom-card border hover:border-${c.color}-500/60 p-6 rounded-3xl transition-all shadow-xl flex flex-col justify-between cursor-pointer">
+            grid.innerHTML = allowed.map(c => `
+                <a href="${c.link}" class="group custom-card border hover:border-${c.color}-500/60 p-6 rounded-3xl transition-all shadow-xl flex flex-col justify-between cursor-pointer">
                     <div class="space-y-4">
                         <div class="p-3.5 bg-${c.color}-500/10 border border-${c.color}-500/20 rounded-2xl text-${c.color}-400 w-fit"><i class="fa-solid ${c.icon} text-2xl"></i></div>
                         <h3 class="font-bold text-lg text-white group-hover:text-${c.color}-400 transition">${c.title}</h3>
@@ -340,678 +248,14 @@
                     <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-${c.color}-400 font-semibold">
                         <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
                     </div>
-                </button>
+                </a>
             `).join('');
+
+            mainDashboard.classList.remove('hidden');
         }
 
-        function openCategory(key) {
-            const userPerms = currentUser.perms || [];
-            if (!currentUser.isOwner && !userPerms.includes(key)) {
-                categoryContentContainer.innerHTML = `
-                    <div class="text-center py-12 space-y-4">
-                        <i class="fa-solid fa-shield-halved text-5xl text-red-500"></i>
-                        <h2 class="text-xl font-bold text-white">ACCÈS RESTREINT</h2>
-                        <p class="text-xs text-slate-400">Vous n'avez pas l'autorisation d'accéder au module ${key}.</p>
-                    </div>
-                `;
-                viewHome.classList.add('hidden');
-                viewCategory.classList.remove('hidden');
-                return;
-            }
-
-            viewHome.classList.add('hidden');
-            viewCategory.classList.remove('hidden');
-
-            if (key === 'ENA') renderEnaWorkspace();
-            if (key === 'MEDICAL') renderMedicalWorkspace();
-            if (key === 'CHAT') renderChatWorkspace();
-            if (key === 'FONDATION') renderFondationWorkspace();
-            if (key === 'FSF') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> FSF - Opérateurs</h2><p class="text-xs text-slate-400">Espace Forces Spéciales Françaises.</p>`;
-            if (key === 'COS_EMA') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2><p class="text-xs text-slate-400">Espace État-Major.</p>`;
-            if (key === 'ADMINISTRATION') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-teal-400 mr-2"></i> Administration</h2><p class="text-xs text-slate-400">Espace Registres &amp; Fichiers.</p>`;
-            if (key === 'REGIMENTS') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments</h2><p class="text-xs text-slate-400">Espace Régiments.</p>`;
-        }
-
-        function goHome() {
-            viewCategory.classList.add('hidden');
-            viewHome.classList.remove('hidden');
-        }
-
-        function logout() {
-            localStorage.removeItem('fsf_user_session');
-            location.reload();
-        }
-
-        // ==========================================
-        //  MODULE ENA WORKSPACE (FIDÈLE À LA CAPTURE)
-        // ==========================================
-        function renderEnaWorkspace() {
-            categoryContentContainer.innerHTML = `
-                <div class="space-y-6">
-                    <!-- En-tête URL style Capture DB -->
-                    <div class="bg-slate-950 p-3.5 border border-slate-800 rounded-2xl flex items-center gap-3">
-                        <i class="fa-solid fa-link text-blue-400 text-sm"></i>
-                        <span class="text-xs font-mono text-slate-200 truncate">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app</span>
-                    </div>
-
-                    <div class="flex gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-bold">
-                        <button onclick="switchEnaTab('rtdb')" id="ena-tab-rtdb" class="px-3.5 py-2 bg-blue-600 text-white rounded-xl cursor-pointer">Live Database (Capture)</button>
-                        <button onclick="switchEnaTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Documents &amp; Fichiers</button>
-                        <button onclick="switchEnaTab('formations')" id="ena-tab-formations" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Formations</button>
-                        <button onclick="switchEnaTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Unités &amp; Sections</button>
-                        <button onclick="switchEnaTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Plannings</button>
-                        <button onclick="switchEnaTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Notes</button>
-                    </div>
-
-                    <!-- REPRODUCTION DE L'INTERFACE CAPTURE RTDB -->
-                    <div id="ena-content-rtdb" class="space-y-4">
-                        <div class="bg-slate-950 p-5 border border-slate-800 rounded-2xl rtdb-tree space-y-3">
-                            <div class="text-slate-400 font-mono text-xs flex items-center gap-2 border-b border-slate-800/80 pb-3">
-                                <span class="text-blue-400 font-bold">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app/</span>
-                            </div>
-
-                            <div class="pl-2 space-y-2 text-xs">
-                                <!-- Noeud logs -->
-                                <div>
-                                    <div onclick="toggleRtdbNode('rtdb-logs-tree')" class="rtdb-node-title flex items-center gap-2">
-                                        <i class="fa-solid fa-caret-right text-slate-500 transition-transform" id="rtdb-logs-tree-caret"></i>
-                                        <span class="text-slate-300 font-mono">logs</span>
-                                    </div>
-                                    <div id="rtdb-logs-tree" class="hidden pl-6 pt-1 space-y-1 text-[11px] font-mono text-slate-400"></div>
-                                </div>
-
-                                <!-- Noeud notifications -->
-                                <div>
-                                    <div onclick="toggleRtdbNode('rtdb-notifs-tree')" class="rtdb-node-title flex items-center gap-2">
-                                        <i class="fa-solid fa-caret-right text-slate-500 transition-transform" id="rtdb-notifs-tree-caret"></i>
-                                        <span class="text-slate-300 font-mono">notifications</span>
-                                    </div>
-                                    <div id="rtdb-notifs-tree" class="hidden pl-6 pt-1 space-y-1 text-[11px] font-mono text-slate-400"></div>
-                                </div>
-
-                                <!-- Noeud units -->
-                                <div>
-                                    <div onclick="toggleRtdbNode('rtdb-units-tree')" class="rtdb-node-title flex items-center gap-2">
-                                        <i class="fa-solid fa-caret-right text-slate-500 transition-transform" id="rtdb-units-tree-caret"></i>
-                                        <span class="text-slate-300 font-mono">units</span>
-                                    </div>
-                                    <div id="rtdb-units-tree" class="hidden pl-6 pt-1 space-y-1 text-[11px] font-mono text-slate-400"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="ena-content-docs" class="hidden space-y-4">
-                        <label class="px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl cursor-pointer inline-block">
-                            + Importer Fichier
-                            <input type="file" onchange="uploadDocDB(event)" class="hidden">
-                        </label>
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <div id="docs-list-container" class="lg:col-span-4 space-y-2"></div>
-                            <div id="doc-preview-container" class="lg:col-span-8 bg-slate-950 p-6 border border-slate-800 rounded-2xl text-center text-xs text-slate-500">Sélectionnez un document.</div>
-                        </div>
-                    </div>
-
-                    <div id="ena-content-formations" class="hidden space-y-6">
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <form onsubmit="addInstructorDB(event)" class="lg:col-span-4 bg-slate-950 p-4 border border-slate-800 rounded-2xl space-y-3 text-xs">
-                                <h4 class="font-bold text-white uppercase">Ajouter Instructeur</h4>
-                                <input type="text" id="inst-name" required placeholder="Nom complet" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
-                                <select id="inst-role" required class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-300 outline-none">
-                                    <option value="Directeur de l'ENA">Directeur de l'ENA</option>
-                                    <option value="Formateur Principal">Formateur Principal</option>
-                                    <option value="Instructeur">Instructeur</option>
-                                </select>
-                                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded-xl">+ Ajouter</button>
-                            </form>
-                            <div class="lg:col-span-8 bg-slate-950 p-4 border border-slate-800 rounded-2xl space-y-3">
-                                <h4 class="font-bold text-white uppercase text-xs">Corps des Instructeurs Live</h4>
-                                <div id="instructors-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="ena-content-unités" class="hidden space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-sm font-bold text-white">Répertoire des Unités Forces Spéciales</h3>
-                            <button onclick="createNewUnitPrompt()" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold cursor-pointer">+ Créer Unité</button>
-                        </div>
-                        <div id="units-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                    </div>
-
-                    <div id="ena-content-plannings" class="hidden space-y-4">
-                        <form onsubmit="addSessionDB(event)" class="bg-slate-950 p-4 border border-slate-800 rounded-xl space-y-3 text-xs">
-                            <h4 class="font-bold text-white uppercase">Programmer une Session</h4>
-                            <input type="text" id="sess-title" required placeholder="Nom de la session / Formation" class="w-full bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-white outline-none">
-                            <input type="datetime-local" id="sess-time" required class="w-full bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-white outline-none">
-                            <button type="submit" class="w-full bg-blue-600 py-2.5 rounded-lg font-bold text-white cursor-pointer">Publier Session Live</button>
-                        </form>
-                        <div id="sessions-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-                    </div>
-
-                    <div id="ena-content-notes" class="hidden space-y-4">
-                        <div class="flex gap-2">
-                            <button onclick="createNewNoteDB()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl cursor-pointer">+ Nouvelle Note</button>
-                            <button onclick="printNotePDF()" class="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl cursor-pointer"><i class="fa-solid fa-file-pdf mr-1"></i> Imprimer PDF</button>
-                        </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <div id="notes-list-container" class="lg:col-span-4 space-y-2"></div>
-                            <div id="note-editor-container" class="lg:col-span-8 bg-slate-950 p-4 border border-slate-800 rounded-xl">
-                                <p class="text-xs text-slate-500 italic">Sélectionnez une note.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            listenUnitsDB();
-            listenNotesDB();
-            listenSessionsDB();
-            listenDocsDB();
-            listenInstructorsDB();
-            listenRtdbTree();
-        }
-
-        function switchEnaTab(tab) {
-            ['rtdb', 'docs', 'formations', 'unités', 'plannings', 'notes'].forEach(t => {
-                const el = document.getElementById(`ena-content-${t}`);
-                const btn = document.getElementById(`ena-tab-${t}`);
-                if (t === tab) {
-                    if (el) el.classList.remove('hidden');
-                    if (btn) btn.className = "px-3.5 py-2 bg-blue-600 text-white rounded-xl cursor-pointer";
-                } else {
-                    if (el) el.classList.add('hidden');
-                    if (btn) btn.className = "px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer";
-                }
-            });
-        }
-
-        function toggleRtdbNode(id) {
-            const el = document.getElementById(id);
-            const caret = document.getElementById(id + '-caret');
-            if (el) el.classList.toggle('hidden');
-            if (caret) caret.classList.toggle('rotate-90');
-        }
-
-        function listenRtdbTree() {
-            db.ref('logs').on('value', snap => {
-                const el = document.getElementById('rtdb-logs-tree');
-                if (!el) return;
-                const d = snap.val();
-                if (!d) { el.innerHTML = `<div>null</div>`; return; }
-                el.innerHTML = Object.keys(d).map(k => `<div><span class="text-blue-400">${k}:</span> ${JSON.stringify(d[k])}</div>`).join('');
-            });
-
-            db.ref('notifications').on('value', snap => {
-                const el = document.getElementById('rtdb-notifs-tree');
-                if (!el) return;
-                const d = snap.val();
-                if (!d) { el.innerHTML = `<div>null</div>`; return; }
-                el.innerHTML = Object.keys(d).map(k => `<div><span class="text-purple-400">${k}:</span> ${JSON.stringify(d[k])}</div>`).join('');
-            });
-
-            db.ref('units').on('value', snap => {
-                const el = document.getElementById('rtdb-units-tree');
-                if (!el) return;
-                const d = snap.val();
-                if (!d) { el.innerHTML = `<div>null</div>`; return; }
-                el.innerHTML = Object.keys(d).map(k => `<div><span class="text-emerald-400">${k}:</span> ${JSON.stringify(d[k])}</div>`).join('');
-            });
-        }
-
-        // ==========================================
-        //  MODULE MÉDICAL AVANCÉ
-        // ==========================================
-        function renderMedicalWorkspace() {
-            categoryContentContainer.innerHTML = `
-                <div class="space-y-6">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-notes-medical text-rose-400"></i> Service Médical &amp; Santé des Opérateurs</h2>
-                            <p class="text-xs text-slate-400">Gestion des bilans de santé, aptitudes TAP, SIGYCOP et indisponibilités</p>
-                        </div>
-                        <button onclick="addMedicalRecordPrompt()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl cursor-pointer">+ Nouvelle Fiche Médicale</button>
-                    </div>
-
-                    <div id="medical-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                </div>
-            `;
-            listenMedicalDB();
-        }
-
-        function listenMedicalDB() {
-            db.ref('medical').on('value', snapshot => {
-                const container = document.getElementById('medical-cards-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-3 text-center p-6">Aucun dossier médical enregistré.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const m = data[key];
-                    return `
-                        <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3">
-                            <div class="flex justify-between items-start border-b border-slate-800 pb-3">
-                                <div>
-                                    <span class="font-bold text-white text-sm block">${m.name}</span>
-                                    <span class="text-xs text-blue-400 font-mono">Matricule : ${m.mat}</span>
-                                </div>
-                                <span class="px-2.5 py-1 bg-rose-950 text-rose-300 border border-rose-800 rounded-lg text-[10px] font-bold">${m.sang || 'A+'}</span>
-                            </div>
-                            <div class="space-y-1.5 text-xs text-slate-300">
-                                <div class="flex justify-between"><span>Aptitude TAP :</span> <span class="${m.tap ? 'text-emerald-400' : 'text-red-400'} font-bold">${m.tap ? 'Apte' : 'Inapte'}</span></div>
-                                <div class="flex justify-between"><span>Statut VMA :</span> <span class="font-mono text-blue-400">${m.vma || '16.5 km/h'}</span></div>
-                                <div class="flex justify-between"><span>SIGYCOP :</span> <span class="font-mono text-purple-400">${m.sigycop || '1121110'}</span></div>
-                            </div>
-                            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-                                <span class="text-[10px] text-slate-500">Mise à jour : ${m.date || 'Récemment'}</span>
-                                <button onclick="deleteMedicalDB('${key}')" class="text-red-400 hover:text-red-300 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        function addMedicalRecordPrompt() {
-            const name = prompt("Nom & Prénom de l'opérateur :");
-            const mat = prompt("Matricule :");
-            const sang = prompt("Groupe sanguin (ex: O+, A-) :");
-            if (name && mat) {
-                db.ref('medical').push({
-                    name: name,
-                    mat: mat,
-                    sang: sang || 'A+',
-                    tap: true,
-                    vma: '17 km/h',
-                    sigycop: '1121110',
-                    date: new Date().toLocaleDateString('fr-FR')
-                });
-            }
-        }
-
-        function deleteMedicalDB(key) { db.ref('medical/' + key).remove(); }
-
-        // ==========================================
-        //  MODULE CHAT OPÉRATIONNEL SÉPARÉ
-        // ==========================================
-        function renderChatWorkspace() {
-            categoryContentContainer.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-comments text-emerald-400"></i> Salon de Chat Opérationnel</h2>
-                            <p class="text-xs text-slate-400">Communications instantanées cryptées entre membres autorisés</p>
-                        </div>
-                    </div>
-
-                    <div id="op-chat-messages" class="p-4 bg-slate-950 border border-slate-800 rounded-2xl h-[350px] overflow-y-auto space-y-2 text-xs"></div>
-
-                    <form onsubmit="sendOpChatMessageDB(event)" class="flex gap-2">
-                        <input type="text" id="op-chat-input" required placeholder="Tapez votre message opérationnel..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none">
-                        <button type="submit" class="px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs cursor-pointer">Envoyer</button>
-                    </form>
-                </div>
-            `;
-            listenOpChatDB();
-        }
-
-        function listenOpChatDB() {
-            db.ref('op_chat').on('value', snapshot => {
-                const container = document.getElementById('op-chat-messages');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-slate-500 italic text-center p-4">Aucun message dans le salon opérationnel.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const m = data[key];
-                    return `
-                        <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-start">
-                            <div>
-                                <span class="font-bold text-emerald-400 mr-2">${m.author} (${m.mat}):</span>
-                                <span class="text-slate-200">${m.text}</span>
-                                <span class="block text-[9px] text-slate-500 font-mono mt-0.5">${m.date}</span>
-                            </div>
-                            <button onclick="deleteOpChatMessageDB('${key}')" class="text-slate-600 hover:text-red-400 text-xs p-1"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    `;
-                }).join('');
-                container.scrollTop = container.scrollHeight;
-            });
-        }
-
-        function sendOpChatMessageDB(e) {
-            e.preventDefault();
-            const input = document.getElementById('op-chat-input');
-            if (input && input.value.trim() !== '') {
-                db.ref('op_chat').push({
-                    author: currentUser.username,
-                    mat: currentUser.matricule,
-                    text: input.value.trim(),
-                    date: new Date().toLocaleTimeString('fr-FR')
-                });
-                input.value = '';
-            }
-        }
-
-        function deleteOpChatMessageDB(key) { db.ref('op_chat/' + key).remove(); }
-
-        // ==========================================
-        //  MODULE FONDATION (STAFF, ROLES, LOGS DB)
-        // ==========================================
-        function renderFondationWorkspace() {
-            categoryContentContainer.innerHTML = `
-                <div class="space-y-6">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Commandement Staff</h2>
-                            <p class="text-xs text-slate-400">Gestion globale des permissions, canaux staff et audit</p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold overflow-x-auto">
-                        <button onclick="switchFondationTab('validations')" id="f-btn-validations" class="px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer">Validations en Attente</button>
-                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Membres &amp; Exclusions</button>
-                        <button onclick="switchFondationTab('logs')" id="f-btn-logs" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Logs Staff</button>
-                    </div>
-
-                    <div id="f-content-validations" class="space-y-3">
-                        <div id="pending-list-container" class="space-y-3"></div>
-                    </div>
-
-                    <div id="f-content-users" class="hidden space-y-3">
-                        <div id="users-list-container" class="space-y-3"></div>
-                    </div>
-
-                    <div id="f-content-logs" class="hidden space-y-3">
-                        <div id="logs-list-container" class="font-mono text-xs text-slate-400 space-y-1 max-h-[300px] overflow-y-auto bg-slate-950 p-4 border border-slate-800 rounded-xl"></div>
-                    </div>
-                </div>
-            `;
-
-            listenPendingRequestsDB();
-            listenUsersDB();
-            listenLogsDB();
-        }
-
-        function switchFondationTab(tab) {
-            ['validations', 'users', 'logs'].forEach(t => {
-                const el = document.getElementById(`f-content-${t}`);
-                const btn = document.getElementById(`f-btn-${t}`);
-                if (t === tab) {
-                    if (el) el.classList.remove('hidden');
-                    if (btn) btn.className = "px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer";
-                } else {
-                    if (el) el.classList.add('hidden');
-                    if (btn) btn.className = "px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer";
-                }
-            });
-        }
-
-        function listenPendingRequestsDB() {
-            db.ref('pending_requests').on('value', snapshot => {
-                const container = document.getElementById('pending-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const req = data[key];
-                    return `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div>
-                                <span class="font-bold text-white text-sm block">${req.username} (${req.email})</span>
-                                <span class="text-xs text-blue-400 font-mono">Matricule : ${req.matricule}</span>
-                            </div>
-                            <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                                <div class="grid grid-cols-4 gap-2 text-[10px] bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-ENA" class="accent-purple-500"> ENA</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-MEDICAL" class="accent-purple-500"> Médical</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-CHAT" class="accent-purple-500"> Chat</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-FSF" class="accent-purple-500"> FSF</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-COS_EMA" class="accent-purple-500"> COS</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-ADMINISTRATION" class="accent-purple-500"> Admin</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-FONDATION" class="accent-purple-500"> Fondation</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-REGIMENTS" class="accent-purple-500"> Régiments</label>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="approveUserDB('${key}', '${req.email}', '${req.username}', '${req.matricule}')" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl cursor-pointer">Accepter</button>
-                                    <button onclick="refuseUserDB('${key}', '${req.email}')" class="px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl cursor-pointer">Refuser</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        function approveUserDB(reqKey, email, username, matricule) {
-            const perms = [];
-            ['ENA', 'MEDICAL', 'CHAT', 'FSF', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'].forEach(m => {
-                if (document.getElementById(`p-${reqKey}-${m}`)?.checked) perms.push(m);
-            });
-
-            db.ref('users').push({
-                email: email,
-                username: username,
-                matricule: matricule,
-                perms: perms
-            });
-
-            db.ref('pending_requests/' + reqKey).remove();
-            db.ref('logs').push({ action: "Approbation de " + username + " (" + email + ")", date: new Date().toLocaleString('fr-FR') });
-        }
-
-        function refuseUserDB(reqKey, email) {
-            db.ref('pending_requests/' + reqKey).remove();
-            db.ref('logs').push({ action: "Refus de " + email, date: new Date().toLocaleString('fr-FR') });
-        }
-
-        function listenUsersDB() {
-            db.ref('users').on('value', snapshot => {
-                const container = document.getElementById('users-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucun utilisateur approuvé.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const u = data[key];
-                    return `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-xs">
-                            <div>
-                                <span class="font-bold text-white text-sm block">${u.username} (${u.email})</span>
-                                <span class="text-emerald-400 font-mono text-[11px]">Permis : ${(u.perms || []).join(', ')}</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="editUserPermsPrompt('${key}', '${u.username}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-bold cursor-pointer">Modifier</button>
-                                <button onclick="excludeUserDB('${key}', '${u.username}')" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg font-bold cursor-pointer">Exclure / Bannir</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        function excludeUserDB(userKey, username) {
-            db.ref('users/' + userKey).remove();
-            db.ref('logs').push({ action: "Exclusion de " + username, date: new Date().toLocaleString('fr-FR') });
-        }
-
-        function editUserPermsPrompt(userKey, username) {
-            const newPermsStr = prompt("Mettre à jour les accès (ex: ENA,MEDICAL,CHAT) pour " + username + " :");
-            if (newPermsStr !== null) {
-                const permsArray = newPermsStr.split(',').map(s => s.trim().toUpperCase());
-                db.ref('users/' + userKey + '/perms').set(permsArray);
-                db.ref('logs').push({ action: "Mise à jour accès " + username + " -> " + permsArray.join(', '), date: new Date().toLocaleString('fr-FR') });
-            }
-        }
-
-        function listenLogsDB() {
-            db.ref('logs').on('value', snapshot => {
-                const container = document.getElementById('logs-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<div>• Aucun log.</div>`; return; }
-                container.innerHTML = Object.values(data).reverse().map(l => `<div>• ${l.action} <span class="text-slate-600">(${l.date})</span></div>`).join('');
-            });
-        }
-
-        // FONCTIONS AUXILIAIRES ENA
-        function listenUnitsDB() {
-            db.ref('units').on('value', snapshot => {
-                const container = document.getElementById('units-grid-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-3">Aucune unité.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const u = data[key];
-                    const members = u.members ? Object.values(u.members) : [];
-                    return `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                                <span class="font-bold text-xs text-white">${u.name}</span>
-                                <button onclick="deleteUnitDB('${key}')" class="text-red-400 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                            <div class="space-y-1.5">
-                                ${members.map(m => `<div class="bg-slate-900 p-2 rounded-lg text-xs flex justify-between"><span class="font-bold text-slate-200">${m.name}</span><span class="font-mono text-[10px] text-blue-400">${m.matricule}</span></div>`).join('')}
-                            </div>
-                            <button onclick="addMemberToUnitPrompt('${key}')" class="w-full py-1.5 bg-slate-900 hover:bg-slate-800 text-xs font-bold text-slate-300 rounded-lg border border-slate-800 cursor-pointer">+ Ajouter membre</button>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        function createNewUnitPrompt() { const name = prompt("Nom de l'unité :"); if (name) db.ref('units').push({ name: name }); }
-        function deleteUnitDB(key) { db.ref('units/' + key).remove(); }
-        function addMemberToUnitPrompt(key) { const name = prompt("Nom & Prénom :"); const mat = prompt("Matricule :"); if (name && mat) db.ref('units/' + key + '/members').push({ name: name, matricule: mat }); }
-
-        function listenNotesDB() {
-            db.ref('notes').on('value', snapshot => {
-                const container = document.getElementById('notes-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune note.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const n = data[key];
-                    return `
-                        <div onclick="openNoteEditorDB('${key}', \`${n.title || ''}\`, \`${n.content || ''}\`)" class="p-3 bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-xl flex justify-between items-center cursor-pointer">
-                            <span class="font-bold text-xs text-white truncate">${n.title || 'Sans titre'}</span>
-                            <button onclick="event.stopPropagation(); deleteNoteDB('${key}')" class="text-slate-500 hover:text-red-400 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        function createNewNoteDB() { db.ref('notes').push({ title: "Nouvelle Note Sync", content: "" }); }
-        function openNoteEditorDB(key, title, content) {
-            const editor = document.getElementById('note-editor-container');
-            if (editor) {
-                editor.innerHTML = `
-                    <div class="space-y-3">
-                        <input type="text" id="active-note-title" value="${title}" oninput="updateNoteDB('${key}', 'title', this.value)" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-xs font-bold text-white outline-none">
-                        <textarea id="active-note-content" oninput="updateNoteDB('${key}', 'content', this.value)" rows="8" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-xs text-slate-200 outline-none resize-none">${content}</textarea>
-                    </div>
-                `;
-            }
-        }
-        function updateNoteDB(key, field, val) { db.ref('notes/' + key + '/' + field).set(val); }
-        function deleteNoteDB(key) { db.ref('notes/' + key).remove(); }
-
-        function printNotePDF() {
-            const title = document.getElementById('active-note-title')?.value || "Note";
-            const content = document.getElementById('active-note-content')?.value || "";
-            const win = window.open('', '', 'width=800,height=600');
-            win.document.write(`<html><head><title>${title}</title></head><body style="font-family:sans-serif;padding:40px;"><h1>${title}</h1><p style="white-space:pre-wrap;">${content}</p></body></html>`);
-            win.document.close();
-            win.print();
-        }
-
-        function listenSessionsDB() {
-            db.ref('sessions').on('value', snapshot => {
-                const container = document.getElementById('sessions-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-2">Aucune session.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const s = data[key];
-                    return `
-                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                            <div><span class="font-bold text-xs text-white block">${s.title}</span><span class="text-[10px] text-blue-400 font-mono"><i class="fa-solid fa-clock mr-1"></i>${s.time}</span></div>
-                            <button onclick="deleteSessionDB('${key}')" class="text-red-400 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-        function addSessionDB(e) { e.preventDefault(); db.ref('sessions').push({ title: document.getElementById('sess-title').value, time: document.getElementById('sess-time').value }); }
-        function deleteSessionDB(key) { db.ref('sessions/' + key).remove(); }
-
-        function listenDocsDB() {
-            db.ref('docs').on('value', snapshot => {
-                const container = document.getElementById('docs-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucun document.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const d = data[key];
-                    return `
-                        <div onclick="previewDocDB('${d.name}')" class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center cursor-pointer">
-                            <span class="font-bold text-xs text-white truncate"><i class="fa-solid fa-file-pdf text-red-400 mr-2"></i>${d.name}</span>
-                            <button onclick="event.stopPropagation(); deleteDocDB('${key}')" class="text-red-400 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-        function uploadDocDB(e) { for (let f of e.target.files) db.ref('docs').push({ name: f.name, size: (f.size/1024).toFixed(1) + ' KB' }); }
-        function previewDocDB(name) {
-            const prev = document.getElementById('doc-preview-container');
-            if (prev) prev.innerHTML = `<div class="p-6 bg-slate-900 border border-slate-800 rounded-xl"><i class="fa-solid fa-file-lines text-4xl text-blue-400 mb-2"></i><p>Aperçu du document [ ${name} ]</p></div>`;
-        }
-        function deleteDocDB(key) { db.ref('docs/' + key).remove(); }
-
-        function listenInstructorsDB() {
-            db.ref('instructors').on('value', snapshot => {
-                const container = document.getElementById('instructors-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-2">Aucun instructeur.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const i = data[key];
-                    return `
-                        <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                            <div><span class="font-bold text-white text-xs block">${i.name}</span><span class="text-[10px] text-blue-400 block">${i.role}</span></div>
-                            <button onclick="deleteInstructorDB('${key}')" class="text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-        function addInstructorDB(e) { e.preventDefault(); db.ref('instructors').push({ name: document.getElementById('inst-name').value, role: document.getElementById('inst-role').value }); }
-        function deleteInstructorDB(key) { db.ref('instructors/' + key).remove(); }
-
-        // PARAMÈTRES
-        document.getElementById('brightness-range').addEventListener('input', (e) => {
-            const val = e.target.value;
-            document.getElementById('brightness-value').textContent = `${val}%`;
-            document.documentElement.style.setProperty('--site-brightness', `${val}%`);
-        });
-
-        function setTheme(t) { document.body.setAttribute('data-theme', t); }
-
-        document.getElementById('open-settings-btn').addEventListener('click', () => settingsDrawer.classList.remove('hidden'));
-        document.getElementById('close-settings-btn').addEventListener('click', () => settingsDrawer.classList.add('hidden'));
-
-        if (currentUser) {
-            authScreen.classList.add('hidden');
-            checkUserApprovalState();
-        }
+        function logout() { localStorage.removeItem('fsf_user_session'); location.reload(); }
+        if (currentUser) { authScreen.classList.add('hidden'); checkUserApprovalState(); }
     </script>
 </body>
 </html>
