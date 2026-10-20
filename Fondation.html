@@ -136,6 +136,7 @@
 
         document.getElementById('display-username').textContent = currentUser.username || currentUser.email;
 
+        // INITIALISATION FIREBASE CORRIGÉE ET ACTIVÉE
         const firebaseConfig = { databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
