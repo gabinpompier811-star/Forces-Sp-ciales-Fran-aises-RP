@@ -9,7 +9,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// DOM & Connexion
+// Connexion DOM
 const loginForm = document.getElementById("login-form");
 const loginContainer = document.getElementById("login-container");
 const appContainer = document.getElementById("app-container");
@@ -21,7 +21,7 @@ if (loginForm) {
         const email = document.getElementById("login-email").value;
         loginContainer.classList.add("hidden");
         appContainer.classList.remove("hidden");
-        ajouterLog(email, "CONNEXION", "Accès sécurisé au portail FSF");
+        ajouterLog(email, "CONNEXION", "Utilisateur connecté au portail ENA / FSF");
     });
 }
 
@@ -32,14 +32,14 @@ if (logoutBtn) {
     });
 }
 
-// NAVIGATION
-const tabButtons = document.querySelectorAll(".tab-btn");
+// Navigation multi-onglets
+const navTabButtons = document.querySelectorAll(".nav-tab-btn");
 const tabContents = document.querySelectorAll(".tab-content");
 
-tabButtons.forEach(button => {
+navTabButtons.forEach(button => {
     button.addEventListener("click", () => {
         const targetTab = button.getAttribute("data-tab");
-        tabButtons.forEach(btn => btn.classList.remove("active"));
+        navTabButtons.forEach(btn => btn.classList.remove("active"));
         tabContents.forEach(content => content.classList.add("hidden"));
 
         button.classList.add("active");
@@ -48,7 +48,7 @@ tabButtons.forEach(button => {
     });
 });
 
-// LOGS
+// Logs Firebase
 function ajouterLog(utilisateur, action, details) {
     const logRef = ref(db, 'logs/');
     const newLogRef = push(logRef);
@@ -68,15 +68,15 @@ onValue(logsRef, (snapshot) => {
         logsContainer.innerHTML = "";
         if (data) {
             Object.values(data).reverse().forEach(log => {
-                const logDiv = document.createElement("div");
-                logDiv.className = "log-entry";
-                logDiv.innerHTML = `
-                    <span style="color:#64748b;">[${log.date}]</span>
-                    <span style="color:#38bdf8; font-weight:bold;">${log.utilisateur}</span>
-                    <span style="color:#22c55e;">${log.action}</span>
+                const row = document.createElement("div");
+                row.className = "log-row";
+                row.innerHTML = `
+                    <span class="log-time">${log.date}</span>
+                    <span class="log-mail">${log.utilisateur}</span>
+                    <span class="log-act">${log.action}</span>
                     <span>${log.details}</span>
                 `;
-                logsContainer.appendChild(logDiv);
+                logsContainer.appendChild(row);
             });
         }
     }
