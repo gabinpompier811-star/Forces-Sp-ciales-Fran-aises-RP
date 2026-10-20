@@ -2,26 +2,47 @@
 <html lang="fr" data-theme="dark" data-accent="blue">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"f content="width=device-width, initial-scale=1.0">
-    <title>Portail Stratégique & Opérationnel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Stratégique & Opérationnel - FSF / ENA</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --site-brightness: 100%; }
-        body { filter: brightness(var(--site-brightness)); transition: filter 0.15s ease-out; }
+        :root {
+            --site-brightness: 100%;
+            --bg-main: #090d16;
+            --bg-card: #0f172a;
+            --border-card: #1e293b;
+        }
+
+        /* Thèmes d'interface */
+        body[data-theme="dark"] { --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
+        body[data-theme="deep-night"] { --bg-main: #020408; --bg-card: #090d16; --border-card: #131c2e; }
+        body[data-theme="neon"] { --bg-main: #05050a; --bg-card: #0d0e1b; --border-card: #1f2347; }
+
+        body {
+            background-color: var(--bg-main);
+            filter: brightness(var(--site-brightness));
+            transition: filter 0.15s ease-out, background-color 0.3s ease;
+        }
+
+        .custom-card {
+            background-color: var(--bg-card);
+            border-color: var(--border-card);
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #090d16; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
+<body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
 
     <!-- 1. PAGE DE CONNEXION -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-        <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
+        <div class="w-full max-w-md custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-3">
                 <div class="inline-flex p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 shadow-inner">
                     <i class="fa-solid fa-shield-halved text-4xl"></i>
@@ -52,9 +73,9 @@
         </div>
     </div>
 
-    <!-- 2. MODAL : CONFIGURATION DU PSEUDO (PREMIÈRE CONNEXION) -->
+    <!-- 2. MODAL : CONFIGURATION DU PSEUDO -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
+        <div class="w-full max-w-lg custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
                 <div class="inline-flex p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 mb-1">
                     <i class="fa-solid fa-user-gear text-3xl"></i>
@@ -66,7 +87,7 @@
             <form id="profile-form" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-300 mb-1.5">Pseudo / Nom d'affichage *</label>
-                    <input type="text" id="input-username" required placeholder="ex: Capitaine N. VELMONT" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:border-emerald-500 outline-none">
+                    <input type="text" id="input-username" required placeholder="ex: Capitaine Noli VELMONT" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:border-emerald-500 outline-none">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur</label>
@@ -100,8 +121,9 @@
                     <span id="display-matricule" class="text-[10px] text-blue-400 font-mono">FS-000-FR</span>
                 </div>
 
+                <!-- Bouton Logo Paramètres Avancés -->
                 <button id="open-settings-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
-                    <i class="fa-solid fa-sliders text-blue-400"></i>
+                    <i class="fa-solid fa-gear text-blue-400 animate-spin-slow"></i>
                     <span class="hidden md:inline">Paramètres</span>
                 </button>
 
@@ -124,20 +146,20 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <button onclick="openCategory('ENA')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-blue-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                    <button onclick="openCategory('ENA')" class="group text-left custom-card border hover:border-blue-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
                         <div class="space-y-4">
                             <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-graduation-cap text-2xl"></i>
                             </div>
                             <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition">ENA &amp; Formations</h3>
-                            <p class="text-xs text-slate-400">École Nationale d'Apprentissage, examens et attestations.</p>
+                            <p class="text-xs text-slate-400">École Nationale d'Apprentissage, examens, fiches et attestations.</p>
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-blue-400 font-semibold">
                             <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
                         </div>
                     </button>
 
-                    <button onclick="openCategory('FSF')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-red-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                    <button onclick="openCategory('FSF')" class="group text-left custom-card border hover:border-red-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
                         <div class="space-y-4">
                             <div class="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-user-ninja text-2xl"></i>
@@ -150,7 +172,7 @@
                         </div>
                     </button>
 
-                    <button onclick="openCategory('COS_EMA')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-amber-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                    <button onclick="openCategory('COS_EMA')" class="group text-left custom-card border hover:border-amber-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
                         <div class="space-y-4">
                             <div class="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-star text-2xl"></i>
@@ -163,7 +185,7 @@
                         </div>
                     </button>
 
-                    <button onclick="openCategory('ADMINISTRATION')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                    <button onclick="openCategory('ADMINISTRATION')" class="group text-left custom-card border hover:border-emerald-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
                         <div class="space-y-4">
                             <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-folder-tree text-2xl"></i>
@@ -176,20 +198,20 @@
                         </div>
                     </button>
 
-                    <button onclick="openCategory('FONDATION')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-purple-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                    <button onclick="openCategory('FONDATION')" class="group text-left custom-card border hover:border-purple-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
                         <div class="space-y-4">
                             <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-purple-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-shield-cat text-2xl"></i>
                             </div>
                             <h3 class="font-bold text-lg text-white group-hover:text-purple-400 transition">Fondation (Staff)</h3>
-                            <p class="text-xs text-slate-400">Espace modérateurs, rôles et paramètres globaux.</p>
+                            <p class="text-xs text-slate-400">Espace modérateurs, rôles, validations et logs du staff.</p>
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-purple-400 font-semibold">
                             <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
                         </div>
                     </button>
 
-                    <button onclick="openCategory('REGIMENTS')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-cyan-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
+                    <button onclick="openCategory('REGIMENTS')" class="group text-left custom-card border hover:border-cyan-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
                         <div class="space-y-4">
                             <div class="p-3.5 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 w-fit group-hover:scale-110 transition">
                                 <i class="fa-solid fa-person-military-rifle text-2xl"></i>
@@ -210,7 +232,7 @@
                     <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
                 </button>
                 
-                <div id="category-content-container" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+                <div id="category-content-container" class="custom-card border rounded-3xl p-8 shadow-2xl">
                     <!-- Injection JS -->
                 </div>
             </div>
@@ -218,19 +240,20 @@
         </main>
     </div>
 
-    <!-- 4. PANNEAU DES PARAMÈTRES -->
+    <!-- 4. PANNEAU DE PARAMÈTRES AVANCÉS -->
     <div id="settings-drawer" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex justify-end">
-        <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between">
+        <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between overflow-y-auto">
             <div class="space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-blue-400"></i> Paramètres d'Interface
+                        <i class="fa-solid fa-sliders text-blue-400"></i> Paramètres Avancés
                     </h3>
                     <button id="close-settings-btn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition cursor-pointer">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
 
+                <!-- Réglage Luminosité -->
                 <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
                     <div class="flex justify-between items-center">
                         <label class="text-xs font-bold text-slate-300 flex items-center gap-2">
@@ -241,20 +264,44 @@
                     <input type="range" id="brightness-range" min="30" max="100" value="100" class="w-full accent-blue-500 cursor-pointer">
                 </div>
 
+                <!-- Thème visuel -->
+                <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                    <label class="text-xs font-bold text-slate-300 block">Style du Thème Graphique</label>
+                    <div class="grid grid-cols-3 gap-2 text-xs">
+                        <button onclick="setTheme('dark')" class="p-2.5 bg-slate-900 border border-slate-700 hover:border-blue-500 rounded-xl text-center font-bold">Sombre</button>
+                        <button onclick="setTheme('deep-night')" class="p-2.5 bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl text-center font-bold">Nuit</button>
+                        <button onclick="setTheme('neon')" class="p-2.5 bg-indigo-950/40 border border-indigo-800 hover:border-indigo-500 rounded-xl text-center font-bold">Néon</button>
+                    </div>
+                </div>
+
+                <!-- Profil Utilisateur -->
                 <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
                     <h4 class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-user text-blue-400"></i> Profil Utilisateur
+                        <i class="fa-solid fa-user text-blue-400"></i> Configuration du Profil
                     </h4>
                     <button id="edit-profile-btn" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-pen-to-square"></i> Modifier mon Pseudo
+                        <i class="fa-solid fa-pen-to-square"></i> Modifier mon Pseudo &amp; Matricule
                     </button>
                 </div>
+
+                <!-- Réinitialisation du Cache -->
+                <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                    <h4 class="text-xs font-bold text-slate-300 mb-1">Stockage Local &amp; Données</h4>
+                    <button onclick="resetDataCache()" class="w-full bg-red-950/40 hover:bg-red-900/60 border border-red-800/60 text-red-300 text-xs py-2 rounded-xl font-bold transition">
+                        Réinitialiser le cache local
+                    </button>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-800 text-center">
+                <p class="text-[10px] text-slate-500 font-mono">Portail FSF / ENA • v2.5.0</p>
             </div>
         </div>
     </div>
 
-    <!-- 5. JAVASCRIPT -->
+    <!-- 5. SCRIPT JAVASCRIPT PRINCIPAL -->
     <script>
+        // Éléments du DOM
         const authScreen = document.getElementById('auth-screen');
         const mainDashboard = document.getElementById('main-dashboard');
         const authForm = document.getElementById('auth-form');
@@ -274,10 +321,12 @@
         const brightnessRange = document.getElementById('brightness-range');
         const brightnessValue = document.getElementById('brightness-value');
 
+        // État de l'utilisateur
         let userProfile = JSON.parse(localStorage.getItem('fsf_user_profile')) || null;
         let savedBrightness = localStorage.getItem('fsf_brightness') || "100";
+        let savedTheme = localStorage.getItem('fsf_theme') || "dark";
 
-        // Données dynamiques des utilisateurs pour le module Fondation
+        // DONNÉES DU MODULE FONDATION (Staff)
         let pendingRequests = [
             { id: 'mael', name: 'Maël (Candidat Opérateur)', desc: 'Demandeur souhaite rejoindre le réseau FSF / ENA.', email: 'mael@fsf.fr' }
         ];
@@ -287,10 +336,57 @@
             { id: 'mael_user', name: 'mael.operateur@fsf.fr', role: 'Opérateur Validé', perms: ['ENA', 'FSF'], isOwner: false }
         ];
 
+        let staffLogs = [
+            { date: '20/10/2026 22:15', action: "Création du profil administrateur principal pour gabinpompier811@gmail.com" }
+        ];
+
+        // DONNÉES DU MODULE ENA
+        let instructorsList = [
+            { id: '1', name: 'Colonel Alex GIROND', role: "Directeur de l'ENA" },
+            { id: '2', name: 'Commandant Mathis ROSIER', role: "Directeur adjoint" },
+            { id: '3', name: 'Lieutenant Maël LIOGER', role: "Formateur Principal" },
+            { id: '4', name: 'Capitaine John FOX', role: "Instructeur" }
+        ];
+
+        let formationsList = [
+            { id: '1', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: '[FGI] Formation Général Initiale', score: 'Admis (20/20)' },
+            { id: '2', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", score: 'Admis (20/20)' }
+        ];
+
+        let enaDocs = [
+            { id: '1', name: '[CAT1] Brevet Caporal ENA.pdf', size: '1.2 MB' }
+        ];
+
+        let enaNotes = [
+            { id: '1', title: 'Ce que vous pouvez faire', content: 'Mettre à jour les dossiers de tous les opérateurs.' },
+            { id: '2', title: 'Commandos Jaubert', content: 'Session de qualification maritime prévue en fin de semaine.' }
+        ];
+        let selectedNoteId = '1';
+
+        let enaSessions = [
+            { id: '1', formation: '[FGI] Formation Générale Initiale', datetime: '2026-10-19T15:26', location: 'Sur BA FR', instructor: 'Colonel Alex GIROND' }
+        ];
+
+        let enaUnits = {
+            'CPA 10': [
+                { name: 'Capitaine Noli VELMONT', matricule: 'FS-027-FR', active: true },
+                { name: 'Soldat de 1er Classe Nino POTIER', matricule: 'JY-099-FR', active: true },
+                { name: 'Commandant Rosier Mathis', matricule: 'RM-002-FR', active: true }
+            ],
+            '4e RHFS': [{ name: 'Sous-Lieutenant Jake HARPER', matricule: 'ME-500-FR', active: true }],
+            '13e RDP': [{ name: '1e Classe VALMON marius', matricule: 'HG-452-VJ', active: true }],
+            'Commandos Jaubert (marine)': [{ name: 'Capitaine de vaisseau Alex GIROND', matricule: 'AZ-051-DR', active: true }],
+            'Groupe de Commandos Parachutistes (GCP)': [],
+            'N/A (Sans affectation)': [{ name: 'Soldat MATRAT Mike', matricule: 'GH-245-FR', active: false }]
+        };
+
+        // Appliquer les paramètres enregistrés
         document.documentElement.style.setProperty('--site-brightness', `${savedBrightness}%`);
         brightnessRange.value = savedBrightness;
         brightnessValue.textContent = `${savedBrightness}%`;
+        document.body.setAttribute('data-theme', savedTheme);
 
+        // Connexion
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const emailInput = document.getElementById('user-email').value;
@@ -328,219 +424,13 @@
             mainDashboard.classList.remove('hidden');
         }
 
-        // Données dynamiques pour les Plannings et Notes
-        let enaNotes = [
-            { id: '1', title: 'Ce que vous pouvez faire', content: 'Mettre à jour les dossiers de tous les opérateurs.' },
-            { id: '2', title: 'Commandos Jaubert', content: 'Session de qualification maritime prévue en fin de semaine.' },
-            { id: '3', title: 'Mort RP', content: 'Procédure de validation de Mort RP à suivre selon le protocole officiel.' }
-        ];
-        let selectedNoteId = '1';
-        
-        let enaSessions = [
-            { id: '1', formation: '[FGI] Formation Générale Initiale', datetime: '2026-10-19T15:26', location: 'Sur BA FR', instructor: 'Colonel Alex GIROND' }
-        ];
-        
-        // Données dynamiques
-        let enaDocs = [
-            { id: '1', name: '[CAT1] Brevet Caporal ENA.pdf', size: '1.2 MB', date: '20/10/2026' }
-        ];
-        
-        let enaUnits = {
-            'CPA 10': [
-                { name: 'Capitaine Noli VELMONT', matricule: 'FS-027-FR', active: true },
-                { name: 'Soldat de 1er Classe Nino POTIER', matricule: 'JY-099-FR', active: true },
-                { name: 'Commandant Rosier Mathis', matricule: 'RM-002-FR', active: true },
-                { name: 'Sergent-Chef Simon RENARD', matricule: 'RT-767-FR', active: true }
-            ],
-            '4e RHFS': [
-                { name: 'Sous-Lieutenant Jake HARPER', matricule: 'ME-500-FR', active: true }
-            ],
-            '13e RDP': [
-                { name: '1e Classe VALMON marius', matricule: 'HG-452-VJ', active: true },
-                { name: '1e Classe APPOLOGNIA justinien', matricule: 'BC-654-TX', active: true }
-            ],
-            'Commandos Jaubert (marine)': [
-                { name: 'Capitaine de vaisseau Alex GIROND', matricule: 'AZ-051-DR', active: true },
-                { name: 'Lieutenant de vaisseau FOX John', matricule: 'BI-000-DC', active: true }
-            ],
-            'Groupe de Commandos Parachutistes (GCP)': [],
-            'N/A (Sans affectation)': [
-                { name: 'Soldat de 1er Classe Alice RENOIR', matricule: 'AF-109-FR', active: true },
-                { name: 'Soldat MATRAT Mike', matricule: 'GH-245-FR', active: false },
-                { name: 'Soldat HUBERT Julien', matricule: 'TY-356-FR', active: false },
-                { name: 'Soldat de 1er Classe ORNIDON Léo', matricule: 'OP-025-FR', active: false }
-            ]
-        };
-        
-        // Rendu et fonctions Documents & Fichiers
-        function renderEnaDocsList() {
-            if (enaDocs.length === 0) return `<p class="text-xs text-slate-500 italic p-3">Aucun document importé.</p>`;
-            return enaDocs.map(d => `
-                <div onclick="previewEnaDoc('${d.id}')" class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center hover:border-blue-500/50 cursor-pointer transition">
-                    <div class="flex items-center gap-2.5 truncate">
-                        <i class="fa-solid fa-file-pdf text-red-400 text-base"></i>
-                        <div class="truncate">
-                            <span class="font-bold text-xs text-white block truncate">${d.name}</span>
-                            <span class="text-[10px] text-slate-500 font-mono">${d.size || 'Fichier'}</span>
-                        </div>
-                    </div>
-                    <button onclick="event.stopPropagation(); deleteEnaDoc('${d.id}')" class="text-slate-500 hover:text-red-400 p-1 text-xs">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-        
-        function uploadEnaFile(e) {
-            const files = e.target.files;
-            for (let f of files) {
-                enaDocs.push({ id: Date.now().toString(), name: f.name, size: (f.size / 1024).toFixed(1) + ' KB' });
-            }
-            const container = document.getElementById('docs-list-container');
-            if (container) container.innerHTML = renderEnaDocsList();
-        }
-        
-        function previewEnaDoc(id) {
-            const doc = enaDocs.find(d => d.id === id);
-            const prev = document.getElementById('doc-preview-container');
-            if (doc && prev) {
-                prev.innerHTML = `
-                    <div class="w-full h-full flex flex-col justify-between space-y-4">
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                            <span class="font-bold text-white text-sm flex items-center gap-2"><i class="fa-solid fa-file-pdf text-red-400"></i> ${doc.name}</span>
-                            <span class="text-xs font-mono text-blue-400">${doc.size}</span>
-                        </div>
-                        <div class="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-3">
-                            <i class="fa-solid fa-file-lines text-5xl text-blue-500"></i>
-                            <p class="text-xs text-slate-300">Aperçu sécurisé du document [ ${doc.name} ]</p>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        
-        function deleteEnaDoc(id) {
-            enaDocs = enaDocs.filter(d => d.id !== id);
-            const container = document.getElementById('docs-list-container');
-            if (container) container.innerHTML = renderEnaDocsList();
-        }
-        
-        // Rendu et fonctions Unités & Sections
-        function renderEnaUnitsCards() {
-            return Object.keys(enaUnits).map(unitName => {
-                const members = enaUnits[unitName];
-                return `
-                    <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-3">
-                        <div class="flex justify-between items-center border-b border-slate-800/80 pb-2.5">
-                            <span class="font-bold text-xs text-white flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> ${unitName}</span>
-                            <span class="px-2 py-0.5 bg-blue-950 text-blue-400 border border-blue-800/60 rounded text-[10px] font-mono font-bold">${members.length}</span>
-                        </div>
-                        <div class="space-y-2 max-h-[220px] overflow-y-auto">
-                            ${members.length === 0 ? '<p class="text-[11px] text-slate-500 italic p-2">Aucun membre affecté.</p>' : members.map(m => `
-                                <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center">
-                                    <div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="font-bold text-xs text-slate-200">${m.name}</span>
-                                            <span class="w-2 h-2 rounded-full ${m.active ? 'bg-emerald-500' : 'bg-red-500'}"></span>
-                                        </div>
-                                        <span class="text-[10px] font-mono text-blue-400 block">${m.matricule}</span>
-                                    </div>
-                                    <button onclick="openMemberFiche('${m.name}')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded text-[10px] font-bold transition">Fiche</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function openMemberFiche(memberName) {
-            alert("Ouverture de la fiche complète de : " + memberName);
-        }
-        
-        // Gestion des sous-onglets ENA
-        function switchEnaSubTab(tab) {
-            const tabs = ['tb', 'docs', 'formations', 'unités', 'plannings', 'notes'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`ena-tab-${t}`);
-                const content = document.getElementById(`ena-content-${t}`);
-                if (t === tab) {
-                    btn.className = "px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer";
-                    content.classList.remove('hidden');
-                } else {
-                    btn.className = "px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer";
-                    content.classList.add('hidden');
-                }
-            });
-        }
-        
-        function renderInstructorsCards() {
-            return instructorsList.map(inst => `
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                    <div>
-                        <h4 class="font-bold text-white text-xs">${inst.name}</h4>
-                        <span class="text-[10px] text-blue-400 block">${inst.role}</span>
-                    </div>
-                    <button onclick="deleteInstructor('${inst.id}')" class="text-slate-500 hover:text-red-400 text-xs transition cursor-pointer">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-        
-        function renderFormationsRows() {
-            return formationsList.map(f => `
-                <tr>
-                    <td class="p-3 font-bold text-white">${f.name}</td>
-                    <td class="p-3 text-slate-300">${f.grade}</td>
-                    <td class="p-3 font-mono text-blue-400">${f.matricule}</td>
-                    <td class="p-3 text-slate-200">${f.formation}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">${f.score}</span></td>
-                    <td class="p-3 text-right">
-                        <button onclick="deleteFormationRecord('${f.id}')" class="px-2 py-1 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 rounded text-xs transition cursor-pointer">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-        
-        function addInstructor(e) {
-            e.preventDefault();
-            instructorsList.push({ id: Date.now().toString(), name: document.getElementById('instructor-name').value, role: document.getElementById('instructor-role').value });
-            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
-        }
-        
-        function deleteInstructor(id) {
-            instructorsList = instructorsList.filter(i => i.id !== id);
-            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
-        }
-        
-        function addFormationRecord(e) {
-            e.preventDefault();
-            formationsList.push({
-                id: Date.now().toString(),
-                name: document.getElementById('add-mil-name').value,
-                grade: document.getElementById('add-mil-grade').value,
-                matricule: document.getElementById('add-mil-matricule').value,
-                formation: document.getElementById('add-mil-formation').value,
-                score: 'Admis (20/20)'
-            });
-            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
-        }
-        
-        function deleteFormationRecord(id) {
-            formationsList = formationsList.filter(f => f.id !== id);
-            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
-        }
-        
         // Navigation interne par catégorie
         function openCategory(categoryKey) {
             viewHome.classList.add('hidden');
             viewCategory.classList.remove('hidden');
-        
+
             const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
-        
+
             switch(categoryKey) {
                 case 'ENA':
                     renderEnaWorkspace();
@@ -549,21 +439,19 @@
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> Forces Spéciales Françaises</h2>
                         <p class="text-xs text-slate-400 mb-6">Dossiers opérateurs, aptitudes médicales VMA et tirs.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Emplacement prêt pour le script FSF.</div>
+                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Section Forces Spéciales prêt.</div>
                     `;
                     break;
                 case 'COS_EMA':
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2>
                         <p class="text-xs text-slate-400 mb-6">Commandement des Opérations & État-Major.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Emplacement prêt pour le script COS/EMA.</div>
                     `;
                     break;
                 case 'ADMINISTRATION':
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-emerald-400 mr-2"></i> Administration</h2>
                         <p class="text-xs text-slate-400 mb-6">Registre officiel et gestion des fichiers.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Emplacement prêt pour le script Administration.</div>
                     `;
                     break;
                 case 'FONDATION':
@@ -573,13 +461,14 @@
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments & Unités</h2>
                         <p class="text-xs text-slate-400 mb-6">Répertoire des effectifs par régiment spécialisé.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Emplacement prêt pour le script Régiments.</div>
                     `;
                     break;
             }
         }
 
-        // Rendu du module Fondation 100% fonctionnel
+        // ==========================================
+        //  MODULE FONDATION (STAFF & MODÉRATION)
+        // ==========================================
         function renderFondationModule(isSuperAdmin) {
             categoryContentContainer.innerHTML = `
                 <div class="space-y-6">
@@ -601,12 +490,16 @@
                         </div>
                     </div>
 
+                    <!-- Sous-onglets de la Fondation -->
                     <div class="flex gap-2 border-b border-slate-800 pb-3">
                         <button onclick="switchFondationTab('validation')" id="btn-tab-validation" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer">
                             <i class="fa-solid fa-user-check mr-1.5"></i> Validations en Attente (${pendingRequests.length})
                         </button>
                         <button onclick="switchFondationTab('utilisateurs')" id="btn-tab-utilisateurs" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
                             <i class="fa-solid fa-users-gear mr-1.5"></i> Gestion des Opérateurs (${registeredUsers.length})
+                        </button>
+                        <button onclick="switchFondationTab('logs')" id="btn-tab-logs" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
+                            <i class="fa-solid fa-list-check mr-1.5"></i> Journal d'Audit / Logs
                         </button>
                     </div>
 
@@ -645,16 +538,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- ONGLET 3 : LOGS DU STAFF -->
+                    <div id="fondation-tab-logs" class="hidden space-y-4">
+                        <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+                            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-scroll text-purple-400"></i> Historique des Actions Administratives
+                            </h3>
+                            <div class="space-y-2 max-h-[300px] overflow-y-auto font-mono text-xs text-slate-400 divide-y divide-slate-800/50">
+                                ${staffLogs.map(l => `<div class="py-2 flex justify-between"><span>${l.action}</span><span class="text-slate-600 text-[10px]">${l.date}</span></div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
         }
 
-        // Génération HTML des demandes en attente
         function renderPendingList() {
-            if (pendingRequests.length === 0) {
-                return `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`;
-            }
-
+            if (pendingRequests.length === 0) return `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`;
             return pendingRequests.map(req => `
                 <div id="card-${req.id}" class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300">
                     <div class="space-y-1">
@@ -689,139 +590,6 @@
             `).join('');
         }
 
-        // Rendu et Actions pour les Plannings
-        function renderEnaSessionsCards() {
-            if (enaSessions.length === 0) {
-                return `<p class="text-xs text-slate-500 italic p-4 text-center col-span-2">Aucune session planifiée pour le moment.</p>`;
-            }
-        
-            return enaSessions.map(s => {
-                const dateObj = new Date(s.datetime);
-                const dateStr = !isNaN(dateObj) ? dateObj.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : s.datetime;
-        
-                return `
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2.5 relative group hover:border-slate-700 transition">
-                        <div class="flex justify-between items-start">
-                            <span class="px-2.5 py-1 bg-blue-950 text-blue-400 border border-blue-800/60 rounded-lg text-[10px] font-bold">${s.formation}</span>
-                            <button onclick="deleteEnaSession('${s.id}')" class="text-slate-500 hover:text-red-400 transition cursor-pointer text-xs">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                        <div class="space-y-1 text-xs text-slate-300">
-                            <div class="flex items-center gap-2 text-slate-200 font-medium">
-                                <i class="fa-solid fa-clock text-blue-400 text-[11px]"></i> ${dateStr}
-                            </div>
-                            <div class="flex items-center gap-2 text-slate-400">
-                                <i class="fa-solid fa-location-dot text-red-400 text-[11px]"></i> ${s.location}
-                            </div>
-                            <div class="flex items-center gap-2 text-slate-400 text-[11px]">
-                                <i class="fa-solid fa-user-tie text-purple-400"></i> ${s.instructor}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function addEnaSession(e) {
-            e.preventDefault();
-            enaSessions.push({
-                id: Date.now().toString(),
-                formation: document.getElementById('session-formation').value,
-                datetime: document.getElementById('session-datetime').value,
-                location: document.getElementById('session-location').value,
-                instructor: document.getElementById('session-instructor').value
-            });
-            document.getElementById('sessions-list-container').innerHTML = renderEnaSessionsCards();
-        }
-        
-        function deleteEnaSession(id) {
-            enaSessions = enaSessions.filter(s => s.id !== id);
-            document.getElementById('sessions-list-container').innerHTML = renderEnaSessionsCards();
-        }
-        
-        // Rendu et Actions pour les Notes
-        function renderEnaNotesList() {
-            return enaNotes.map(n => {
-                const isSelected = n.id === selectedNoteId;
-                return `
-                    <div onclick="selectEnaNote('${n.id}')" class="p-3.5 rounded-xl border transition cursor-pointer flex justify-between items-center ${isSelected ? 'bg-blue-950/80 border-blue-500/60 text-white shadow-md' : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'}">
-                        <span class="font-bold text-xs truncate max-w-[80%]">${n.title}</span>
-                        <button onclick="event.stopPropagation(); deleteEnaNote('${n.id}')" class="text-slate-500 hover:text-red-400 transition text-xs p-1">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function renderSelectedNoteEditor() {
-            const activeNote = enaNotes.find(n => n.id === selectedNoteId);
-            if (!activeNote) {
-                return `<p class="text-xs text-slate-500 italic">Sélectionnez une note ou créez-en une nouvelle.</p>`;
-            }
-        
-            return `
-                <div class="space-y-3">
-                    <input type="text" value="${activeNote.title}" oninput="updateEnaNoteTitle('${activeNote.id}', this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm font-bold text-white outline-none focus:border-blue-500" placeholder="Titre de la note...">
-                    <textarea oninput="updateEnaNoteContent('${activeNote.id}', this.value)" rows="8" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none focus:border-blue-500 resize-none" placeholder="Rédigez le contenu de la note ici...">${activeNote.content}</textarea>
-                </div>
-            `;
-        }
-        
-        function selectEnaNote(id) {
-            selectedNoteId = id;
-            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
-            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
-        }
-        
-        function createNewEnaNote() {
-            const newId = Date.now().toString();
-            enaNotes.push({ id: newId, title: 'Nouvelle Note', content: '' });
-            selectedNoteId = newId;
-            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
-            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
-        }
-        
-        function updateEnaNoteTitle(id, val) {
-            const n = enaNotes.find(item => item.id === id);
-            if (n) n.title = val;
-            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
-        }
-        
-        function updateEnaNoteContent(id, val) {
-            const n = enaNotes.find(item => item.id === id);
-            if (n) n.content = val;
-        }
-        
-        function deleteEnaNote(id) {
-            enaNotes = enaNotes.filter(n => n.id !== id);
-            if (selectedNoteId === id) {
-                selectedNoteId = enaNotes.length > 0 ? enaNotes[0].id : null;
-            }
-            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
-            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
-        }
-        
-        function printSelectedNote() {
-            const activeNote = enaNotes.find(n => n.id === selectedNoteId);
-            if (!activeNote) return;
-            
-            const win = window.open('', '', 'width=800,height=600');
-            win.document.write(`
-                <html>
-                <head><title>${activeNote.title}</title></head>
-                <body style="font-family: sans-serif; padding: 40px; color: #111;">
-                    <h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">${activeNote.title}</h1>
-                    <p style="white-space: pre-wrap; font-size: 14px; margin-top: 20px;">${activeNote.content}</p>
-                </body>
-                </html>
-            `);
-            win.document.close();
-            win.print();
-        }
-                
-        // Génération HTML de la liste des utilisateurs enregistrés
         function renderRegisteredList() {
             return registeredUsers.map(u => `
                 <tr id="row-${u.id}">
@@ -858,7 +626,6 @@
             `).join('');
         }
 
-        // Validation instantanée (sans pop-up)
         function validerDemandeInstant(reqId, action) {
             const req = pendingRequests.find(r => r.id === reqId);
             if (!req) return;
@@ -879,15 +646,17 @@
                     perms: perms,
                     isOwner: false
                 });
+
+                staffLogs.unshift({ date: new Date().toLocaleString(), action: `Validation de l'accès pour ${req.email} avec permissions : ${perms.join(', ')}` });
+            } else {
+                staffLogs.unshift({ date: new Date().toLocaleString(), action: `Refus de la demande d'accès pour ${req.email}` });
             }
 
             pendingRequests = pendingRequests.filter(r => r.id !== reqId);
-            
             const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
             renderFondationModule(isSuperAdmin);
         }
 
-        // Modifications fluides des permissions
         function toggleEditUserPerms(userId) {
             const panel = document.getElementById(`edit-panel-${userId}`);
             if (panel) panel.classList.toggle('hidden');
@@ -906,13 +675,17 @@
             user.perms = newPerms;
             user.role = newPerms.includes('Fondation') ? 'Modérateur Staff' : 'Opérateur Validé';
 
+            staffLogs.unshift({ date: new Date().toLocaleString(), action: `Modification des permissions pour ${user.name} : ${newPerms.join(', ')}` });
+
             const display = document.getElementById(`perms-display-${userId}`);
             if (display) display.textContent = newPerms.join(', ');
-
             toggleEditUserPerms(userId);
         }
 
         function bannirUtilisateurInstant(userId) {
+            const u = registeredUsers.find(item => item.id === userId);
+            if (u) staffLogs.unshift({ date: new Date().toLocaleString(), action: `Bannissement de l'utilisateur ${u.name}` });
+
             registeredUsers = registeredUsers.filter(u => u.id !== userId);
             const row = document.getElementById(`row-${userId}`);
             const panel = document.getElementById(`edit-panel-${userId}`);
@@ -921,35 +694,436 @@
         }
 
         function switchFondationTab(tabName) {
-            const tabValidation = document.getElementById('fondation-tab-validation');
-            const tabUtilisateurs = document.getElementById('fondation-tab-utilisateurs');
-            const btnValidation = document.getElementById('btn-tab-validation');
-            const btnUtilisateurs = document.getElementById('btn-tab-utilisateurs');
+            ['validation', 'utilisateurs', 'logs'].forEach(t => {
+                const tabEl = document.getElementById(`fondation-tab-${t}`);
+                const btnEl = document.getElementById(`btn-tab-${t}`);
+                if (t === tabName) {
+                    if (tabEl) tabEl.classList.remove('hidden');
+                    if (btnEl) btnEl.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
+                } else {
+                    if (tabEl) tabEl.classList.add('hidden');
+                    if (btnEl) btnEl.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
+                }
+            });
+        }
 
-            if (tabName === 'validation') {
-                tabValidation.classList.remove('hidden');
-                tabUtilisateurs.classList.add('hidden');
-                btnValidation.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
-                btnUtilisateurs.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
-            } else {
-                tabValidation.classList.add('hidden');
-                tabUtilisateurs.classList.remove('hidden');
-                btnUtilisateurs.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
-                btnValidation.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
+        // ==========================================
+        //  MODULE ENA WORKSPACE AU COMPLET
+        // ==========================================
+        function renderEnaWorkspace() {
+            categoryContentContainer.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Barre de navigation des sous-onglets ENA -->
+                    <div class="flex items-center gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-medium">
+                        <button onclick="switchEnaSubTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-chart-line"></i> Tableau de bord
+                        </button>
+                        <button onclick="switchEnaSubTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-file-contract"></i> Documents &amp; Fichiers
+                        </button>
+                        <button onclick="switchEnaSubTab('formations')" id="ena-tab-formations" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-graduation-cap"></i> Formations
+                        </button>
+                        <button onclick="switchEnaSubTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-users-rectangle"></i> Unités &amp; Sections
+                        </button>
+                        <button onclick="switchEnaSubTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-calendar-days"></i> Plannings &amp; Sessions
+                        </button>
+                        <button onclick="switchEnaSubTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-clipboard-list"></i> Notes &amp; Directives
+                        </button>
+                    </div>
+
+                    <!-- 1. TABLEAU DE BORD (Statistiques & Résumé) -->
+                    <div id="ena-content-tb" class="space-y-6">
+                        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+                            <span class="text-xs font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-filter text-blue-400"></i> Filtrer les Statistiques par Unité :
+                            </span>
+                            <select onchange="filterDashboardStats(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none">
+                                <option value="all">Toutes les Unités</option>
+                                <option value="CPA 10">CPA 10</option>
+                                <option value="13e RDP">13e RDP</option>
+                                <option value="Commandos Jaubert (marine)">Commandos Jaubert</option>
+                                <option value="4e RHFS">4e RHFS</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl"><i class="fa-solid fa-users text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">Total Militaires</span><span class="text-xl font-black text-white" id="stat-total-militaires">15</span></div>
+                            </div>
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl"><i class="fa-solid fa-circle-check text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">Taux de Réussite</span><span class="text-xl font-black text-emerald-400">100%</span></div>
+                            </div>
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl"><i class="fa-solid fa-stethoscope text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">VMA à Renouveler (&lt;15J)</span><span class="text-xl font-black text-amber-400">0</span></div>
+                            </div>
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl"><i class="fa-solid fa-heart-crack text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">VMA Périmées (&gt;2 mois)</span><span class="text-xl font-black text-red-400">0</span></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="lg:col-span-7 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-400"></i> Dernières Formations Évaluées</h3>
+                                <div class="divide-y divide-slate-800/60 text-xs text-slate-300">
+                                    <div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">Capitaine Noli VELMONT</span><span class="text-[10px] text-slate-500">[CDU] Cursus de Chef d'Unité</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></div>
+                                    <div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">Capitaine Noli VELMONT</span><span class="text-[10px] text-slate-500">[FG2 / BSTAT] Brevet d'Adjoint</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></div>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-5 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-bullhorn text-amber-400"></i> Résumé Opérationnel</h3>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Validées (Admis)</span><span class="font-bold text-emerald-400">2</span></div>
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Ajournées (Échecs)</span><span class="font-bold text-red-400">0</span></div>
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Demandes en Attente d'Examen</span><span class="font-bold text-amber-400">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. DOCUMENTS & FICHIERS -->
+                    <div id="ena-content-docs" class="hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <label class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-2 shadow-lg">
+                                <i class="fa-solid fa-file-arrow-up"></i> Importer Fichiers (Photos, PDF...)
+                                <input type="file" id="file-uploader" onchange="uploadEnaFile(event)" class="hidden" multiple>
+                            </label>
+                            <span class="text-[11px] text-slate-500 font-mono"><i class="fa-solid fa-cloud"></i> Stockage local sécurisé</span>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2 max-h-[500px] overflow-y-auto">
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fichiers Enregistrés</h3>
+                                <div id="docs-list-container" class="space-y-2">${renderEnaDocsList()}</div>
+                            </div>
+                            <div id="doc-preview-container" class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-6 flex flex-col justify-center items-center text-slate-500 text-xs min-h-[350px]">
+                                <i class="fa-solid fa-file-pdf text-4xl mb-2 text-slate-700"></i>
+                                <span>Sélectionnez un document à gauche pour prévisualiser</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. FORMATIONS -->
+                    <div id="ena-content-formations" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Ajouter un Instructeur</h3>
+                                <form onsubmit="addInstructor(event)" class="space-y-3">
+                                    <input type="text" id="instructor-name" required placeholder="Nom complet (ex: LCL Alex)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none">
+                                    <select id="instructor-role" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 outline-none">
+                                        <option value="">-- Rôle Instructeur --</option>
+                                        <option value="Directeur de l'ENA">Directeur de l'ENA</option>
+                                        <option value="Directeur adjoint">Directeur adjoint</option>
+                                        <option value="Formateur Principal">Formateur Principal</option>
+                                        <option value="Instructeur">Instructeur</option>
+                                    </select>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">+ Ajouter Instructeur</button>
+                                </form>
+                            </div>
+                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Corps des Formateurs / Instructeurs</h3>
+                                <div id="instructors-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-1">${renderInstructorsCards()}</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-list-check text-blue-400"></i> Suivi des Formations &amp; Évaluations</h3>
+                            <form onsubmit="addFormationRecord(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 text-xs">
+                                <input type="text" id="add-mil-name" required placeholder="Nom Prénom" class="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                                <input type="text" id="add-mil-grade" required placeholder="Grade" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                                <input type="text" id="add-mil-matricule" required placeholder="Matricule" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                                <select id="add-mil-formation" required class="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-300 outline-none">
+                                    <option value="">-- Formation --</option>
+                                    <option value="[FGI] Formation Général Initiale">[FGI] Formation Général Initiale</option>
+                                    <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint &amp; Spécialiste</option>
+                                </select>
+                                <button type="submit" class="lg:col-span-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition cursor-pointer">+ Inscrire</button>
+                            </form>
+
+                            <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-slate-900 text-slate-400 font-mono text-[10px] uppercase border-b border-slate-800">
+                                        <tr><th class="p-3">MILITAIRE</th><th class="p-3">GRADE</th><th class="p-3">MATRICULE</th><th class="p-3">FORMATION</th><th class="p-3">STATUT</th><th class="p-3 text-right">ACTION</th></tr>
+                                    </thead>
+                                    <tbody id="formations-table-body" class="divide-y divide-slate-800/60 text-slate-200">${renderFormationsRows()}</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. UNITÉS & SECTIONS -->
+                    <div id="ena-content-unités" class="hidden space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <div><h3 class="text-sm font-bold text-white flex items-center gap-2"><i class="fa-solid fa-users-rectangle text-blue-400"></i> Répertoire des Unités Forces Spéciales</h3><p class="text-[11px] text-slate-400">Effectifs engagés par régiment spécialisé</p></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">${renderEnaUnitsCards()}</div>
+                    </div>
+
+                    <!-- 5. PLANNINGS & SESSIONS -->
+                    <div id="ena-content-plannings" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-calendar-plus text-blue-400"></i> Programmer une Session</h3>
+                                <form onsubmit="addEnaSession(event)" class="space-y-3">
+                                    <select id="session-formation" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none">
+                                        <option value="[FGI] Formation Générale Initiale">[FGI] Formation Générale Initiale</option>
+                                        <option value="[CAT1] Certificat d'Aptitude Technique 1">[CAT1] Certificat d'Aptitude Technique 1</option>
+                                    </select>
+                                    <input type="datetime-local" id="session-datetime" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none">
+                                    <input type="text" id="session-location" required placeholder="Lieu (ex: Stand B)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none">
+                                    <select id="session-instructor" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none">
+                                        <option value="Colonel Alex GIROND (Directeur de l'ENA)">Colonel Alex GIROND</option>
+                                    </select>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer">+ Créer Session</button>
+                                </form>
+                            </div>
+                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-list-ul text-blue-400"></i> Sessions Planifiées</h3>
+                                <div id="sessions-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[450px] overflow-y-auto pr-1">${renderEnaSessionsCards()}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. NOTES & DIRECTIVES -->
+                    <div id="ena-content-notes" class="hidden space-y-4">
+                        <div class="flex items-center gap-2">
+                            <button onclick="createNewEnaNote()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Nouvelle Note</button>
+                            <button onclick="printSelectedNote()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> Imprimer Note (PDF)</button>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2 max-h-[500px] overflow-y-auto">
+                                <div id="notes-list-container" class="space-y-2">${renderEnaNotesList()}</div>
+                            </div>
+                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between min-h-[350px]">
+                                <div id="note-editor-container" class="space-y-4">${renderSelectedNoteEditor()}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Navigation des sous-onglets ENA
+        function switchEnaSubTab(tab) {
+            ['tb', 'docs', 'formations', 'unités', 'plannings', 'notes'].forEach(t => {
+                const btn = document.getElementById(`ena-tab-${t}`);
+                const content = document.getElementById(`ena-content-${t}`);
+                if (t === tab) {
+                    if (btn) btn.className = "px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer";
+                    if (content) content.classList.remove('hidden');
+                } else {
+                    if (btn) btn.className = "px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer";
+                    if (content) content.classList.add('hidden');
+                }
+            });
+        }
+
+        // Fonctions auxiliaires ENA
+        function renderInstructorsCards() {
+            return instructorsList.map(inst => `
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
+                    <div><h4 class="font-bold text-white text-xs">${inst.name}</h4><span class="text-[10px] text-blue-400 block">${inst.role}</span></div>
+                    <button onclick="deleteInstructor('${inst.id}')" class="text-slate-500 hover:text-red-400 text-xs transition cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function renderFormationsRows() {
+            return formationsList.map(f => `
+                <tr>
+                    <td class="p-3 font-bold text-white">${f.name}</td><td class="p-3 text-slate-300">${f.grade}</td><td class="p-3 font-mono text-blue-400">${f.matricule}</td><td class="p-3 text-slate-200">${f.formation}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">${f.score}</span></td>
+                    <td class="p-3 text-right"><button onclick="deleteFormationRecord('${f.id}')" class="px-2 py-1 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 rounded text-xs transition cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function addInstructor(e) {
+            e.preventDefault();
+            instructorsList.push({ id: Date.now().toString(), name: document.getElementById('instructor-name').value, role: document.getElementById('instructor-role').value });
+            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
+        }
+
+        function deleteInstructor(id) {
+            instructorsList = instructorsList.filter(i => i.id !== id);
+            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
+        }
+
+        function addFormationRecord(e) {
+            e.preventDefault();
+            formationsList.push({ id: Date.now().toString(), name: document.getElementById('add-mil-name').value, grade: document.getElementById('add-mil-grade').value, matricule: document.getElementById('add-mil-matricule').value, formation: document.getElementById('add-mil-formation').value, score: 'Admis (20/20)' });
+            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
+        }
+
+        function deleteFormationRecord(id) {
+            formationsList = formationsList.filter(f => f.id !== id);
+            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
+        }
+
+        function renderEnaDocsList() {
+            if (enaDocs.length === 0) return `<p class="text-xs text-slate-500 italic p-3">Aucun document importé.</p>`;
+            return enaDocs.map(d => `
+                <div onclick="previewEnaDoc('${d.id}')" class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center hover:border-blue-500/50 cursor-pointer transition">
+                    <div class="flex items-center gap-2.5 truncate"><i class="fa-solid fa-file-pdf text-red-400 text-base"></i><div class="truncate"><span class="font-bold text-xs text-white block truncate">${d.name}</span><span class="text-[10px] text-slate-500 font-mono">${d.size || 'Fichier'}</span></div></div>
+                    <button onclick="event.stopPropagation(); deleteEnaDoc('${d.id}')" class="text-slate-500 hover:text-red-400 p-1 text-xs"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function uploadEnaFile(e) {
+            for (let f of e.target.files) enaDocs.push({ id: Date.now().toString(), name: f.name, size: (f.size / 1024).toFixed(1) + ' KB' });
+            const container = document.getElementById('docs-list-container');
+            if (container) container.innerHTML = renderEnaDocsList();
+        }
+
+        function previewEnaDoc(id) {
+            const doc = enaDocs.find(d => d.id === id);
+            const prev = document.getElementById('doc-preview-container');
+            if (doc && prev) {
+                prev.innerHTML = `
+                    <div class="w-full h-full flex flex-col justify-between space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3"><span class="font-bold text-white text-sm flex items-center gap-2"><i class="fa-solid fa-file-pdf text-red-400"></i> ${doc.name}</span><span class="text-xs font-mono text-blue-400">${doc.size}</span></div>
+                        <div class="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-3"><i class="fa-solid fa-file-lines text-5xl text-blue-500"></i><p class="text-xs text-slate-300">Aperçu du document [ ${doc.name} ]</p></div>
+                    </div>
+                `;
             }
         }
 
-        function goHome() {
-            viewCategory.classList.add('hidden');
-            viewHome.classList.remove('hidden');
+        function deleteEnaDoc(id) {
+            enaDocs = enaDocs.filter(d => d.id !== id);
+            const container = document.getElementById('docs-list-container');
+            if (container) container.innerHTML = renderEnaDocsList();
         }
 
+        function renderEnaUnitsCards() {
+            return Object.keys(enaUnits).map(unitName => {
+                const members = enaUnits[unitName];
+                return `
+                    <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800/80 pb-2.5"><span class="font-bold text-xs text-white flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> ${unitName}</span><span class="px-2 py-0.5 bg-blue-950 text-blue-400 border border-blue-800/60 rounded text-[10px] font-mono font-bold">${members.length}</span></div>
+                        <div class="space-y-2 max-h-[220px] overflow-y-auto">
+                            ${members.length === 0 ? '<p class="text-[11px] text-slate-500 italic p-2">Aucun membre affecté.</p>' : members.map(m => `
+                                <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center">
+                                    <div><div class="flex items-center gap-1.5"><span class="font-bold text-xs text-slate-200">${m.name}</span><span class="w-2 h-2 rounded-full ${m.active ? 'bg-emerald-500' : 'bg-red-500'}"></span></div><span class="text-[10px] font-mono text-blue-400 block">${m.matricule}</span></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderEnaSessionsCards() {
+            if (enaSessions.length === 0) return `<p class="text-xs text-slate-500 italic p-4 text-center col-span-2">Aucune session planifiée.</p>`;
+            return enaSessions.map(s => `
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2.5">
+                    <div class="flex justify-between items-start"><span class="px-2.5 py-1 bg-blue-950 text-blue-400 border border-blue-800/60 rounded-lg text-[10px] font-bold">${s.formation}</span><button onclick="deleteEnaSession('${s.id}')" class="text-slate-500 hover:text-red-400 transition cursor-pointer text-xs"><i class="fa-solid fa-trash"></i></button></div>
+                    <div class="space-y-1 text-xs text-slate-300">
+                        <div class="flex items-center gap-2 text-slate-200 font-medium"><i class="fa-solid fa-clock text-blue-400 text-[11px]"></i> ${s.datetime}</div>
+                        <div class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-location-dot text-red-400 text-[11px]"></i> ${s.location}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addEnaSession(e) {
+            e.preventDefault();
+            enaSessions.push({ id: Date.now().toString(), formation: document.getElementById('session-formation').value, datetime: document.getElementById('session-datetime').value, location: document.getElementById('session-location').value, instructor: document.getElementById('session-instructor').value });
+            document.getElementById('sessions-list-container').innerHTML = renderEnaSessionsCards();
+        }
+
+        function deleteEnaSession(id) {
+            enaSessions = enaSessions.filter(s => s.id !== id);
+            document.getElementById('sessions-list-container').innerHTML = renderEnaSessionsCards();
+        }
+
+        function renderEnaNotesList() {
+            return enaNotes.map(n => `
+                <div onclick="selectEnaNote('${n.id}')" class="p-3.5 rounded-xl border transition cursor-pointer flex justify-between items-center ${n.id === selectedNoteId ? 'bg-blue-950/80 border-blue-500/60 text-white' : 'bg-slate-900 border-slate-800 text-slate-300'}">
+                    <span class="font-bold text-xs truncate max-w-[80%]">${n.title}</span>
+                    <button onclick="event.stopPropagation(); deleteEnaNote('${n.id}')" class="text-slate-500 hover:text-red-400 transition text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function renderSelectedNoteEditor() {
+            const activeNote = enaNotes.find(n => n.id === selectedNoteId);
+            if (!activeNote) return `<p class="text-xs text-slate-500 italic">Sélectionnez une note.</p>`;
+            return `
+                <div class="space-y-3">
+                    <input type="text" value="${activeNote.title}" oninput="updateEnaNoteTitle('${activeNote.id}', this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm font-bold text-white outline-none">
+                    <textarea oninput="updateEnaNoteContent('${activeNote.id}', this.value)" rows="8" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none resize-none">${activeNote.content}</textarea>
+                </div>
+            `;
+        }
+
+        function selectEnaNote(id) {
+            selectedNoteId = id;
+            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
+            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
+        }
+
+        function createNewEnaNote() {
+            const newId = Date.now().toString();
+            enaNotes.push({ id: newId, title: 'Nouvelle Note', content: '' });
+            selectEnaNote(newId);
+        }
+
+        function updateEnaNoteTitle(id, val) {
+            const n = enaNotes.find(item => item.id === id);
+            if (n) n.title = val;
+            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
+        }
+
+        function updateEnaNoteContent(id, val) {
+            const n = enaNotes.find(item => item.id === id);
+            if (n) n.content = val;
+        }
+
+        function deleteEnaNote(id) {
+            enaNotes = enaNotes.filter(n => n.id !== id);
+            selectedNoteId = enaNotes.length > 0 ? enaNotes[0].id : null;
+            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
+            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
+        }
+
+        function printSelectedNote() {
+            const activeNote = enaNotes.find(n => n.id === selectedNoteId);
+            if (!activeNote) return;
+            const win = window.open('', '', 'width=800,height=600');
+            win.document.write(`<html><head><title>${activeNote.title}</title></head><body style="font-family:sans-serif;padding:40px;"><h1>${activeNote.title}</h1><p style="white-space:pre-wrap;">${activeNote.content}</p></body></html>`);
+            win.document.close();
+            win.print();
+        }
+
+        // PARAMÈTRES AVANCÉS (Luminosité & Thème)
         brightnessRange.addEventListener('input', (e) => {
             const val = e.target.value;
             brightnessValue.textContent = `${val}%`;
             document.documentElement.style.setProperty('--site-brightness', `${val}%`);
             localStorage.setItem('fsf_brightness', val);
         });
+
+        function setTheme(themeName) {
+            document.body.setAttribute('data-theme', themeName);
+            localStorage.setItem('fsf_theme', themeName);
+        }
+
+        function resetDataCache() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        function goHome() {
+            viewCategory.classList.add('hidden');
+            viewHome.classList.remove('hidden');
+        }
 
         document.getElementById('open-settings-btn').addEventListener('click', () => settingsDrawer.classList.remove('hidden'));
         document.getElementById('close-settings-btn').addEventListener('click', () => settingsDrawer.classList.add('hidden'));
