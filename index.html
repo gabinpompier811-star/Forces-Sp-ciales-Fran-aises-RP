@@ -307,6 +307,47 @@
             mainDashboard.classList.remove('hidden');
         }
 
+        // Navigation entre les sous-onglets de la Fondation
+        function switchFondationTab(tabName) {
+            const tabValidation = document.getElementById('fondation-tab-validation');
+            const tabUtilisateurs = document.getElementById('fondation-tab-utilisateurs');
+            const btnValidation = document.getElementById('btn-tab-validation');
+            const btnUtilisateurs = document.getElementById('btn-tab-utilisateurs');
+        
+            if (tabName === 'validation') {
+                tabValidation.classList.remove('hidden');
+                tabUtilisateurs.classList.add('hidden');
+                btnValidation.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
+                btnUtilisateurs.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
+            } else {
+                tabValidation.classList.add('hidden');
+                tabUtilisateurs.classList.remove('hidden');
+                btnUtilisateurs.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
+                btnValidation.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
+            }
+        }
+        
+        // Validation des demandes (ex: Maël)
+        function validerDemandeMael(action) {
+            if (action === 'accepter') {
+                const enaChecked = document.getElementById('mael-ena').checked;
+                const fsfChecked = document.getElementById('mael-fsf').checked;
+                alert("✔ Demande acceptée pour Maël ! Ses accès autorisés ont été enregistrés avec succès.");
+            } else {
+                alert("❌ La demande d'accès de Maël a été refusée.");
+            }
+        }
+        
+        function modifierUtilisateur(nom) {
+            prompt(`Modifier les permissions et cases autorisées pour ${nom} :`);
+        }
+        
+        function bannirUtilisateur(nom) {
+            if (confirm(`Êtes-vous sûr de vouloir bannir ${nom} du portail ?`)) {
+                alert(`${nom} a été banni avec succès.`);
+            }
+        }
+        
         // Navigation interne par catégorie (sans changer de site ni message d'alerte)
         function openCategory(categoryKey) {
             viewHome.classList.add('hidden');
@@ -343,6 +384,9 @@
                     `;
                     break;
                 case 'FONDATION':
+                // Vérification de l'e-mail administrateur suprême
+                const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
+            
                 categoryContentContainer.innerHTML = `
                     <div class="space-y-6">
                         <!-- Header du module -->
@@ -352,87 +396,106 @@
                                     <span class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
                                         <i class="fa-solid fa-shield-cat text-lg"></i>
                                     </span>
-                                    Panneau de Contrôle - Fondation &amp; Staff
+                                    Panneau de Contrôle - Fondation &amp; Administration Totale
                                 </h2>
-                                <p class="text-xs text-slate-400 mt-1">Espace réservé à la modération, gestion des accès et sécurité du serveur</p>
+                                <p class="text-xs text-slate-400 mt-1">Gestion des accès, attributions des modules et modération globale</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="px-3 py-1 bg-purple-950/60 border border-purple-800/60 text-purple-300 text-xs font-semibold rounded-full flex items-center gap-1.5">
                                     <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
-                                    Accès Restreint (Staff)
+                                    ${isSuperAdmin ? 'Accès Suprême (Fondateur)' : 'Accès Modérateur'}
                                 </span>
                             </div>
                         </div>
             
-                        <!-- Grille des outils Staff -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Outil 1 : Whitelist -->
-                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                        <i class="fa-solid fa-user-check text-blue-400"></i> Whitelist Serveur
-                                    </h3>
-                                    <span class="text-[10px] font-mono bg-blue-950 text-blue-400 px-2 py-0.5 rounded">Actif</span>
-                                </div>
-                                <p class="text-xs text-slate-400">Gérer les autorisations d'entrée des nouveaux opérateurs.</p>
-                                <button onclick="alert('Module Whitelist en cours de chargement...')" class="w-full bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-300 font-bold py-2 rounded-xl text-xs transition">
-                                    Gérer la Whitelist
-                                </button>
-                            </div>
+                        <!-- Sous-onglets de la Fondation -->
+                        <div class="flex gap-2 border-b border-slate-800 pb-3">
+                            <button onclick="switchFondationTab('validation')" id="btn-tab-validation" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer">
+                                <i class="fa-solid fa-user-check mr-1.5"></i> Validations en Attente (1)
+                            </button>
+                            <button onclick="switchFondationTab('utilisateurs')" id="btn-tab-utilisateurs" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
+                                <i class="fa-solid fa-users-gear mr-1.5"></i> Gestion des Opérateurs
+                            </button>
+                        </div>
             
-                            <!-- Outil 2 : Sanctions & Logs -->
-                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                        <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Sanctions &amp; Rapports
-                                    </h3>
-                                    <span class="text-[10px] font-mono bg-amber-950 text-amber-400 px-2 py-0.5 rounded">Sécurisé</span>
-                                </div>
-                                <p class="text-xs text-slate-400">Consulter l'historique des avertissements et sanctions administratives.</p>
-                                <button onclick="alert('Module Sanctions en cours de chargement...')" class="w-full bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/30 text-amber-300 font-bold py-2 rounded-xl text-xs transition">
-                                    Voir les Sanctions
-                                </button>
-                            </div>
+                        <!-- CONTENU ONGLET 1 : VALIDATION DES ACCÈS -->
+                        <div id="fondation-tab-validation" class="space-y-4">
+                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
+                                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-clock text-amber-400"></i> Demandes d'accès au portail en attente
+                                </h3>
+                                
+                                <!-- Exemple d'une demande (ex: Maël) -->
+                                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-white text-sm">Maël (Candidat Opérateur)</span>
+                                            <span class="text-[10px] bg-amber-950 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded font-mono">En attente</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">Demandeur souhaite rejoindre le réseau FSF / ENA.</p>
+                                    </div>
             
-                            <!-- Outil 3 : Configuration Globale -->
-                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                        <i class="fa-solid fa-gears text-purple-400"></i> Paramètres Serveur
-                                    </h3>
-                                    <span class="text-[10px] font-mono bg-purple-950 text-purple-400 px-2 py-0.5 rounded">Fondateur</span>
+                                    <!-- Formulaire d'attribution des cases -->
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+                                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1.5 text-[11px] text-slate-300">
+                                            <span class="font-bold text-slate-400 block mb-1">Accès aux modules :</span>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="mael-ena"> ENA</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="mael-fsf"> FSF</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="mael-cos"> COS / EMA</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="mael-admin"> Administration</label>
+                                        </div>
+            
+                                        <div class="flex gap-2">
+                                            <button onclick="validerDemandeMael('accepter')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
+                                                <i class="fa-solid fa-check mr-1"></i> Accepter
+                                            </button>
+                                            <button onclick="validerDemandeMael('refuser')" class="bg-red-600 hover:bg-red-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
+                                                <i class="fa-solid fa-xmark mr-1"></i> Refuser
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="text-xs text-slate-400">Modifier les configurations globales du portail et des rôles.</p>
-                                <button onclick="alert('Module Paramètres Serveur en cours de chargement...')" class="w-full bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-purple-300 font-bold py-2 rounded-xl text-xs transition">
-                                    Configurer le Portail
-                                </button>
                             </div>
                         </div>
             
-                        <!-- Tableau rapide des membres du Staff connectés ou actifs -->
-                        <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
-                            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-users-gear text-purple-400"></i> Hiérarchie &amp; Staff Actif
-                            </h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-xs">
-                                    <thead class="text-slate-500 border-b border-slate-800 uppercase font-mono text-[10px]">
-                                        <tr>
-                                            <th class="pb-2">Opérateur / Staff</th>
-                                            <th class="pb-2">Rôle Fondation</th>
-                                            <th class="pb-2">Statut</th>
-                                            <th class="pb-2 text-right">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-800/60 text-slate-300">
-                                        <tr>
-                                            <td class="py-3 font-bold text-white">${userProfile ? userProfile.username : 'Utilisateur'}</td>
-                                            <td class="py-3"><span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 rounded text-[10px]">Fondateur / Développeur</span></td>
-                                            <td class="py-3"><span class="text-emerald-400 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> En Ligne</span></td>
-                                            <td class="py-3 text-right"><button class="text-slate-400 hover:text-white px-2 py-1 bg-slate-900 rounded border border-slate-800">Modifier</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <!-- CONTENU ONGLET 2 : GESTION DES UTILISATEURS (MODIFIER, SUPPRIMER, BANNER) -->
+                        <div id="fondation-tab-utilisateurs" class="hidden space-y-4">
+                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
+                                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-users text-blue-400"></i> Annuaire des Comptes &amp; Permissions Globales
+                                </h3>
+            
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-xs">
+                                        <thead class="text-slate-500 border-b border-slate-800 uppercase font-mono text-[10px]">
+                                            <tr>
+                                                <th class="pb-2.5">Identifiant / E-mail</th>
+                                                <th class="pb-2.5">Rôle / Statut</th>
+                                                <th class="pb-2.5">Permissions Modules</th>
+                                                <th class="pb-2.5 text-right">Actions Administratives</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                                            <tr>
+                                                <td class="py-3 font-bold text-white">gabinpompier811@gmail.com</td>
+                                                <td class="py-3"><span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 rounded font-bold text-[10px]">Fondateur Suprême (Tous les permis)</span></td>
+                                                <td class="py-3 font-mono text-emerald-400">ENA, FSF, COS, Admin, Fondation, Régiments</td>
+                                                <td class="py-3 text-right">
+                                                    <span class="text-slate-500 italic">Protégé (Accès Total)</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-3 font-bold text-white">mael.operateur@fsf.fr</td>
+                                                <td class="py-3"><span class="px-2 py-0.5 bg-blue-950 text-blue-400 border border-blue-800 rounded text-[10px]">Opérateur Validé</span></td>
+                                                <td class="py-3 font-mono text-slate-400">ENA, FSF</td>
+                                                <td class="py-3 text-right space-x-2">
+                                                    <button onclick="modifierUtilisateur('Maël')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded transition cursor-pointer">Modifier</button>
+                                                    <button onclick="bannirUtilisateur('Maël')" class="px-2.5 py-1 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 rounded transition cursor-pointer">Bannir</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
