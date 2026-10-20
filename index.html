@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Stratégique FSF / ENA - Sécurité Strict Restreinte</title>
+    <title>Portail Stratégique FSF / ENA - Système Avancé</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,18 +23,23 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #090d16; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        
+        /* Style fidèle à l'interface Firebase RTDB de la capture */
+        .rtdb-tree { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+        .rtdb-node-title { color: #e2e8f0; font-weight: 600; cursor: pointer; user-select: none; }
+        .rtdb-node-title:hover { color: #60a5fa; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- 1. ÉCRAN DE CONNEXION -->
+    <!-- 1. CONNEXION -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <div class="w-full max-w-md custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-3">
                 <div class="inline-flex p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 shadow-inner">
                     <i class="fa-solid fa-shield-halved text-4xl"></i>
                 </div>
-                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL D'ACCÈS SÉCURISÉ</h1>
+                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL DE COMMANDEMENT</h1>
                 <p class="text-xs text-slate-400">Authentification Réseau Realtime DB</p>
             </div>
 
@@ -54,14 +59,14 @@
         </div>
     </div>
 
-    <!-- 2. MODAL INITIALISATION PROFIL (NOUVEAU COMPTE) -->
+    <!-- 2. PROFIL MODAL -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-lg custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
                 <div class="inline-flex p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 mb-1">
                     <i class="fa-solid fa-user-gear text-3xl"></i>
                 </div>
-                <h2 class="text-xl font-bold text-white">Création de la Demande d'Accès</h2>
+                <h2 class="text-xl font-bold text-white">Création du Profil Opérateur</h2>
                 <p class="text-xs text-slate-400">Renseignez vos identifiants pour soumission à la Fondation</p>
             </div>
 
@@ -75,13 +80,13 @@
                     <input type="text" id="input-matricule" placeholder="ex: FS-027-FR" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 outline-none">
                 </div>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">
-                    Envoyer à la Fondation <i class="fa-solid fa-paper-plane ml-2"></i>
+                    Soumettre à la Fondation <i class="fa-solid fa-paper-plane ml-2"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- 3. ÉCRAN DE PATIENTEMENT STRICT (SI NON ACCEPTE) -->
+    <!-- 3. PAGE D'ATTENTE FONDATION -->
     <div id="pending-approval-screen" class="hidden flex-1 flex items-center justify-center p-4 bg-slate-950">
         <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-6">
             <div class="inline-flex p-4 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 animate-pulse">
@@ -90,20 +95,19 @@
             <div class="space-y-2">
                 <h2 class="text-2xl font-black text-white">ACCÈS EN ATTENTE DE VALIDATION</h2>
                 <p class="text-xs text-slate-400 leading-relaxed">
-                    Votre demande d'accès est actuellement en cours d'examen par la <span class="text-purple-400 font-bold">Fondation</span>.<br>
-                    Vous devez être accepté et recevoir vos permissions pour accéder au portail.
+                    Votre demande d'accès est examinée par la <span class="text-purple-400 font-bold">Fondation</span>.<br>
+                    Vous serez débloqué automatiquement dès validation des permissions.
                 </p>
             </div>
             <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-left space-y-1 font-mono text-[11px] text-slate-400">
-                <div class="flex justify-between"><span>Identifiant:</span> <span id="pending-user-email" class="text-white">---</span></div>
-                <div class="flex justify-between"><span>Statut du compte:</span> <span class="text-amber-400 font-bold">En attente d'approbation Staff</span></div>
+                <div class="flex justify-between"><span>E-mail:</span> <span id="pending-user-email" class="text-white">---</span></div>
+                <div class="flex justify-between"><span>Statut:</span> <span class="text-amber-400 font-bold">En attente d'attribution</span></div>
             </div>
-            <p class="text-[10px] text-slate-500 italic">Dès que la Fondation valide votre profil, cet écran disparaîtra automatiquement.</p>
             <button onclick="logout()" class="px-4 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 rounded-xl text-xs font-bold transition cursor-pointer">Déconnexion</button>
         </div>
     </div>
 
-    <!-- 4. TABLEAU DE BORD PRINCIPAL -->
+    <!-- 4. DASHBOARD PRINCIPAL -->
     <div id="main-dashboard" class="hidden flex-1 flex flex-col">
         <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-3">
@@ -113,7 +117,7 @@
                 <div>
                     <span class="font-black tracking-widest text-sm text-white block">PORTAIL DE COMMANDEMENT</span>
                     <span class="text-[10px] text-emerald-400 uppercase tracking-wide flex items-center gap-1 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Sync Live Actif
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Realtime DB Synced
                     </span>
                 </div>
             </div>
@@ -134,21 +138,19 @@
         </header>
 
         <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
-            <!-- ACCUEIL CATEGORIES AUTORISEES -->
             <div id="view-home" class="space-y-8">
                 <div class="flex justify-between items-center border-b border-slate-800/80 pb-6">
                     <div>
                         <h2 class="text-2xl font-black text-white tracking-wide">VOS ESPACES AUTORISÉS</h2>
-                        <p class="text-xs text-slate-400 mt-1">Accès restreint selon vos permissions validées par la Fondation</p>
+                        <p class="text-xs text-slate-400 mt-1">Accès restreint aux modules validés par la Fondation</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="categories-grid">
-                    <!-- Cartes injectées uniquement si autorisées -->
+                    <!-- Généré dynamiquement -->
                 </div>
             </div>
 
-            <!-- CONTENU DYNAMIQUE DE LA CATEGORIE SELECTIONNEE -->
             <div id="view-category" class="hidden space-y-6">
                 <button onclick="goHome()" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
@@ -158,7 +160,7 @@
         </main>
     </div>
 
-    <!-- 5. PANNEAU DE PARAMÈTRES AVANCÉS -->
+    <!-- 5. PANNEAU DE PARAMÈTRES -->
     <div id="settings-drawer" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex justify-end">
         <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between overflow-y-auto">
             <div class="space-y-6">
@@ -183,16 +185,11 @@
                         <button onclick="setTheme('neon')" class="p-2.5 bg-indigo-950/40 border border-indigo-800 hover:border-indigo-500 rounded-xl font-bold">Néon</button>
                     </div>
                 </div>
-
-                <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <h4 class="text-xs font-bold text-slate-300 mb-2"><i class="fa-solid fa-user text-blue-400 mr-2"></i>Profil</h4>
-                    <button id="edit-profile-btn" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs py-2.5 rounded-xl font-bold">Modifier Pseudo / Matricule</button>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- 6. SCRIPT AVEC SÉCURITÉ ET RESTRICTION D'ACCÈS TOTALE -->
+    <!-- 6. LOGIQUE JAVASCRIPT ET FIREBASE INTEGRÉE -->
     <script>
         const firebaseConfig = {
             databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app"
@@ -202,7 +199,6 @@
         const db = firebase.database();
 
         let currentUser = JSON.parse(localStorage.getItem('fsf_user_session')) || null;
-        let selectedNoteKey = null;
 
         const authScreen = document.getElementById('auth-screen');
         const pendingApprovalScreen = document.getElementById('pending-approval-screen');
@@ -241,15 +237,14 @@
             checkUserApprovalState();
         });
 
-        // VÉRIFICATION D'APPROBATION SÉCURISÉE EN TEMPS RÉEL
+        // APPROBATION TEMPS RÉEL
         function checkUserApprovalState() {
             if (!currentUser) return;
 
-            // gabinpompier811@gmail.com = accès suprême immédiat à toutes les sections
             if (currentUser.isOwner) {
                 currentUser.username = "Fondateur Suprême";
                 currentUser.matricule = "FS-001-OWNER";
-                currentUser.perms = ['ENA', 'FSF', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'];
+                currentUser.perms = ['ENA', 'FSF', 'MEDICAL', 'CHAT', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'];
                 pendingApprovalScreen.classList.add('hidden');
                 loadDashboard();
                 return;
@@ -257,7 +252,6 @@
 
             document.getElementById('pending-user-email').textContent = currentUser.email;
 
-            // Vérifier la base de données `users`
             db.ref('users').on('value', snapshot => {
                 const users = snapshot.val();
                 let foundUser = null;
@@ -271,18 +265,15 @@
                 }
 
                 if (foundUser) {
-                    // COMPTE VALIDÉ PAR LA FONDATION
                     currentUser.username = foundUser.username || currentUser.email;
                     currentUser.matricule = foundUser.matricule || 'FS-000-FR';
-                    currentUser.perms = foundUser.perms || []; // Permissions exactes données
+                    currentUser.perms = foundUser.perms || [];
                     
                     pendingApprovalScreen.classList.add('hidden');
                     profileModal.classList.add('hidden');
                     loadDashboard();
                 } else {
-                    // COMPTE NON ENCORE VALIDÉ PAR LA FONDATION
                     mainDashboard.classList.add('hidden');
-
                     db.ref('pending_requests').once('value', pSnap => {
                         const pendings = pSnap.val();
                         let isPending = false;
@@ -311,29 +302,29 @@
             mainDashboard.classList.remove('hidden');
         }
 
-        // RENDU STRICT DES CARTES SELON LES PERMISSIONS ACCORDÉES
         function renderCategoryGrid() {
             const grid = document.getElementById('categories-grid');
             const userPerms = currentUser.perms || [];
 
             const allCategories = [
-                { key: 'ENA', title: 'ENA & Formations', desc: 'Tableau de bord, documents, instructeurs, unités, plannings, notes.', icon: 'fa-graduation-cap', color: 'blue' },
-                { key: 'FSF', title: 'Forces Spéciales Françaises', desc: 'Dossiers opérateurs, VMA et aptitudes.', icon: 'fa-user-ninja', color: 'red' },
+                { key: 'ENA', title: 'ENA & Formations', desc: 'Interface Realtime DB, documents, instructeurs, unités, plannings, notes.', icon: 'fa-graduation-cap', color: 'blue' },
+                { key: 'MEDICAL', title: 'Service Médical & Santé', desc: 'Fiches médicales, bilans VMA, aptitudes TAP, suivi des blessures.', icon: 'fa-notes-medical', color: 'rose' },
+                { key: 'CHAT', title: 'Salon de Chat Opérationnel', desc: 'Canaux de discussion sécurisés entre opérateurs autorisés.', icon: 'fa-comments', color: 'emerald' },
+                { key: 'FSF', title: 'Forces Spéciales Françaises', desc: 'Dossiers opérateurs et spécialités.', icon: 'fa-user-ninja', color: 'red' },
                 { key: 'COS_EMA', title: 'COS / EMA', desc: 'Commandement des Opérations & État-Major.', icon: 'fa-star', color: 'amber' },
-                { key: 'ADMINISTRATION', title: 'Administration', desc: 'Gestion des dossiers et registres.', icon: 'fa-folder-tree', color: 'emerald' },
-                { key: 'FONDATION', title: 'Fondation (Staff)', desc: 'Validations, gestion membres, messagerie & logs.', icon: 'fa-shield-cat', color: 'purple' },
+                { key: 'ADMINISTRATION', title: 'Administration', desc: 'Gestion des dossiers et registres officiels.', icon: 'fa-folder-tree', color: 'teal' },
+                { key: 'FONDATION', title: 'Fondation (Staff)', desc: 'Validations, gestion des membres, messagerie staff & logs.', icon: 'fa-shield-cat', color: 'purple' },
                 { key: 'REGIMENTS', title: 'Régiments', desc: 'Répertoire des unités spécialisées.', icon: 'fa-person-military-rifle', color: 'cyan' }
             ];
 
-            // Filtrer uniquement les catégories autorisées
             const allowedCategories = allCategories.filter(c => currentUser.isOwner || userPerms.includes(c.key));
 
             if (allowedCategories.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-3 p-8 bg-slate-950 border border-slate-800 rounded-3xl text-center space-y-3">
                         <i class="fa-solid fa-lock text-amber-400 text-3xl"></i>
-                        <h3 class="font-bold text-white text-base">Aucun module attribué pour le moment</h3>
-                        <p class="text-xs text-slate-400">La Fondation ne vous a attribué aucune catégorie pour l'instant. Veuillez contacter un administrateur.</p>
+                        <h3 class="font-bold text-white text-base">Aucun module attribué</h3>
+                        <p class="text-xs text-slate-400">La Fondation ne vous a attribué aucun module pour le moment.</p>
                     </div>
                 `;
                 return;
@@ -353,7 +344,6 @@
             `).join('');
         }
 
-        // OUVERTURE SÉCURISÉE D'UNE CATÉGORIE
         function openCategory(key) {
             const userPerms = currentUser.perms || [];
             if (!currentUser.isOwner && !userPerms.includes(key)) {
@@ -373,10 +363,12 @@
             viewCategory.classList.remove('hidden');
 
             if (key === 'ENA') renderEnaWorkspace();
+            if (key === 'MEDICAL') renderMedicalWorkspace();
+            if (key === 'CHAT') renderChatWorkspace();
             if (key === 'FONDATION') renderFondationWorkspace();
             if (key === 'FSF') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> FSF - Opérateurs</h2><p class="text-xs text-slate-400">Espace Forces Spéciales Françaises.</p>`;
             if (key === 'COS_EMA') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2><p class="text-xs text-slate-400">Espace État-Major.</p>`;
-            if (key === 'ADMINISTRATION') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-emerald-400 mr-2"></i> Administration</h2><p class="text-xs text-slate-400">Espace Registres &amp; Fichiers.</p>`;
+            if (key === 'ADMINISTRATION') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-teal-400 mr-2"></i> Administration</h2><p class="text-xs text-slate-400">Espace Registres &amp; Fichiers.</p>`;
             if (key === 'REGIMENTS') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments</h2><p class="text-xs text-slate-400">Espace Régiments.</p>`;
         }
 
@@ -391,220 +383,19 @@
         }
 
         // ==========================================
-        //  MODULE FONDATION (STAFF, ROLES, LOGS DB)
-        // ==========================================
-        function renderFondationWorkspace() {
-            categoryContentContainer.innerHTML = `
-                <div class="space-y-6">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Centre de Commandement Staff</h2>
-                            <p class="text-xs text-slate-400">Gestion des utilisateurs, exclusions, canal de discussion et logs</p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold overflow-x-auto">
-                        <button onclick="switchFondationTab('validations')" id="f-btn-validations" class="px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer">Validations en Attente</button>
-                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Membres &amp; Exclusions</button>
-                        <button onclick="switchFondationTab('chat')" id="f-btn-chat" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Canal Staff</button>
-                        <button onclick="switchFondationTab('logs')" id="f-btn-logs" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Logs Staff</button>
-                    </div>
-
-                    <div id="f-content-validations" class="space-y-3">
-                        <div id="pending-list-container" class="space-y-3"></div>
-                    </div>
-
-                    <div id="f-content-users" class="hidden space-y-3">
-                        <div id="users-list-container" class="space-y-3"></div>
-                    </div>
-
-                    <div id="f-content-chat" class="hidden space-y-4">
-                        <div id="staff-chat-messages" class="p-4 bg-slate-950 border border-slate-800 rounded-2xl h-[300px] overflow-y-auto space-y-2 text-xs"></div>
-                        <form onsubmit="sendStaffMessageDB(event)" class="flex gap-2">
-                            <input type="text" id="staff-chat-input" required placeholder="Saisissez un message de service..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none">
-                            <button type="submit" class="px-5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs cursor-pointer">Envoyer</button>
-                        </form>
-                    </div>
-
-                    <div id="f-content-logs" class="hidden space-y-3">
-                        <div id="logs-list-container" class="font-mono text-xs text-slate-400 space-y-1 max-h-[300px] overflow-y-auto bg-slate-950 p-4 border border-slate-800 rounded-xl"></div>
-                    </div>
-                </div>
-            `;
-
-            listenPendingRequestsDB();
-            listenUsersDB();
-            listenStaffChatDB();
-            listenLogsDB();
-        }
-
-        function switchFondationTab(tab) {
-            ['validations', 'users', 'chat', 'logs'].forEach(t => {
-                const el = document.getElementById(`f-content-${t}`);
-                const btn = document.getElementById(`f-btn-${t}`);
-                if (t === tab) {
-                    if (el) el.classList.remove('hidden');
-                    if (btn) btn.className = "px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer";
-                } else {
-                    if (el) el.classList.add('hidden');
-                    if (btn) btn.className = "px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer";
-                }
-            });
-        }
-
-        function listenPendingRequestsDB() {
-            db.ref('pending_requests').on('value', snapshot => {
-                const container = document.getElementById('pending-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const req = data[key];
-                    return `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div>
-                                <span class="font-bold text-white text-sm block">${req.username} (${req.email})</span>
-                                <span class="text-xs text-blue-400 font-mono">Matricule : ${req.matricule}</span>
-                            </div>
-                            <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                                <div class="grid grid-cols-3 gap-2 text-[11px] bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-ENA" class="accent-purple-500"> ENA</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-FSF" class="accent-purple-500"> FSF</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-COS_EMA" class="accent-purple-500"> COS</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-ADMINISTRATION" class="accent-purple-500"> Admin</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-FONDATION" class="accent-purple-500"> Fondation</label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-REGIMENTS" class="accent-purple-500"> Régiments</label>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="approveUserDB('${key}', '${req.email}', '${req.username}', '${req.matricule}')" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl cursor-pointer">Accepter</button>
-                                    <button onclick="refuseUserDB('${key}', '${req.email}')" class="px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl cursor-pointer">Refuser</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        function approveUserDB(reqKey, email, username, matricule) {
-            const perms = [];
-            ['ENA', 'FSF', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'].forEach(m => {
-                if (document.getElementById(`p-${reqKey}-${m}`)?.checked) perms.push(m);
-            });
-
-            db.ref('users').push({
-                email: email,
-                username: username,
-                matricule: matricule,
-                perms: perms
-            });
-
-            db.ref('pending_requests/' + reqKey).remove();
-            db.ref('logs').push({ action: "Approbation du membre " + username + " (" + email + ")", date: new Date().toLocaleString('fr-FR') });
-        }
-
-        function refuseUserDB(reqKey, email) {
-            db.ref('pending_requests/' + reqKey).remove();
-            db.ref('logs').push({ action: "Refus d'accès pour " + email, date: new Date().toLocaleString('fr-FR') });
-        }
-
-        function listenUsersDB() {
-            db.ref('users').on('value', snapshot => {
-                const container = document.getElementById('users-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucun utilisateur approuvé dans le système.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const u = data[key];
-                    return `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-xs">
-                            <div>
-                                <span class="font-bold text-white text-sm block">${u.username} (${u.email})</span>
-                                <span class="text-emerald-400 font-mono text-[11px]">Permis : ${(u.perms || []).join(', ')}</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="editUserPermsPrompt('${key}', '${u.username}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-bold cursor-pointer">Modifier</button>
-                                <button onclick="excludeUserDB('${key}', '${u.username}')" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg font-bold cursor-pointer">Exclure / Bannir</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        function excludeUserDB(userKey, username) {
-            db.ref('users/' + userKey).remove();
-            db.ref('logs').push({ action: "Exclusion / Bannissement de " + username, date: new Date().toLocaleString('fr-FR') });
-        }
-
-        function editUserPermsPrompt(userKey, username) {
-            const newPermsStr = prompt("Entrez les catégories autorisées séparées par une virgule (ex: ENA,FSF,FONDATION) pour " + username + " :");
-            if (newPermsStr !== null) {
-                const permsArray = newPermsStr.split(',').map(s => s.trim().toUpperCase());
-                db.ref('users/' + userKey + '/perms').set(permsArray);
-                db.ref('logs').push({ action: "Mise à jour des accès pour " + username + " -> " + permsArray.join(', '), date: new Date().toLocaleString('fr-FR') });
-            }
-        }
-
-        function listenStaffChatDB() {
-            db.ref('staff_chat').on('value', snapshot => {
-                const container = document.getElementById('staff-chat-messages');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-slate-500 italic text-center p-4">Aucun message dans le canal Staff.</p>`; return; }
-
-                container.innerHTML = Object.keys(data).map(key => {
-                    const m = data[key];
-                    return `
-                        <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-start">
-                            <div>
-                                <span class="font-bold text-purple-400 mr-2">${m.author}:</span>
-                                <span class="text-slate-200">${m.text}</span>
-                                <span class="block text-[9px] text-slate-500 font-mono mt-0.5">${m.date}</span>
-                            </div>
-                            <button onclick="deleteStaffMessageDB('${key}')" class="text-slate-600 hover:text-red-400 text-xs p-1"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    `;
-                }).join('');
-                container.scrollTop = container.scrollHeight;
-            });
-        }
-
-        function sendStaffMessageDB(e) {
-            e.preventDefault();
-            const input = document.getElementById('staff-chat-input');
-            if (input && input.value.trim() !== '') {
-                db.ref('staff_chat').push({
-                    author: currentUser.username,
-                    text: input.value.trim(),
-                    date: new Date().toLocaleTimeString('fr-FR')
-                });
-                input.value = '';
-            }
-        }
-
-        function deleteStaffMessageDB(key) { db.ref('staff_chat/' + key).remove(); }
-
-        function listenLogsDB() {
-            db.ref('logs').on('value', snapshot => {
-                const container = document.getElementById('logs-list-container');
-                if (!container) return;
-                const data = snapshot.val();
-                if (!data) { container.innerHTML = `<div>• Aucun log.</div>`; return; }
-                container.innerHTML = Object.values(data).reverse().map(l => `<div>• ${l.action} <span class="text-slate-600">(${l.date})</span></div>`).join('');
-            });
-        }
-
-        // ==========================================
-        //  MODULE ENA WORKSPACE (COMPLET REALTIME)
+        //  MODULE ENA WORKSPACE (FIDÈLE À LA CAPTURE)
         // ==========================================
         function renderEnaWorkspace() {
             categoryContentContainer.innerHTML = `
                 <div class="space-y-6">
+                    <!-- En-tête URL style Capture DB -->
+                    <div class="bg-slate-950 p-3.5 border border-slate-800 rounded-2xl flex items-center gap-3">
+                        <i class="fa-solid fa-link text-blue-400 text-sm"></i>
+                        <span class="text-xs font-mono text-slate-200 truncate">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app</span>
+                    </div>
+
                     <div class="flex gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-bold">
-                        <button onclick="switchEnaTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white rounded-xl cursor-pointer">Tableau de bord</button>
+                        <button onclick="switchEnaTab('rtdb')" id="ena-tab-rtdb" class="px-3.5 py-2 bg-blue-600 text-white rounded-xl cursor-pointer">Live Database (Capture)</button>
                         <button onclick="switchEnaTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Documents &amp; Fichiers</button>
                         <button onclick="switchEnaTab('formations')" id="ena-tab-formations" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Formations</button>
                         <button onclick="switchEnaTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Unités &amp; Sections</button>
@@ -612,23 +403,40 @@
                         <button onclick="switchEnaTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Notes</button>
                     </div>
 
-                    <div id="ena-content-tb" class="space-y-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
-                                <i class="fa-solid fa-users text-blue-400 text-2xl"></i>
-                                <div><span class="text-[10px] text-slate-400 block font-bold">TOTAL MILITAIRES</span><span class="text-xl font-black text-white" id="stat-militaires-count">0</span></div>
+                    <!-- REPRODUCTION DE L'INTERFACE CAPTURE RTDB -->
+                    <div id="ena-content-rtdb" class="space-y-4">
+                        <div class="bg-slate-950 p-5 border border-slate-800 rounded-2xl rtdb-tree space-y-3">
+                            <div class="text-slate-400 font-mono text-xs flex items-center gap-2 border-b border-slate-800/80 pb-3">
+                                <span class="text-blue-400 font-bold">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app/</span>
                             </div>
-                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
-                                <i class="fa-solid fa-circle-check text-emerald-400 text-2xl"></i>
-                                <div><span class="text-[10px] text-slate-400 block font-bold">TAUX DE RÉUSSITE</span><span class="text-xl font-black text-emerald-400">100%</span></div>
-                            </div>
-                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
-                                <i class="fa-solid fa-stethoscope text-amber-400 text-2xl"></i>
-                                <div><span class="text-[10px] text-slate-400 block font-bold">VMA À RENOUVELER</span><span class="text-xl font-black text-amber-400">0</span></div>
-                            </div>
-                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
-                                <i class="fa-solid fa-heart-crack text-red-400 text-2xl"></i>
-                                <div><span class="text-[10px] text-slate-400 block font-bold">VMA PÉRIMÉES</span><span class="text-xl font-black text-red-400">0</span></div>
+
+                            <div class="pl-2 space-y-2 text-xs">
+                                <!-- Noeud logs -->
+                                <div>
+                                    <div onclick="toggleRtdbNode('rtdb-logs-tree')" class="rtdb-node-title flex items-center gap-2">
+                                        <i class="fa-solid fa-caret-right text-slate-500 transition-transform" id="rtdb-logs-tree-caret"></i>
+                                        <span class="text-slate-300 font-mono">logs</span>
+                                    </div>
+                                    <div id="rtdb-logs-tree" class="hidden pl-6 pt-1 space-y-1 text-[11px] font-mono text-slate-400"></div>
+                                </div>
+
+                                <!-- Noeud notifications -->
+                                <div>
+                                    <div onclick="toggleRtdbNode('rtdb-notifs-tree')" class="rtdb-node-title flex items-center gap-2">
+                                        <i class="fa-solid fa-caret-right text-slate-500 transition-transform" id="rtdb-notifs-tree-caret"></i>
+                                        <span class="text-slate-300 font-mono">notifications</span>
+                                    </div>
+                                    <div id="rtdb-notifs-tree" class="hidden pl-6 pt-1 space-y-1 text-[11px] font-mono text-slate-400"></div>
+                                </div>
+
+                                <!-- Noeud units -->
+                                <div>
+                                    <div onclick="toggleRtdbNode('rtdb-units-tree')" class="rtdb-node-title flex items-center gap-2">
+                                        <i class="fa-solid fa-caret-right text-slate-500 transition-transform" id="rtdb-units-tree-caret"></i>
+                                        <span class="text-slate-300 font-mono">units</span>
+                                    </div>
+                                    <div id="rtdb-units-tree" class="hidden pl-6 pt-1 space-y-1 text-[11px] font-mono text-slate-400"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -701,10 +509,11 @@
             listenSessionsDB();
             listenDocsDB();
             listenInstructorsDB();
+            listenRtdbTree();
         }
 
         function switchEnaTab(tab) {
-            ['tb', 'docs', 'formations', 'unités', 'plannings', 'notes'].forEach(t => {
+            ['rtdb', 'docs', 'formations', 'unités', 'plannings', 'notes'].forEach(t => {
                 const el = document.getElementById(`ena-content-${t}`);
                 const btn = document.getElementById(`ena-tab-${t}`);
                 if (t === tab) {
@@ -717,18 +526,346 @@
             });
         }
 
+        function toggleRtdbNode(id) {
+            const el = document.getElementById(id);
+            const caret = document.getElementById(id + '-caret');
+            if (el) el.classList.toggle('hidden');
+            if (caret) caret.classList.toggle('rotate-90');
+        }
+
+        function listenRtdbTree() {
+            db.ref('logs').on('value', snap => {
+                const el = document.getElementById('rtdb-logs-tree');
+                if (!el) return;
+                const d = snap.val();
+                if (!d) { el.innerHTML = `<div>null</div>`; return; }
+                el.innerHTML = Object.keys(d).map(k => `<div><span class="text-blue-400">${k}:</span> ${JSON.stringify(d[k])}</div>`).join('');
+            });
+
+            db.ref('notifications').on('value', snap => {
+                const el = document.getElementById('rtdb-notifs-tree');
+                if (!el) return;
+                const d = snap.val();
+                if (!d) { el.innerHTML = `<div>null</div>`; return; }
+                el.innerHTML = Object.keys(d).map(k => `<div><span class="text-purple-400">${k}:</span> ${JSON.stringify(d[k])}</div>`).join('');
+            });
+
+            db.ref('units').on('value', snap => {
+                const el = document.getElementById('rtdb-units-tree');
+                if (!el) return;
+                const d = snap.val();
+                if (!d) { el.innerHTML = `<div>null</div>`; return; }
+                el.innerHTML = Object.keys(d).map(k => `<div><span class="text-emerald-400">${k}:</span> ${JSON.stringify(d[k])}</div>`).join('');
+            });
+        }
+
+        // ==========================================
+        //  MODULE MÉDICAL AVANCÉ
+        // ==========================================
+        function renderMedicalWorkspace() {
+            categoryContentContainer.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-notes-medical text-rose-400"></i> Service Médical &amp; Santé des Opérateurs</h2>
+                            <p class="text-xs text-slate-400">Gestion des bilans de santé, aptitudes TAP, SIGYCOP et indisponibilités</p>
+                        </div>
+                        <button onclick="addMedicalRecordPrompt()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl cursor-pointer">+ Nouvelle Fiche Médicale</button>
+                    </div>
+
+                    <div id="medical-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            `;
+            listenMedicalDB();
+        }
+
+        function listenMedicalDB() {
+            db.ref('medical').on('value', snapshot => {
+                const container = document.getElementById('medical-cards-container');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-3 text-center p-6">Aucun dossier médical enregistré.</p>`; return; }
+
+                container.innerHTML = Object.keys(data).map(key => {
+                    const m = data[key];
+                    return `
+                        <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3">
+                            <div class="flex justify-between items-start border-b border-slate-800 pb-3">
+                                <div>
+                                    <span class="font-bold text-white text-sm block">${m.name}</span>
+                                    <span class="text-xs text-blue-400 font-mono">Matricule : ${m.mat}</span>
+                                </div>
+                                <span class="px-2.5 py-1 bg-rose-950 text-rose-300 border border-rose-800 rounded-lg text-[10px] font-bold">${m.sang || 'A+'}</span>
+                            </div>
+                            <div class="space-y-1.5 text-xs text-slate-300">
+                                <div class="flex justify-between"><span>Aptitude TAP :</span> <span class="${m.tap ? 'text-emerald-400' : 'text-red-400'} font-bold">${m.tap ? 'Apte' : 'Inapte'}</span></div>
+                                <div class="flex justify-between"><span>Statut VMA :</span> <span class="font-mono text-blue-400">${m.vma || '16.5 km/h'}</span></div>
+                                <div class="flex justify-between"><span>SIGYCOP :</span> <span class="font-mono text-purple-400">${m.sigycop || '1121110'}</span></div>
+                            </div>
+                            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+                                <span class="text-[10px] text-slate-500">Mise à jour : ${m.date || 'Récemment'}</span>
+                                <button onclick="deleteMedicalDB('${key}')" class="text-red-400 hover:text-red-300 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        function addMedicalRecordPrompt() {
+            const name = prompt("Nom & Prénom de l'opérateur :");
+            const mat = prompt("Matricule :");
+            const sang = prompt("Groupe sanguin (ex: O+, A-) :");
+            if (name && mat) {
+                db.ref('medical').push({
+                    name: name,
+                    mat: mat,
+                    sang: sang || 'A+',
+                    tap: true,
+                    vma: '17 km/h',
+                    sigycop: '1121110',
+                    date: new Date().toLocaleDateString('fr-FR')
+                });
+            }
+        }
+
+        function deleteMedicalDB(key) { db.ref('medical/' + key).remove(); }
+
+        // ==========================================
+        //  MODULE CHAT OPÉRATIONNEL SÉPARÉ
+        // ==========================================
+        function renderChatWorkspace() {
+            categoryContentContainer.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-comments text-emerald-400"></i> Salon de Chat Opérationnel</h2>
+                            <p class="text-xs text-slate-400">Communications instantanées cryptées entre membres autorisés</p>
+                        </div>
+                    </div>
+
+                    <div id="op-chat-messages" class="p-4 bg-slate-950 border border-slate-800 rounded-2xl h-[350px] overflow-y-auto space-y-2 text-xs"></div>
+
+                    <form onsubmit="sendOpChatMessageDB(event)" class="flex gap-2">
+                        <input type="text" id="op-chat-input" required placeholder="Tapez votre message opérationnel..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none">
+                        <button type="submit" class="px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs cursor-pointer">Envoyer</button>
+                    </form>
+                </div>
+            `;
+            listenOpChatDB();
+        }
+
+        function listenOpChatDB() {
+            db.ref('op_chat').on('value', snapshot => {
+                const container = document.getElementById('op-chat-messages');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<p class="text-slate-500 italic text-center p-4">Aucun message dans le salon opérationnel.</p>`; return; }
+
+                container.innerHTML = Object.keys(data).map(key => {
+                    const m = data[key];
+                    return `
+                        <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-emerald-400 mr-2">${m.author} (${m.mat}):</span>
+                                <span class="text-slate-200">${m.text}</span>
+                                <span class="block text-[9px] text-slate-500 font-mono mt-0.5">${m.date}</span>
+                            </div>
+                            <button onclick="deleteOpChatMessageDB('${key}')" class="text-slate-600 hover:text-red-400 text-xs p-1"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    `;
+                }).join('');
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        function sendOpChatMessageDB(e) {
+            e.preventDefault();
+            const input = document.getElementById('op-chat-input');
+            if (input && input.value.trim() !== '') {
+                db.ref('op_chat').push({
+                    author: currentUser.username,
+                    mat: currentUser.matricule,
+                    text: input.value.trim(),
+                    date: new Date().toLocaleTimeString('fr-FR')
+                });
+                input.value = '';
+            }
+        }
+
+        function deleteOpChatMessageDB(key) { db.ref('op_chat/' + key).remove(); }
+
+        // ==========================================
+        //  MODULE FONDATION (STAFF, ROLES, LOGS DB)
+        // ==========================================
+        function renderFondationWorkspace() {
+            categoryContentContainer.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Commandement Staff</h2>
+                            <p class="text-xs text-slate-400">Gestion globale des permissions, canaux staff et audit</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold overflow-x-auto">
+                        <button onclick="switchFondationTab('validations')" id="f-btn-validations" class="px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer">Validations en Attente</button>
+                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Membres &amp; Exclusions</button>
+                        <button onclick="switchFondationTab('logs')" id="f-btn-logs" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Logs Staff</button>
+                    </div>
+
+                    <div id="f-content-validations" class="space-y-3">
+                        <div id="pending-list-container" class="space-y-3"></div>
+                    </div>
+
+                    <div id="f-content-users" class="hidden space-y-3">
+                        <div id="users-list-container" class="space-y-3"></div>
+                    </div>
+
+                    <div id="f-content-logs" class="hidden space-y-3">
+                        <div id="logs-list-container" class="font-mono text-xs text-slate-400 space-y-1 max-h-[300px] overflow-y-auto bg-slate-950 p-4 border border-slate-800 rounded-xl"></div>
+                    </div>
+                </div>
+            `;
+
+            listenPendingRequestsDB();
+            listenUsersDB();
+            listenLogsDB();
+        }
+
+        function switchFondationTab(tab) {
+            ['validations', 'users', 'logs'].forEach(t => {
+                const el = document.getElementById(`f-content-${t}`);
+                const btn = document.getElementById(`f-btn-${t}`);
+                if (t === tab) {
+                    if (el) el.classList.remove('hidden');
+                    if (btn) btn.className = "px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer";
+                } else {
+                    if (el) el.classList.add('hidden');
+                    if (btn) btn.className = "px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer";
+                }
+            });
+        }
+
+        function listenPendingRequestsDB() {
+            db.ref('pending_requests').on('value', snapshot => {
+                const container = document.getElementById('pending-list-container');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`; return; }
+
+                container.innerHTML = Object.keys(data).map(key => {
+                    const req = data[key];
+                    return `
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <span class="font-bold text-white text-sm block">${req.username} (${req.email})</span>
+                                <span class="text-xs text-blue-400 font-mono">Matricule : ${req.matricule}</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                                <div class="grid grid-cols-4 gap-2 text-[10px] bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-ENA" class="accent-purple-500"> ENA</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-MEDICAL" class="accent-purple-500"> Médical</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-CHAT" class="accent-purple-500"> Chat</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-FSF" class="accent-purple-500"> FSF</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-COS_EMA" class="accent-purple-500"> COS</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-ADMINISTRATION" class="accent-purple-500"> Admin</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-FONDATION" class="accent-purple-500"> Fondation</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-REGIMENTS" class="accent-purple-500"> Régiments</label>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="approveUserDB('${key}', '${req.email}', '${req.username}', '${req.matricule}')" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl cursor-pointer">Accepter</button>
+                                    <button onclick="refuseUserDB('${key}', '${req.email}')" class="px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl cursor-pointer">Refuser</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        function approveUserDB(reqKey, email, username, matricule) {
+            const perms = [];
+            ['ENA', 'MEDICAL', 'CHAT', 'FSF', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'].forEach(m => {
+                if (document.getElementById(`p-${reqKey}-${m}`)?.checked) perms.push(m);
+            });
+
+            db.ref('users').push({
+                email: email,
+                username: username,
+                matricule: matricule,
+                perms: perms
+            });
+
+            db.ref('pending_requests/' + reqKey).remove();
+            db.ref('logs').push({ action: "Approbation de " + username + " (" + email + ")", date: new Date().toLocaleString('fr-FR') });
+        }
+
+        function refuseUserDB(reqKey, email) {
+            db.ref('pending_requests/' + reqKey).remove();
+            db.ref('logs').push({ action: "Refus de " + email, date: new Date().toLocaleString('fr-FR') });
+        }
+
+        function listenUsersDB() {
+            db.ref('users').on('value', snapshot => {
+                const container = document.getElementById('users-list-container');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucun utilisateur approuvé.</p>`; return; }
+
+                container.innerHTML = Object.keys(data).map(key => {
+                    const u = data[key];
+                    return `
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-bold text-white text-sm block">${u.username} (${u.email})</span>
+                                <span class="text-emerald-400 font-mono text-[11px]">Permis : ${(u.perms || []).join(', ')}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editUserPermsPrompt('${key}', '${u.username}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-bold cursor-pointer">Modifier</button>
+                                <button onclick="excludeUserDB('${key}', '${u.username}')" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg font-bold cursor-pointer">Exclure / Bannir</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        function excludeUserDB(userKey, username) {
+            db.ref('users/' + userKey).remove();
+            db.ref('logs').push({ action: "Exclusion de " + username, date: new Date().toLocaleString('fr-FR') });
+        }
+
+        function editUserPermsPrompt(userKey, username) {
+            const newPermsStr = prompt("Mettre à jour les accès (ex: ENA,MEDICAL,CHAT) pour " + username + " :");
+            if (newPermsStr !== null) {
+                const permsArray = newPermsStr.split(',').map(s => s.trim().toUpperCase());
+                db.ref('users/' + userKey + '/perms').set(permsArray);
+                db.ref('logs').push({ action: "Mise à jour accès " + username + " -> " + permsArray.join(', '), date: new Date().toLocaleString('fr-FR') });
+            }
+        }
+
+        function listenLogsDB() {
+            db.ref('logs').on('value', snapshot => {
+                const container = document.getElementById('logs-list-container');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<div>• Aucun log.</div>`; return; }
+                container.innerHTML = Object.values(data).reverse().map(l => `<div>• ${l.action} <span class="text-slate-600">(${l.date})</span></div>`).join('');
+            });
+        }
+
+        // FONCTIONS AUXILIAIRES ENA
         function listenUnitsDB() {
             db.ref('units').on('value', snapshot => {
                 const container = document.getElementById('units-grid-container');
                 if (!container) return;
                 const data = snapshot.val();
-                let countMilitaires = 0;
                 if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-3">Aucune unité.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
                     const u = data[key];
                     const members = u.members ? Object.values(u.members) : [];
-                    countMilitaires += members.length;
                     return `
                         <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
                             <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -742,9 +879,6 @@
                         </div>
                     `;
                 }).join('');
-
-                const statEl = document.getElementById('stat-militaires-count');
-                if (statEl) statEl.textContent = countMilitaires;
             });
         }
 
@@ -773,7 +907,6 @@
 
         function createNewNoteDB() { db.ref('notes').push({ title: "Nouvelle Note Sync", content: "" }); }
         function openNoteEditorDB(key, title, content) {
-            selectedNoteKey = key;
             const editor = document.getElementById('note-editor-container');
             if (editor) {
                 editor.innerHTML = `
@@ -801,7 +934,7 @@
                 const container = document.getElementById('sessions-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-2">Aucune session planifiée.</p>`; return; }
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-2">Aucune session.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
                     const s = data[key];
@@ -875,7 +1008,6 @@
         document.getElementById('open-settings-btn').addEventListener('click', () => settingsDrawer.classList.remove('hidden'));
         document.getElementById('close-settings-btn').addEventListener('click', () => settingsDrawer.classList.add('hidden'));
 
-        // INITIALISATION AUTOMATIQUE
         if (currentUser) {
             authScreen.classList.add('hidden');
             checkUserApprovalState();
