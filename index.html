@@ -372,133 +372,90 @@
             ]
         };
         
-        // Rendu principal ENA Workspace
-        function renderEnaWorkspace() {
-            categoryContentContainer.innerHTML = `
-                <div class="space-y-6">
-                    <!-- Barre de sous-onglets ENA -->
-                    <div class="flex items-center gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-medium">
-                        <button onclick="switchEnaSubTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-chart-line"></i> Tableau de bord
-                        </button>
-                        <button onclick="switchEnaSubTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-file-contract"></i> Documents &amp; Fichiers
-                        </button>
-                        <button onclick="switchEnaSubTab('formations')" id="ena-tab-formations" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-graduation-cap"></i> Formations
-                        </button>
-                        <button onclick="switchEnaSubTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-users-rectangle"></i> Unités &amp; Sections
-                        </button>
-                        <button onclick="switchEnaSubTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-calendar-days"></i> Plannings &amp; Sessions
-                        </button>
-                        <button onclick="switchEnaSubTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-clipboard-list"></i> Notes &amp; Directives
-                        </button>
-                    </div>
-        
-                    <!-- 1. TABLEAU DE BORD (Statistiques & Résumé) -->
-                    <div id="ena-content-tb" class="space-y-6">
-                        <!-- Filtre d'Unité -->
-                        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
-                            <span class="text-xs font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-filter text-blue-400"></i> Filtrer les Statistiques par Unité :
-                            </span>
-                            <select onchange="filterDashboardStats(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none">
-                                <option value="all">Toutes les Unités</option>
-                                <option value="CPA 10">CPA 10</option>
-                                <option value="13e RDP">13e RDP</option>
-                                <option value="Commandos Jaubert (marine)">Commandos Jaubert</option>
-                                <option value="4e RHFS">4e RHFS</option>
-                            </select>
-                        </div>
-        
-                        <!-- 4 Cartes d'indicateurs -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
-                                <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl"><i class="fa-solid fa-users text-xl"></i></div>
-                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">Total Militaires</span><span class="text-xl font-black text-white" id="stat-total-militaires">15</span></div>
-                            </div>
-                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
-                                <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl"><i class="fa-solid fa-circle-check text-xl"></i></div>
-                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">Taux de Réussite</span><span class="text-xl font-black text-emerald-400">100%</span></div>
-                            </div>
-                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
-                                <div class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl"><i class="fa-solid fa-stethoscope text-xl"></i></div>
-                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">VMA à Renouveler (&lt;15J)</span><span class="text-xl font-black text-amber-400">0</span></div>
-                            </div>
-                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
-                                <div class="p-3 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl"><i class="fa-solid fa-heart-crack text-xl"></i></div>
-                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">VMA Périmées (&gt;2 mois)</span><span class="text-xl font-black text-red-400">0</span></div>
-                            </div>
-                        </div>
-        
-                        <!-- Résumé opérationnel & Dernières évaluations -->
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                            <div class="lg:col-span-7 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-3">
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-400"></i> Dernières Formations Évaluées</h3>
-                                <div class="divide-y divide-slate-800/60 text-xs text-slate-300">
-                                    <div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">Capitaine Noli VELMONT</span><span class="text-[10px] text-slate-500">[CDU] Cursus de Chef d'Unité</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></div>
-                                    <div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">Capitaine Noli VELMONT</span><span class="text-[10px] text-slate-500">[FG2 / BSTAT] Brevet d'Adjoint</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></div>
-                                </div>
-                            </div>
-                            <div class="lg:col-span-5 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-3">
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-bullhorn text-amber-400"></i> Résumé Opérationnel</h3>
-                                <div class="space-y-2 text-xs">
-                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Validées (Admis)</span><span class="font-bold text-emerald-400">3</span></div>
-                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Ajournées (Échecs)</span><span class="font-bold text-red-400">0</span></div>
-                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Demandes en Attente d'Examen</span><span class="font-bold text-amber-400">0</span></div>
-                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Inaptitudes temporaires (GITA)</span><span class="font-bold text-slate-400">0</span></div>
-                                </div>
-                            </div>
+        // Rendu et fonctions Documents & Fichiers
+        function renderEnaDocsList() {
+            if (enaDocs.length === 0) return `<p class="text-xs text-slate-500 italic p-3">Aucun document importé.</p>`;
+            return enaDocs.map(d => `
+                <div onclick="previewEnaDoc('${d.id}')" class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center hover:border-blue-500/50 cursor-pointer transition">
+                    <div class="flex items-center gap-2.5 truncate">
+                        <i class="fa-solid fa-file-pdf text-red-400 text-base"></i>
+                        <div class="truncate">
+                            <span class="font-bold text-xs text-white block truncate">${d.name}</span>
+                            <span class="text-[10px] text-slate-500 font-mono">${d.size || 'Fichier'}</span>
                         </div>
                     </div>
-        
-                    <!-- 2. DOCUMENTS & FICHIERS -->
-                    <div id="ena-content-docs" class="hidden space-y-4">
-                        <div class="flex justify-between items-center">
-                            <label class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-2 shadow-lg">
-                                <i class="fa-solid fa-file-arrow-up"></i> Importer Fichiers (Photos, PDF...)
-                                <input type="file" id="file-uploader" onchange="uploadEnaFile(event)" class="hidden" multiple>
-                            </label>
-                            <span class="text-[11px] text-slate-500 font-mono"><i class="fa-solid fa-cloud"></i> Stockage local sécurisé</span>
-                        </div>
-        
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2 max-h-[500px] overflow-y-auto">
-                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fichiers Enregistrés</h3>
-                                <div id="docs-list-container" class="space-y-2">
-                                    ${renderEnaDocsList()}
-                                </div>
-                            </div>
-                            <div id="doc-preview-container" class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-6 flex flex-col justify-center items-center text-slate-500 text-xs min-h-[350px]">
-                                <i class="fa-solid fa-file-pdf text-4xl mb-2 text-slate-700"></i>
-                                <span>Sélectionnez un document à gauche pour prévisualiser</span>
-                            </div>
-                        </div>
-                    </div>
-        
-                    <!-- 3. UNITÉS & SECTIONS -->
-                    <div id="ena-content-unités" class="hidden space-y-4">
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                            <div>
-                                <h3 class="text-sm font-bold text-white flex items-center gap-2"><i class="fa-solid fa-users-rectangle text-blue-400"></i> Répertoire des Unités Forces Spéciales</h3>
-                                <p class="text-[11px] text-slate-400">Effectifs engagés par régiment spécialisé</p>
-                            </div>
-                        </div>
-        
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                            ${renderEnaUnitsCards()}
-                        </div>
-                    </div>
-        
-                    <!-- CONTENUS PRÉCÉDENTS (Formations, Plannings, Notes) -->
-                    <div id="ena-content-formations" class="hidden space-y-6"></div>
-                    <div id="ena-content-plannings" class="hidden space-y-6"></div>
-                    <div id="ena-content-notes" class="hidden space-y-4"></div>
+                    <button onclick="event.stopPropagation(); deleteEnaDoc('${d.id}')" class="text-slate-500 hover:text-red-400 p-1 text-xs">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
                 </div>
-            `;
+            `).join('');
+        }
+        
+        function uploadEnaFile(e) {
+            const files = e.target.files;
+            for (let f of files) {
+                enaDocs.push({ id: Date.now().toString(), name: f.name, size: (f.size / 1024).toFixed(1) + ' KB' });
+            }
+            const container = document.getElementById('docs-list-container');
+            if (container) container.innerHTML = renderEnaDocsList();
+        }
+        
+        function previewEnaDoc(id) {
+            const doc = enaDocs.find(d => d.id === id);
+            const prev = document.getElementById('doc-preview-container');
+            if (doc && prev) {
+                prev.innerHTML = `
+                    <div class="w-full h-full flex flex-col justify-between space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <span class="font-bold text-white text-sm flex items-center gap-2"><i class="fa-solid fa-file-pdf text-red-400"></i> ${doc.name}</span>
+                            <span class="text-xs font-mono text-blue-400">${doc.size}</span>
+                        </div>
+                        <div class="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-3">
+                            <i class="fa-solid fa-file-lines text-5xl text-blue-500"></i>
+                            <p class="text-xs text-slate-300">Aperçu sécurisé du document [ ${doc.name} ]</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function deleteEnaDoc(id) {
+            enaDocs = enaDocs.filter(d => d.id !== id);
+            const container = document.getElementById('docs-list-container');
+            if (container) container.innerHTML = renderEnaDocsList();
+        }
+        
+        // Rendu et fonctions Unités & Sections
+        function renderEnaUnitsCards() {
+            return Object.keys(enaUnits).map(unitName => {
+                const members = enaUnits[unitName];
+                return `
+                    <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800/80 pb-2.5">
+                            <span class="font-bold text-xs text-white flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> ${unitName}</span>
+                            <span class="px-2 py-0.5 bg-blue-950 text-blue-400 border border-blue-800/60 rounded text-[10px] font-mono font-bold">${members.length}</span>
+                        </div>
+                        <div class="space-y-2 max-h-[220px] overflow-y-auto">
+                            ${members.length === 0 ? '<p class="text-[11px] text-slate-500 italic p-2">Aucun membre affecté.</p>' : members.map(m => `
+                                <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center">
+                                    <div>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="font-bold text-xs text-slate-200">${m.name}</span>
+                                            <span class="w-2 h-2 rounded-full ${m.active ? 'bg-emerald-500' : 'bg-red-500'}"></span>
+                                        </div>
+                                        <span class="text-[10px] font-mono text-blue-400 block">${m.matricule}</span>
+                                    </div>
+                                    <button onclick="openMemberFiche('${m.name}')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded text-[10px] font-bold transition">Fiche</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function openMemberFiche(memberName) {
+            alert("Ouverture de la fiche complète de : " + memberName);
         }
         
         // Gestion des sous-onglets ENA
