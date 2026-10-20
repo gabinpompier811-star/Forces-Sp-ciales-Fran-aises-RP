@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon de Chat Opérationnel - FSF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        body { background-color: #090d16; }
+        .custom-card { background-color: #0f172a; border-color: #1e293b; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col p-6 max-w-4xl mx-auto space-y-6">
+
+    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <a href="index.html" class="px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Retour Accueil</a>
+        <h1 class="text-lg font-black text-emerald-400"><i class="fa-solid fa-comments mr-2"></i> Salon de Chat Opérationnel</h1>
+    </div>
+
+    <div class="custom-card border rounded-3xl p-6 space-y-4 shadow-xl">
+        <div id="op-chat-messages" class="p-4 bg-slate-950 border border-slate-800 rounded-2xl h-[400px] overflow-y-auto space-y-2 text-xs"></div>
+
+        <form onsubmit="sendOpChatMessage(event)" class="flex gap-2">
+            <input type="text" id="op-chat-input" required placeholder="Tapez votre message opérationnel..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-emerald-500">
+            <button type="submit" class="px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs cursor-pointer">Envoyer</button>
+        </form>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
+        if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('CHAT'))) {
+            alert("Accès non autorisé au Chat Opérationnel !");
+            window.location.href = "index.html";
+        }
+
+        const firebaseConfig = { databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        db.ref('op_chat').on('value', snapshot => {
+            const container = document.getElementById('op-chat-messages');
+            const data = snapshot.val();
+            if (!data) { container.innerHTML = `<p class="text-slate-500 italic text-center p-4">Aucun message dans le salon opérationnel.</p>`; return; }
+
+            container.innerHTML = Object.keys(data).map(key => {
+                const m = data[key];
+                return `
+                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-start">
+                        <div>
+                            <span class="font-bold text-emerald-400 mr-2">${m.author} :</span>
+                            <span class="text-slate-200">${m.text}</span>
+                            <span class="block text-[9px] text-slate-500 font-mono mt-0.5">${m.date}</span>
+                        </div>
+                        <button onclick="deleteMsg('${key}')" class="text-slate-600 hover:text-red-400 text-xs p-1 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        });
+
+        function sendOpChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('op-chat-input');
+            if (input && input.value.trim() !== '') {
+                db.ref('op_chat').push({
+                    author: currentUser.username || 'Opérateur',
+                    text: input.value.trim(),
+                    date: new Date().toLocaleTimeString('fr-FR')
+                });
+                input.value = '';
+            }
+        }
+
+        function deleteMsg(key) { db.ref('op_chat/' + key).remove(); }
+    </script>
+</body>
+</html>
