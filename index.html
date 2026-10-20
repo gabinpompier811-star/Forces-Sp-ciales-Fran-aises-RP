@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Stratégique & Opérationnel</title>
+    <title>ENA WORKSPACE - Portail Stratégique</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +17,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
 
     <!-- 1. PAGE DE CONNEXION -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <!-- 2. MODAL : CONFIGURATION DU PSEUDO (PREMIÈRE CONNEXION) -->
+    <!-- 2. MODAL : CONFIGURATION DU PSEUDO -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
@@ -66,7 +66,7 @@
             <form id="profile-form" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-300 mb-1.5">Pseudo / Nom d'affichage *</label>
-                    <input type="text" id="input-username" required placeholder="ex: Capitaine N. VELMONT" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:border-emerald-500 outline-none">
+                    <input type="text" id="input-username" required placeholder="ex: Capitaine Noli VELMONT" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:border-emerald-500 outline-none">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur</label>
@@ -82,135 +82,158 @@
     <!-- 3. TABLEAU DE BORD PRINCIPAL -->
     <div id="main-dashboard" class="hidden flex-1 flex flex-col">
         
-        <!-- Navbar -->
-        <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-30">
+        <!-- Navbar Supérieure (Style ENA WORKSPACE) -->
+        <header class="bg-[#0e1422] border-b border-slate-800/80 px-4 py-2.5 flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-3">
-                <div class="p-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400">
-                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-blue-500 text-xl"></i>
+                    <span class="font-black tracking-wider text-sm text-white">ENA WORKSPACE</span>
                 </div>
-                <div>
-                    <span class="font-black tracking-widest text-sm text-white block">PORTAIL DE COMMANDEMENT</span>
-                    <span class="text-[10px] text-slate-400 uppercase tracking-wide">Forces Spéciales &amp; Administration</span>
-                </div>
+                <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Fondateur</span>
             </div>
 
-            <div class="flex items-center gap-3">
-                <div class="hidden sm:flex flex-col text-right border-r border-slate-800 pr-4">
-                    <span id="display-username" class="text-xs font-bold text-slate-100">---</span>
-                    <span id="display-matricule" class="text-[10px] text-blue-400 font-mono">FS-000-FR</span>
-                </div>
-
-                <button id="open-settings-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
-                    <i class="fa-solid fa-sliders text-blue-400"></i>
-                    <span class="hidden md:inline">Paramètres</span>
+            <div class="flex items-center gap-2">
+                <button id="open-settings-btn" class="px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition flex items-center gap-1.5 text-xs font-medium cursor-pointer">
+                    <i class="fa-solid fa-gear text-blue-400"></i> Paramètres
                 </button>
 
-                <button id="logout-btn" class="p-2.5 bg-red-950/50 hover:bg-red-900/80 border border-red-800/60 text-red-300 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
-                    <i class="fa-solid fa-power-off"></i>
+                <div class="relative">
+                    <button class="p-1.5 bg-slate-800/80 border border-slate-700 text-slate-200 rounded-lg text-xs relative">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">48</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 text-xs font-mono">
+                    <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded text-[10px] font-bold">Connecté</span>
+                    <span id="display-user-email" class="text-slate-300 text-[11px]">gabinpompier811@gmail.com</span>
+                </div>
+
+                <button class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-download text-xs"></i> Backup
+                </button>
+
+                <button id="logout-btn" class="px-3 py-1.5 bg-red-900/60 hover:bg-red-800 text-red-200 border border-red-700 rounded-lg transition text-xs font-medium cursor-pointer">
+                    Déconnexion
                 </button>
             </div>
         </header>
 
+        <!-- Barre de Navigation par Onglets (Identique à la capture) -->
+        <nav class="bg-[#0e1422] border-b border-slate-800 px-4 py-1.5 flex items-center gap-1 overflow-x-auto text-xs font-medium text-slate-400">
+            <button onclick="goHome()" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-chart-line text-blue-400"></i> Tableau de Bord
+            </button>
+            <button onclick="alert('Créer un nouveau dossier')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap text-emerald-400 font-bold cursor-pointer">
+                <i class="fa-solid fa-folder-plus"></i> Créer Dossier
+            </button>
+            <button onclick="openCategory('ADMINISTRATION')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-file-contract"></i> Documents &amp; Fichiers
+            </button>
+            <button onclick="openCategory('ENA')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 border border-blue-500/40 text-blue-400 font-bold flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-graduation-cap"></i> ENA &amp; Formations
+            </button>
+            <button onclick="openCategory('REGIMENTS')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-users-rectangle"></i> Unités &amp; Sections
+            </button>
+            <button onclick="openCategory('FSF')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-crosshair"></i> Tirs, Médical &amp; Inaptitudes
+            </button>
+            <button onclick="openCategory('FSF')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-id-card"></i> Fiches &amp; Médical
+            </button>
+            <button onclick="alert('Planning & Sessions')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-calendar-days"></i> Planning &amp; Sessions
+            </button>
+            <button onclick="alert('Décorations')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-medal"></i> Décorations
+            </button>
+            <button onclick="alert('Référentiel Diplômes')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-book-bookmark"></i> Référentiel
+            </button>
+            <button onclick="openCategory('FONDATION')" class="px-3 py-1.5 rounded-lg hover:bg-slate-800/60 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                <i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation (Staff)
+            </button>
+        </nav>
+
         <!-- Zone de Contenu Dynamique -->
-        <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
+        <main class="flex-1 p-4 md:p-6 max-w-[1600px] mx-auto w-full space-y-6">
             
             <!-- VUE ACCUEIL : Grille des Catégories -->
-            <div id="view-home" class="space-y-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+            <div id="view-home" class="space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
                     <div>
-                        <h2 class="text-2xl font-black text-white tracking-wide">SÉLECTIONNEZ VOTRE ESPACE</h2>
-                        <p class="text-xs text-slate-400 mt-1">Accès direct aux différents départements opérationnels</p>
+                        <h2 class="text-xl font-black text-white tracking-wide">ACCÈS AUX MODULES DU PORTAIL</h2>
+                        <p class="text-xs text-slate-400 mt-1">Sélectionnez le service militaire ou administratif à gérer</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <button onclick="openCategory('ENA')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-blue-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 w-fit group-hover:scale-110 transition">
-                                <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <button onclick="openCategory('ENA')" class="group text-left bg-[#0e1422] border border-slate-800 hover:border-blue-500/60 p-5 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 w-fit">
+                                <i class="fa-solid fa-graduation-cap text-xl"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition">ENA &amp; Formations</h3>
-                            <p class="text-xs text-slate-400">École Nationale d'Apprentissage, examens et attestations.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-blue-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                            <h3 class="font-bold text-base text-white group-hover:text-blue-400 transition">ENA &amp; Formations</h3>
+                            <p class="text-xs text-slate-400">Instructeurs, suivi des diplômes, épreuves et inscriptions.</p>
                         </div>
                     </button>
 
-                    <button onclick="openCategory('FSF')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-red-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 w-fit group-hover:scale-110 transition">
-                                <i class="fa-solid fa-user-ninja text-2xl"></i>
+                    <button onclick="openCategory('FSF')" class="group text-left bg-[#0e1422] border border-slate-800 hover:border-red-500/60 p-5 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 w-fit">
+                                <i class="fa-solid fa-user-ninja text-xl"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-red-400 transition">Forces Spéciales Françaises</h3>
-                            <p class="text-xs text-slate-400">Dossiers opérateurs, aptitude médicale VMA et tirs.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-red-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                            <h3 class="font-bold text-base text-white group-hover:text-red-400 transition">Forces Spéciales Françaises</h3>
+                            <p class="text-xs text-slate-400">Dossiers tactiques, visites médicales VMA et tirs de précision.</p>
                         </div>
                     </button>
 
-                    <button onclick="openCategory('COS_EMA')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-amber-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 w-fit group-hover:scale-110 transition">
-                                <i class="fa-solid fa-star text-2xl"></i>
+                    <button onclick="openCategory('COS_EMA')" class="group text-left bg-[#0e1422] border border-slate-800 hover:border-amber-500/60 p-5 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 w-fit">
+                                <i class="fa-solid fa-star text-xl"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-amber-400 transition">COS / EMA</h3>
-                            <p class="text-xs text-slate-400">Commandement des Opérations &amp; État-Major.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-amber-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                            <h3 class="font-bold text-base text-white group-hover:text-amber-400 transition">COS / EMA</h3>
+                            <p class="text-xs text-slate-400">Commandement des Opérations Spéciales &amp; État-Major.</p>
                         </div>
                     </button>
 
-                    <button onclick="openCategory('ADMINISTRATION')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 w-fit group-hover:scale-110 transition">
-                                <i class="fa-solid fa-folder-tree text-2xl"></i>
+                    <button onclick="openCategory('ADMINISTRATION')" class="group text-left bg-[#0e1422] border border-slate-800 hover:border-emerald-500/60 p-5 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 w-fit">
+                                <i class="fa-solid fa-folder-tree text-xl"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-emerald-400 transition">Administration</h3>
-                            <p class="text-xs text-slate-400">Gestion des dossiers officiels, fichiers et registres.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-emerald-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                            <h3 class="font-bold text-base text-white group-hover:text-emerald-400 transition">Administration</h3>
+                            <p class="text-xs text-slate-400">Documents officiels, registres et archives numérisées.</p>
                         </div>
                     </button>
 
-                    <button onclick="openCategory('FONDATION')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-purple-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-purple-400 w-fit group-hover:scale-110 transition">
-                                <i class="fa-solid fa-shield-cat text-2xl"></i>
+                    <button onclick="openCategory('FONDATION')" class="group text-left bg-[#0e1422] border border-slate-800 hover:border-purple-500/60 p-5 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 w-fit">
+                                <i class="fa-solid fa-shield-cat text-xl"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-purple-400 transition">Fondation (Staff)</h3>
-                            <p class="text-xs text-slate-400">Espace modérateurs, rôles et paramètres globaux.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-purple-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                            <h3 class="font-bold text-base text-white group-hover:text-purple-400 transition">Fondation (Staff)</h3>
+                            <p class="text-xs text-slate-400">Panneau de contrôle des accès, modération et validations.</p>
                         </div>
                     </button>
 
-                    <button onclick="openCategory('REGIMENTS')" class="group text-left bg-slate-900/80 border border-slate-800 hover:border-cyan-500/60 p-6 rounded-3xl transition-all duration-300 shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 w-fit group-hover:scale-110 transition">
-                                <i class="fa-solid fa-person-military-rifle text-2xl"></i>
+                    <button onclick="openCategory('REGIMENTS')" class="group text-left bg-[#0e1422] border border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="p-3 bg-cyan-500/10 border border-cyan-500/20 rounded-xl text-cyan-400 w-fit">
+                                <i class="fa-solid fa-person-military-rifle text-xl"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition">Régiments</h3>
-                            <p class="text-xs text-slate-400">Répertoire des effectifs (CPA 10, 13e RDP, Jaubert, GCP, 4e RHFS).</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-cyan-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                            <h3 class="font-bold text-base text-white group-hover:text-cyan-400 transition">Régiments &amp; Unités</h3>
+                            <p class="text-xs text-slate-400">Annuaire des régiments (CPA 10, 13e RDP, Jaubert, GCP, 4e RHFS).</p>
                         </div>
                     </button>
                 </div>
             </div>
 
             <!-- VUE DYNAMIQUE DES CATEGORIES -->
-            <div id="view-category" class="hidden space-y-6">
-                <button onclick="goHome()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
-                </button>
-                
-                <div id="category-content-container" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+            <div id="view-category" class="hidden space-y-4">
+                <div id="category-content-container">
                     <!-- Injection JS -->
                 </div>
             </div>
@@ -277,14 +300,21 @@
         let userProfile = JSON.parse(localStorage.getItem('fsf_user_profile')) || null;
         let savedBrightness = localStorage.getItem('fsf_brightness') || "100";
 
-        // Données dynamiques des utilisateurs
-        let pendingRequests = [
-            { id: 'mael', name: 'Maël (Candidat Opérateur)', desc: 'Demandeur souhaite rejoindre le réseau FSF / ENA.', email: 'mael@fsf.fr' }
+        // Données d'exemple pour le module ENA
+        let instructorsList = [
+            { id: '1', name: 'Colonel Alex GIROND', role: "Directeur de l'ENA" },
+            { id: '2', name: 'Commandant Mathis ROSIER', role: "Directeur adjoint" },
+            { id: '3', name: 'Lieutenant Maël LIOGER', role: "Formateur Principal" },
+            { id: '4', name: 'Capitaine John FOX', role: "Instructeur" },
+            { id: '5', name: 'Sergent-Chef Simon RENARD', role: "Aspirant Instructeur" },
+            { id: '6', name: 'Sous-Lieutenant Jake HARPER', role: "Aspirant Instructeur" },
+            { id: '7', name: 'Capitaine Noli VELMONT', role: "Chef des Instructeurs" }
         ];
 
-        let registeredUsers = [
-            { id: 'gabin', name: 'gabinpompier811@gmail.com', role: 'Fondateur Suprême (Tous les permis)', perms: ['ENA', 'FSF', 'COS', 'Admin', 'Fondation', 'Régiments'], isOwner: true },
-            { id: 'mael_user', name: 'mael.operateur@fsf.fr', role: 'Opérateur Validé', perms: ['ENA', 'FSF'], isOwner: false }
+        let formationsList = [
+            { id: '1', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: '[FGI] Formation Général Initiale', score: 'Admis (20/20)' },
+            { id: '2', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", score: 'Admis (20/20)' },
+            { id: '3', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: "[CDU] Cursus de Chef d'Unité", score: 'Admis (20/20)' }
         ];
 
         document.documentElement.style.setProperty('--site-brightness', `${savedBrightness}%`);
@@ -322,290 +352,313 @@
 
         function loadDashboard() {
             if (userProfile) {
-                displayUsername.textContent = userProfile.username;
-                displayMatricule.textContent = userProfile.matricule;
+                document.getElementById('display-user-email').textContent = userProfile.email;
             }
             mainDashboard.classList.remove('hidden');
         }
 
-        // Navigation interne par catégorie
         function openCategory(categoryKey) {
             viewHome.classList.add('hidden');
             viewCategory.classList.remove('hidden');
 
-            const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
-
             switch(categoryKey) {
                 case 'ENA':
-                    categoryContentContainer.innerHTML = `
-                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-graduation-cap text-blue-400 mr-2"></i> ENA & Formations</h2>
-                        <p class="text-xs text-slate-400 mb-6">Module de gestion des examens et cursus militaires.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Contenu et scripts du module ENA.</div>
-                    `;
+                    renderEnaWorkspace();
                     break;
                 case 'FSF':
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> Forces Spéciales Françaises</h2>
                         <p class="text-xs text-slate-400 mb-6">Dossiers opérateurs, aptitudes médicales VMA et tirs.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Contenu et scripts du module FSF.</div>
                     `;
                     break;
                 case 'COS_EMA':
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2>
-                        <p class="text-xs text-slate-400 mb-6">Commandement des Opérations & État-Major.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Contenu et scripts du module COS / EMA.</div>
                     `;
                     break;
                 case 'ADMINISTRATION':
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-emerald-400 mr-2"></i> Administration</h2>
-                        <p class="text-xs text-slate-400 mb-6">Registre officiel et gestion des fichiers.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Contenu et scripts de l'Administration.</div>
                     `;
                     break;
                 case 'FONDATION':
-                    renderFondationModule(isSuperAdmin);
+                    categoryContentContainer.innerHTML = `
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-shield-cat text-purple-400 mr-2"></i> Fondation (Staff)</h2>
+                    `;
                     break;
                 case 'REGIMENTS':
                     categoryContentContainer.innerHTML = `
-                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments & Unités</h2>
-                        <p class="text-xs text-slate-400 mb-6">Répertoire des effectifs par régiment spécialisé.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Contenu et scripts des Régiments.</div>
+                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments</h2>
                     `;
                     break;
             }
         }
 
-        // Rendu complet du module Fondation
-        function renderFondationModule(isSuperAdmin) {
+        // Rendu complet du module ENA & Formations (Capture d'écran exacte)
+        function renderEnaWorkspace() {
             categoryContentContainer.innerHTML = `
                 <div class="space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2.5">
-                                <span class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
-                                    <i class="fa-solid fa-shield-cat text-lg"></i>
-                                </span>
-                                Panneau de Contrôle - Fondation &amp; Administration Totale
-                            </h2>
-                            <p class="text-xs text-slate-400 mt-1">Gestion des accès, attributions des modules et modération globale</p>
+                    <!-- SECTION SUPERIEURE : Instructeurs -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        
+                        <!-- Formulaire Ajouter un Instructeur -->
+                        <div class="lg:col-span-4 bg-[#0e1422] border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+                            <h3 class="text-sm font-bold text-white tracking-wide">Ajouter un Instructeur</h3>
+                            
+                            <form id="add-instructor-form" onsubmit="addInstructor(event)" class="space-y-3">
+                                <div>
+                                    <input type="text" id="instructor-name" required placeholder="Nom complet (ex: LCL Alex)" class="w-full bg-[#151c2e] border border-slate-700/60 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <select id="instructor-role" required class="w-full bg-[#151c2e] border border-slate-700/60 rounded-xl p-3 text-xs text-slate-300 outline-none focus:border-blue-500">
+                                        <option value="">-- Rôle Instructeur --</option>
+                                        <option value="Directeur de l'ENA">Directeur de l'ENA</option>
+                                        <option value="Directeur adjoint">Directeur adjoint</option>
+                                        <option value="Chef des Instructeurs">Chef des Instructeurs</option>
+                                        <option value="Formateur Principal">Formateur Principal</option>
+                                        <option value="Instructeur">Instructeur</option>
+                                        <option value="Aspirant Instructeur">Aspirant Instructeur</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer shadow-lg shadow-blue-950/50">
+                                    + Ajouter Instructeur
+                                </button>
+                            </form>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="px-3 py-1 bg-purple-950/60 border border-purple-800/60 text-purple-300 text-xs font-semibold rounded-full flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
-                                ${isSuperAdmin ? 'Accès Suprême (Fondateur)' : 'Accès Modérateur'}
-                            </span>
-                        </div>
-                    </div>
 
-                    <div class="flex gap-2 border-b border-slate-800 pb-3">
-                        <button onclick="switchFondationTab('validation')" id="btn-tab-validation" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer">
-                            <i class="fa-solid fa-user-check mr-1.5"></i> Validations en Attente (${pendingRequests.length})
-                        </button>
-                        <button onclick="switchFondationTab('utilisateurs')" id="btn-tab-utilisateurs" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
-                            <i class="fa-solid fa-users-gear mr-1.5"></i> Gestion des Opérateurs (${registeredUsers.length})
-                        </button>
-                    </div>
-
-                    <!-- ONGLET 1 : VALIDATIONS EN ATTENTE -->
-                    <div id="fondation-tab-validation" class="space-y-4">
-                        <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
-                            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-clock text-amber-400"></i> Demandes d'accès au portail en attente
-                            </h3>
-                            <div id="pending-container" class="space-y-3">
-                                ${renderPendingList()}
+                        <!-- Grille du Corps des Formateurs -->
+                        <div class="lg:col-span-8 bg-[#0e1422] border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+                            <h3 class="text-sm font-bold text-white tracking-wide">Corps des Formateurs / Instructeurs</h3>
+                            
+                            <div id="instructors-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-1">
+                                ${renderInstructorsCards()}
                             </div>
                         </div>
+
                     </div>
 
-                    <!-- ONGLET 2 : GESTION DES UTILISATEURS -->
-                    <div id="fondation-tab-utilisateurs" class="hidden space-y-4">
-                        <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
-                            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-users text-blue-400"></i> Annuaire des Comptes &amp; Permissions Globales
+                    <!-- SECTION INFERIEURE : Suivi des Formations -->
+                    <div class="bg-[#0e1422] border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+                        
+                        <!-- Barre de titre + Recherche + Export -->
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-blue-400"></i> Suivi des Formations &amp; Évaluations
                             </h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-xs">
-                                    <thead class="text-slate-500 border-b border-slate-800 uppercase font-mono text-[10px]">
-                                        <tr>
-                                            <th class="pb-2.5">Identifiant / E-mail</th>
-                                            <th class="pb-2.5">Rôle / Statut</th>
-                                            <th class="pb-2.5">Permissions Modules</th>
-                                            <th class="pb-2.5 text-right">Actions Administratives</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="registered-users-body" class="divide-y divide-slate-800/60 text-slate-300">
-                                        ${renderRegisteredList()}
-                                    </tbody>
-                                </table>
+
+                            <div class="flex items-center gap-2">
+                                <div class="relative">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                                    <input type="text" id="search-formation" onkeyup="filterFormationsTable()" placeholder="Rechercher nom, grade..." class="bg-[#151c2e] border border-slate-700/60 rounded-xl py-2 pl-8 pr-3 text-xs text-white outline-none focus:border-blue-500">
+                                </div>
+                                <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                                    <i class="fa-solid fa-file-excel"></i> Excel
+                                </button>
+                                <button onclick="exportToPDF()" class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
                             </div>
                         </div>
+
+                        <!-- Formulaire rapide d'inscription -->
+                        <form onsubmit="addFormationRecord(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-2 text-xs">
+                            <div class="lg:col-span-2">
+                                <input type="text" id="add-mil-name" required placeholder="Nom Prénom" class="w-full bg-[#151c2e] border border-slate-700/60 rounded-xl p-2.5 text-white outline-none focus:border-blue-500">
+                            </div>
+                            <div class="lg:col-span-2">
+                                <input type="text" id="add-mil-grade" required placeholder="Grade" class="w-full bg-[#151c2e] border border-slate-700/60 rounded-xl p-2.5 text-white outline-none focus:border-blue-500">
+                            </div>
+                            <div class="lg:col-span-2">
+                                <input type="text" id="add-mil-matricule" required placeholder="Matricule" class="w-full bg-[#151c2e] border border-slate-700/60 rounded-xl p-2.5 text-white outline-none focus:border-blue-500">
+                            </div>
+                            <div class="lg:col-span-2">
+                                <select id="add-mil-unit" class="w-full bg-[#151c2e] border border-slate-700/60 rounded-xl p-2.5 text-slate-300 outline-none focus:border-blue-500">
+                                    <option value="CPA 10">CPA 10</option>
+                                    <option value="13e RDP">13e RDP</option>
+                                    <option value="Commandos Jaubert">Commandos Jaubert</option>
+                                    <option value="GCP">GCP</option>
+                                    <option value="4e RHFS">4e RHFS</option>
+                                    <option value="N/A (Sans affectation)">N/A (Sans affectation)</option>
+                                </select>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <select id="add-mil-formation" required class="w-full bg-[#151c2e] border border-slate-700/60 rounded-xl p-2.5 text-slate-300 outline-none focus:border-blue-500">
+                                    <option value="">-- Formation / Brevet / Permis --</option>
+                                    <option value="[FGI] Formation Général Initiale">[FGI] Formation Général Initiale</option>
+                                    <option value="[CAT1] Certificat d'Aptitude Technique 1">[CAT1] Certificat d'Aptitude Technique 1</option>
+                                    <option value="[CME] Certificat Militaire d'Élémentaire">[CME] Certificat Militaire d'Élémentaire</option>
+                                    <option value="[FG1 / BS1] Formation Générale 1">[FG1 / BS1] Formation Générale 1</option>
+                                    <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint &amp; Spécialiste</option>
+                                    <option value="[CDU] Cursus de Chef d'Unité">[CDU] Cursus de Chef d'Unité</option>
+                                </select>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition cursor-pointer">
+                                    + Inscrire
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Tableau des résultats -->
+                        <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-[#121826] text-slate-400 font-mono text-[10px] uppercase border-b border-slate-800">
+                                    <tr>
+                                        <th class="p-3">MILITAIRE</th>
+                                        <th class="p-3">GRADE</th>
+                                        <th class="p-3">MATRICULE</th>
+                                        <th class="p-3">UNITÉ</th>
+                                        <th class="p-3">FORMATION</th>
+                                        <th class="p-3">STATUT / NOTE</th>
+                                        <th class="p-3 text-right">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="formations-table-body" class="divide-y divide-slate-800/60 text-slate-200">
+                                    ${renderFormationsRows()}
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
                 </div>
             `;
         }
 
-        // Génération HTML des demandes en attente
-        function renderPendingList() {
-            if (pendingRequests.length === 0) {
-                return `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`;
-            }
-
-            return pendingRequests.map(req => `
-                <div id="card-${req.id}" class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300">
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-white text-sm">${req.name}</span>
-                            <span class="text-[10px] bg-amber-950 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded font-mono">En attente</span>
-                        </div>
-                        <p class="text-xs text-slate-400">${req.desc}</p>
+        // Rendu des cartes d'instructeurs
+        function renderInstructorsCards() {
+            return instructorsList.map(inst => `
+                <div id="inst-card-${inst.id}" class="bg-[#151c2e] border border-slate-800 p-3.5 rounded-xl flex justify-between items-center group hover:border-slate-700 transition">
+                    <div>
+                        <h4 class="font-bold text-white text-xs">${inst.name}</h4>
+                        <span class="text-[10px] text-blue-400 block mt-0.5">${inst.role}</span>
                     </div>
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
-                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1 text-[11px] text-slate-300">
-                            <span class="font-bold text-slate-400 block mb-1">Accès aux modules :</span>
-                            <div class="grid grid-cols-2 gap-x-3 gap-y-1">
-                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="${req.id}-ena"> ENA</label>
-                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="${req.id}-fsf"> FSF</label>
-                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-cos"> COS / EMA</label>
-                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-admin"> Admin</label>
-                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-fondation"> Fondation (Staff)</label>
-                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-regiments"> Régiments</label>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="validerDemandeInstant('${req.id}', 'accepter')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
-                                <i class="fa-solid fa-check mr-1"></i> Accepter
-                            </button>
-                            <button onclick="validerDemandeInstant('${req.id}', 'refuser')" class="bg-red-600 hover:bg-red-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
-                                <i class="fa-solid fa-xmark mr-1"></i> Refuser
-                            </button>
-                        </div>
+                    <div class="flex items-center gap-2">
+                        <span class="p-2 bg-red-500/10 text-red-400 rounded-lg text-xs">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </span>
+                        <button onclick="deleteInstructor('${inst.id}')" class="text-slate-500 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition cursor-pointer">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Génération HTML de la liste des utilisateurs enregistrés
-        function renderRegisteredList() {
-            return registeredUsers.map(u => `
-                <tr id="row-${u.id}">
-                    <td class="py-3 font-bold text-white">${u.name}</td>
-                    <td class="py-3"><span class="px-2 py-0.5 ${u.isOwner ? 'bg-purple-950 text-purple-400 border-purple-800' : 'bg-blue-950 text-blue-400 border-blue-800'} border rounded font-bold text-[10px]">${u.role}</span></td>
-                    <td class="py-3 font-mono text-emerald-400" id="perms-display-${u.id}">${u.perms.join(', ')}</td>
-                    <td class="py-3 text-right">
-                        ${u.isOwner ? '<span class="text-slate-500 italic">Protégé (Accès Total)</span>' : `
-                            <div class="flex justify-end gap-2">
-                                <button onclick="toggleEditUserPerms('${u.id}')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded transition cursor-pointer">Modifier</button>
-                                <button onclick="bannirUtilisateurInstant('${u.id}')" class="px-2.5 py-1 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 rounded transition cursor-pointer">Bannir</button>
-                            </div>
-                        `}
+        // Rendu du tableau des formations
+        function renderFormationsRows() {
+            return formationsList.map(f => `
+                <tr id="form-row-${f.id}" class="hover:bg-slate-900/50 transition">
+                    <td class="p-3 font-bold text-white flex items-center gap-2">
+                        <span>${f.name}</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     </td>
-                </tr>
-                <tr id="edit-panel-${u.id}" class="hidden bg-slate-950/90">
-                    <td colspan="4" class="p-4 border-b border-slate-800">
-                        <div class="space-y-3">
-                            <span class="text-xs font-bold text-purple-400 block">Sélectionnez les accès autorisés pour ${u.name} :</span>
-                            <div class="grid grid-cols-3 gap-2 text-xs">
-                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('ENA') ? 'checked' : ''} id="edit-${u.id}-ENA" class="accent-purple-500"> ENA</label>
-                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('FSF') ? 'checked' : ''} id="edit-${u.id}-FSF" class="accent-purple-500"> FSF</label>
-                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('COS') ? 'checked' : ''} id="edit-${u.id}-COS" class="accent-purple-500"> COS / EMA</label>
-                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('Admin') ? 'checked' : ''} id="edit-${u.id}-Admin" class="accent-purple-500"> Administration</label>
-                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('Fondation') ? 'checked' : ''} id="edit-${u.id}-Fondation" class="accent-purple-500"> Fondation (Staff)</label>
-                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('Régiments') ? 'checked' : ''} id="edit-${u.id}-Régiments" class="accent-purple-500"> Régiments</label>
-                            </div>
-                            <button onclick="sauvegarderUserPerms('${u.id}')" class="mt-2 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-bold transition cursor-pointer">
-                                Enregistrer les modifications
-                            </button>
-                        </div>
+                    <td class="p-3 text-slate-300">${f.grade}</td>
+                    <td class="p-3 font-mono text-blue-400">${f.matricule}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-bold text-slate-300">${f.unit}</span></td>
+                    <td class="p-3 text-slate-200 font-medium">${f.formation}</td>
+                    <td class="p-3"><span class="px-2.5 py-1 bg-emerald-950/80 border border-emerald-800/80 text-emerald-400 font-bold rounded-lg text-[10px]">${f.score}</span></td>
+                    <td class="p-3 text-right space-x-1.5">
+                        <button onclick="evaluerMilitaire('${f.id}')" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold rounded-lg transition cursor-pointer">Évaluer</button>
+                        <button onclick="genererDiplome('${f.id}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold rounded-lg transition cursor-pointer">Diplôme</button>
+                        <button onclick="deleteFormationRecord('${f.id}')" class="px-2 py-1 bg-red-950/60 hover:bg-red-800 border border-red-800 text-red-300 rounded-lg text-xs transition cursor-pointer">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        // Validation sans pop-up de confirmation
-        function validerDemandeInstant(reqId, action) {
-            const req = pendingRequests.find(r => r.id === reqId);
-            if (!req) return;
+        // Actions JavaScript du module ENA
+        function addInstructor(e) {
+            e.preventDefault();
+            const name = document.getElementById('instructor-name').value;
+            const role = document.getElementById('instructor-role').value;
 
-            if (action === 'accepter') {
-                const perms = [];
-                if (document.getElementById(`${reqId}-ena`)?.checked) perms.push('ENA');
-                if (document.getElementById(`${reqId}-fsf`)?.checked) perms.push('FSF');
-                if (document.getElementById(`${reqId}-cos`)?.checked) perms.push('COS');
-                if (document.getElementById(`${reqId}-admin`)?.checked) perms.push('Admin');
-                if (document.getElementById(`${reqId}-fondation`)?.checked) perms.push('Fondation');
-                if (document.getElementById(`${reqId}-regiments`)?.checked) perms.push('Régiments');
-
-                registeredUsers.push({
-                    id: reqId + '_user',
-                    name: req.email,
-                    role: perms.includes('Fondation') ? 'Modérateur Staff' : 'Opérateur Validé',
-                    perms: perms,
-                    isOwner: false
-                });
-            }
-
-            // Supprimer la demande sans aucun message de pop-up
-            pendingRequests = pendingRequests.filter(r => r.id !== reqId);
-            
-            // Re-rendre le module Fondation en direct
-            const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
-            renderFondationModule(isSuperAdmin);
-        }
-
-        // Modification en direct des permissions d'un utilisateur
-        function toggleEditUserPerms(userId) {
-            const panel = document.getElementById(`edit-panel-${userId}`);
-            if (panel) panel.classList.toggle('hidden');
-        }
-
-        function sauvegarderUserPerms(userId) {
-            const user = registeredUsers.find(u => u.id === userId);
-            if (!user) return;
-
-            const newPerms = [];
-            ['ENA', 'FSF', 'COS', 'Admin', 'Fondation', 'Régiments'].forEach(p => {
-                const cb = document.getElementById(`edit-${userId}-${p}`);
-                if (cb && cb.checked) newPerms.push(p);
+            instructorsList.push({
+                id: Date.now().toString(),
+                name: name,
+                role: role
             });
 
-            user.perms = newPerms;
-            user.role = newPerms.includes('Fondation') ? 'Modérateur Staff' : 'Opérateur Validé';
-
-            const display = document.getElementById(`perms-display-${userId}`);
-            if (display) display.textContent = newPerms.join(', ');
-
-            toggleEditUserPerms(userId);
+            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
+            document.getElementById('add-instructor-form').reset();
         }
 
-        // Bannissement instantané
-        function bannirUtilisateurInstant(userId) {
-            registeredUsers = registeredUsers.filter(u => u.id !== userId);
-            const row = document.getElementById(`row-${userId}`);
-            const panel = document.getElementById(`edit-panel-${userId}`);
-            if (row) row.remove();
-            if (panel) panel.remove();
+        function deleteInstructor(id) {
+            instructorsList = instructorsList.filter(i => i.id !== id);
+            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
         }
 
-        function switchFondationTab(tabName) {
-            const tabValidation = document.getElementById('fondation-tab-validation');
-            const tabUtilisateurs = document.getElementById('fondation-tab-utilisateurs');
-            const btnValidation = document.getElementById('btn-tab-validation');
-            const btnUtilisateurs = document.getElementById('btn-tab-utilisateurs');
+        function addFormationRecord(e) {
+            e.preventDefault();
+            const name = document.getElementById('add-mil-name').value;
+            const grade = document.getElementById('add-mil-grade').value;
+            const matricule = document.getElementById('add-mil-matricule').value;
+            const unit = document.getElementById('add-mil-unit').value;
+            const formation = document.getElementById('add-mil-formation').value;
 
-            if (tabName === 'validation') {
-                tabValidation.classList.remove('hidden');
-                tabUtilisateurs.classList.add('hidden');
-                btnValidation.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
-                btnUtilisateurs.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
-            } else {
-                tabValidation.classList.add('hidden');
-                tabUtilisateurs.classList.remove('hidden');
-                btnUtilisateurs.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
-                btnValidation.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
-            }
+            formationsList.push({
+                id: Date.now().toString(),
+                name: name,
+                grade: grade,
+                matricule: matricule,
+                unit: unit,
+                formation: formation,
+                score: 'Admis (20/20)'
+            });
+
+            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
+        }
+
+        function deleteFormationRecord(id) {
+            formationsList = formationsList.filter(f => f.id !== id);
+            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
+        }
+
+        function filterFormationsTable() {
+            const query = document.getElementById('search-formation').value.toLowerCase();
+            const filtered = formationsList.filter(f => 
+                f.name.toLowerCase().includes(query) || 
+                f.grade.toLowerCase().includes(query) || 
+                f.matricule.toLowerCase().includes(query)
+            );
+            
+            document.getElementById('formations-table-body').innerHTML = filtered.map(f => `
+                <tr id="form-row-${f.id}" class="hover:bg-slate-900/50 transition">
+                    <td class="p-3 font-bold text-white flex items-center gap-2">
+                        <span>${f.name}</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    </td>
+                    <td class="p-3 text-slate-300">${f.grade}</td>
+                    <td class="p-3 font-mono text-blue-400">${f.matricule}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-bold text-slate-300">${f.unit}</span></td>
+                    <td class="p-3 text-slate-200 font-medium">${f.formation}</td>
+                    <td class="p-3"><span class="px-2.5 py-1 bg-emerald-950/80 border border-emerald-800/80 text-emerald-400 font-bold rounded-lg text-[10px]">${f.score}</span></td>
+                    <td class="p-3 text-right space-x-1.5">
+                        <button onclick="evaluerMilitaire('${f.id}')" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold rounded-lg transition cursor-pointer">Évaluer</button>
+                        <button onclick="genererDiplome('${f.id}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold rounded-lg transition cursor-pointer">Diplôme</button>
+                        <button onclick="deleteFormationRecord('${f.id}')" class="px-2 py-1 bg-red-950/60 hover:bg-red-800 border border-red-800 text-red-300 rounded-lg text-xs transition cursor-pointer">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function evaluerMilitaire(id) {
+            console.log("Évaluation de l'élément " + id);
+        }
+
+        function genererDiplome(id) {
+            console.log("Génération du diplôme pour l'élément " + id);
+        }
+
+        function exportToExcel() {
+            console.log("Exportation vers Excel");
+        }
+
+        function exportToPDF() {
+            console.log("Exportation vers PDF");
         }
 
         function goHome() {
