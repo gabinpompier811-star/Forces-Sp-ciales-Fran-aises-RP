@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Stratégique FSF / ENA - Sync Realtime</title>
+    <title>Portail Stratégique & Opérationnel FSF / ENA - Complet & Sync</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,46 +16,62 @@
         :root { --site-brightness: 100%; --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
         body[data-theme="dark"] { --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
         body[data-theme="deep-night"] { --bg-main: #020408; --bg-card: #090d16; --border-card: #131c2e; }
+        body[data-theme="neon"] { --bg-main: #05050a; --bg-card: #0d0e1b; --border-card: #1f2347; }
+        
         body { background-color: var(--bg-main); filter: brightness(var(--site-brightness)); transition: filter 0.15s ease-out, background-color 0.3s ease; }
         .custom-card { background-color: var(--bg-card); border-color: var(--border-card); }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #090d16; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- 1. CONNEXION -->
+    <!-- 1. PAGE DE CONNEXION -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <div class="w-full max-w-md custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-3">
                 <div class="inline-flex p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 shadow-inner">
                     <i class="fa-solid fa-wifi text-4xl animate-pulse"></i>
                 </div>
-                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL FSF / ENA</h1>
-                <p class="text-xs text-slate-400">Connexion Réseau Realtime Database</p>
+                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL DE COMMANDEMENT</h1>
+                <p class="text-xs text-slate-400">Connexion Réseau Synchronisée Live</p>
             </div>
 
             <form id="auth-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase">Identifiant / Email</label>
-                    <input type="email" id="user-email" required placeholder="gabinpompier811@gmail.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-slate-100">
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Identifiant / Email</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                        <input type="email" id="user-email" required placeholder="gabinpompier811@gmail.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 outline-none text-slate-100">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase">Mot de passe</label>
-                    <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-slate-100">
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Mot de passe</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                        <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 outline-none text-slate-100">
+                    </div>
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg cursor-pointer">
-                    Accéder au Portail <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                    Connexion au Système <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- 2. INITIALISATION DU PROFIL -->
+    <!-- 2. MODAL CONFIGURATION PROFIL -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-lg custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
-            <h2 class="text-xl font-bold text-white text-center">Initialisation du Profil Opérateur</h2>
+            <div class="text-center space-y-2">
+                <div class="inline-flex p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 mb-1">
+                    <i class="fa-solid fa-user-gear text-3xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Initialisation du Profil Opérateur</h2>
+                <p class="text-xs text-slate-400">Renseignez votre nom d'affichage et votre matricule</p>
+            </div>
+
             <form id="profile-form" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-300 mb-1.5">Pseudo / Nom d'affichage *</label>
@@ -65,12 +81,12 @@
                     <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur</label>
                     <input type="text" id="input-matricule" placeholder="ex: FS-027-FR" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 outline-none">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">Enregistrer</button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">Valider le Profil <i class="fa-solid fa-check ml-2"></i></button>
             </form>
         </div>
     </div>
 
-    <!-- 3. DASHBOARD PRINCIPAL -->
+    <!-- 3. TABLEAU DE BORD PRINCIPAL -->
     <div id="main-dashboard" class="hidden flex-1 flex flex-col">
         <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-3">
@@ -78,9 +94,9 @@
                     <i class="fa-solid fa-shield-halved text-lg"></i>
                 </div>
                 <div>
-                    <span class="font-black tracking-widest text-sm text-white block">PORTAIL COMMANDEMENT</span>
-                    <span class="text-[10px] text-emerald-400 uppercase tracking-wide flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Realtime DB Connecté
+                    <span class="font-black tracking-widest text-sm text-white block">PORTAIL DE COMMANDEMENT</span>
+                    <span class="text-[10px] text-emerald-400 uppercase tracking-wide flex items-center gap-1 font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Realtime DB Synced
                     </span>
                 </div>
             </div>
@@ -92,6 +108,7 @@
                 </div>
                 <button id="open-settings-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
                     <i class="fa-solid fa-gear text-blue-400"></i>
+                    <span class="hidden md:inline">Paramètres</span>
                 </button>
                 <button id="logout-btn" class="p-2.5 bg-red-950/50 hover:bg-red-900/80 border border-red-800/60 text-red-300 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
                     <i class="fa-solid fa-power-off"></i>
@@ -100,60 +117,144 @@
         </header>
 
         <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
-            <div id="view-home" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <button onclick="openCategory('ENA')" class="group text-left custom-card border hover:border-blue-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer">
-                    <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 w-fit mb-4"><i class="fa-solid fa-graduation-cap text-2xl"></i></div>
-                    <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition">ENA &amp; Formations</h3>
-                    <p class="text-xs text-slate-400 mt-2">Gestion des unités, notes et plannings en direct.</p>
-                </button>
+            <!-- VUE ACCUEIL -->
+            <div id="view-home" class="space-y-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-white tracking-wide">SÉLECTIONNEZ VOTRE ESPACE</h2>
+                        <p class="text-xs text-slate-400 mt-1">Accès direct aux départements opérationnels</p>
+                    </div>
+                </div>
 
-                <button onclick="openCategory('FONDATION')" class="group text-left custom-card border hover:border-purple-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer">
-                    <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-purple-400 w-fit mb-4"><i class="fa-solid fa-shield-cat text-2xl"></i></div>
-                    <h3 class="font-bold text-lg text-white group-hover:text-purple-400 transition">Fondation (Staff)</h3>
-                    <p class="text-xs text-slate-400 mt-2">Gestion globale des permissions et demandes d'accès.</p>
-                </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <button onclick="openCategory('ENA')" class="group text-left custom-card border hover:border-blue-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-graduation-cap text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition">ENA &amp; Formations</h3>
+                            <p class="text-xs text-slate-400">Tableau de bord, documents, instructeurs, unités, plannings et notes.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-blue-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
+
+                    <button onclick="openCategory('FSF')" class="group text-left custom-card border hover:border-red-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-user-ninja text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-white group-hover:text-red-400 transition">Forces Spéciales Françaises</h3>
+                            <p class="text-xs text-slate-400">Dossiers opérateurs, aptitudes médicales VMA et tirs.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-red-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
+
+                    <button onclick="openCategory('COS_EMA')" class="group text-left custom-card border hover:border-amber-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-star text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-white group-hover:text-amber-400 transition">COS / EMA</h3>
+                            <p class="text-xs text-slate-400">Commandement des Opérations &amp; État-Major.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-amber-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
+
+                    <button onclick="openCategory('ADMINISTRATION')" class="group text-left custom-card border hover:border-emerald-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-folder-tree text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-white group-hover:text-emerald-400 transition">Administration</h3>
+                            <p class="text-xs text-slate-400">Gestion des dossiers officiels, fichiers et registres.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-emerald-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
+
+                    <button onclick="openCategory('FONDATION')" class="group text-left custom-card border hover:border-purple-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-purple-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-shield-cat text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-white group-hover:text-purple-400 transition">Fondation (Staff)</h3>
+                            <p class="text-xs text-slate-400">Espace modérateurs, rôles, validations et logs du staff.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-purple-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
+
+                    <button onclick="openCategory('REGIMENTS')" class="group text-left custom-card border hover:border-cyan-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-person-military-rifle text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition">Régiments</h3>
+                            <p class="text-xs text-slate-400">Répertoire des effectifs spécialisés.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-cyan-400 font-semibold">
+                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </button>
+                </div>
             </div>
 
+            <!-- VUE CATEGORIE DYNAMIQUE -->
             <div id="view-category" class="hidden space-y-6">
                 <button onclick="goHome()" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-arrow-left"></i> Retour au menu
+                    <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
                 </button>
                 <div id="category-content-container" class="custom-card border rounded-3xl p-8 shadow-2xl"></div>
             </div>
         </main>
     </div>
 
-    <!-- 4. PANNEAU PARAMÈTRES -->
+    <!-- 4. PANNEAU PARAMÈTRES AVANCÉS -->
     <div id="settings-drawer" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex justify-end">
-        <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between">
+        <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between overflow-y-auto">
             <div class="space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-sliders text-blue-400"></i> Paramètres</h3>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-sliders text-blue-400"></i> Paramètres Avancés</h3>
                     <button id="close-settings-btn" class="p-2 text-slate-400 hover:text-white rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
+
                 <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <label class="text-xs font-bold text-slate-300">Luminosité Interface</label>
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-slate-300 flex items-center gap-2"><i class="fa-solid fa-sun text-amber-400"></i> Luminosité de l'Écran</label>
+                        <span id="brightness-value" class="text-xs font-mono font-bold text-blue-400">100%</span>
+                    </div>
                     <input type="range" id="brightness-range" min="30" max="100" value="100" class="w-full accent-blue-500 cursor-pointer">
+                </div>
+
+                <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                    <label class="text-xs font-bold text-slate-300 block">Thème Graphique</label>
+                    <div class="grid grid-cols-3 gap-2 text-xs">
+                        <button onclick="setTheme('dark')" class="p-2.5 bg-slate-900 border border-slate-700 hover:border-blue-500 rounded-xl text-center font-bold">Sombre</button>
+                        <button onclick="setTheme('deep-night')" class="p-2.5 bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl text-center font-bold">Nuit</button>
+                        <button onclick="setTheme('neon')" class="p-2.5 bg-indigo-950/40 border border-indigo-800 hover:border-indigo-500 rounded-xl text-center font-bold">Néon</button>
+                    </div>
+                </div>
+
+                <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                    <h4 class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2"><i class="fa-solid fa-user text-blue-400"></i> Modifier mon profil</h4>
+                    <button id="edit-profile-btn" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-pen-to-square"></i> Pseudo &amp; Matricule
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 5. JAVASCRIPT REALTIME COMPLET -->
     <script>
-        // --- CONFIGURATION FIREBASE REALTIME DATABASE ---
+        // CONFIGURATION REALTIME DATABASE
         const firebaseConfig = {
             databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app"
         };
 
-        // Initialisation de Firebase Realtime DB
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Variables globales
         let userProfile = JSON.parse(localStorage.getItem('fsf_user_profile')) || null;
-        let activeNoteId = null;
+        let selectedNoteId = null;
 
-        // Dom Elements
+        // Éléments DOM
         const authScreen = document.getElementById('auth-screen');
         const mainDashboard = document.getElementById('main-dashboard');
         const authForm = document.getElementById('auth-form');
@@ -164,7 +265,7 @@
         const viewCategory = document.getElementById('view-category');
         const categoryContentContainer = document.getElementById('category-content-container');
 
-        // --- AUTHENTIFICATION ---
+        // CONNEXION
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('user-email').value;
@@ -197,8 +298,13 @@
         function openCategory(key) {
             viewHome.classList.add('hidden');
             viewCategory.classList.remove('hidden');
+            const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
             if (key === 'ENA') renderEnaWorkspace();
-            if (key === 'FONDATION') renderFondationWorkspace();
+            if (key === 'FONDATION') renderFondationWorkspace(isSuperAdmin);
+            if (key === 'FSF') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> FSF - Opérateurs</h2><p class="text-xs text-slate-400">Espace FSF en direct.</p>`;
+            if (key === 'COS_EMA') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2><p class="text-xs text-slate-400">Espace État-Major.</p>`;
+            if (key === 'ADMINISTRATION') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-emerald-400 mr-2"></i> Administration</h2><p class="text-xs text-slate-400">Espace Registres.</p>`;
+            if (key === 'REGIMENTS') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments</h2><p class="text-xs text-slate-400">Espace Régiments.</p>`;
         }
 
         function goHome() {
@@ -207,19 +313,245 @@
         }
 
         // ==========================================
-        //  MODULE ENA WORKSPACE (REALTIME DATABASE)
+        //  MODULE FONDATION (STAFF, ROLES, LOGS DB)
+        // ==========================================
+        function renderFondationWorkspace(isSuperAdmin) {
+            categoryContentContainer.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Administration Live</h2>
+                            <p class="text-xs text-slate-400">Gestion des rôles, validations et suivi du staff</p>
+                        </div>
+                        <span class="px-3 py-1 bg-purple-950 border border-purple-800 text-purple-300 text-xs font-semibold rounded-full">${isSuperAdmin ? 'Fondateur' : 'Modérateur'}</span>
+                    </div>
+
+                    <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold">
+                        <button onclick="switchFondationTab('validations')" id="f-btn-validations" class="px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer">Validations en Attente</button>
+                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Gestion Opérateurs</button>
+                        <button onclick="switchFondationTab('logs')" id="f-btn-logs" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Logs Staff</button>
+                    </div>
+
+                    <div id="f-content-validations" class="space-y-3">
+                        <div id="pending-list-container" class="space-y-3"></div>
+                    </div>
+
+                    <div id="f-content-users" class="hidden space-y-3">
+                        <div id="users-list-container" class="space-y-2"></div>
+                    </div>
+
+                    <div id="f-content-logs" class="hidden space-y-3">
+                        <div id="logs-list-container" class="font-mono text-xs text-slate-400 space-y-1 max-h-[300px] overflow-y-auto bg-slate-950 p-4 border border-slate-800 rounded-xl"></div>
+                    </div>
+                </div>
+            `;
+
+            listenPendingDB();
+            listenUsersDB();
+            listenLogsDB();
+        }
+
+        function switchFondationTab(tab) {
+            ['validations', 'users', 'logs'].forEach(t => {
+                const el = document.getElementById(`f-content-${t}`);
+                const btn = document.getElementById(`f-btn-${t}`);
+                if (t === tab) {
+                    if (el) el.classList.remove('hidden');
+                    if (btn) btn.className = "px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer";
+                } else {
+                    if (el) el.classList.add('hidden');
+                    if (btn) btn.className = "px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer";
+                }
+            });
+        }
+
+        function listenPendingDB() {
+            db.ref('pending_requests').on('value', snapshot => {
+                const container = document.getElementById('pending-list-container');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune demande en attente.</p>`; return; }
+
+                container.innerHTML = Object.keys(data).map(key => {
+                    const req = data[key];
+                    return `
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div><span class="font-bold text-white text-sm block">${req.email || req.name}</span><span class="text-xs text-slate-400">Demande d'accès</span></div>
+                            <div class="flex items-center gap-2">
+                                <div class="grid grid-cols-3 gap-2 text-[10px] bg-slate-900 p-2 rounded-lg border border-slate-800">
+                                    <label><input type="checkbox" checked id="p-${key}-ena" class="accent-purple-500"> ENA</label>
+                                    <label><input type="checkbox" checked id="p-${key}-fsf" class="accent-purple-500"> FSF</label>
+                                    <label><input type="checkbox" id="p-${key}-fondation" class="accent-purple-500"> Fondation</label>
+                                </div>
+                                <button onclick="acceptPendingDB('${key}', '${req.email || req.name}')" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl cursor-pointer">Accepter</button>
+                                <button onclick="refusePendingDB('${key}', '${req.email || req.name}')" class="px-3 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl cursor-pointer">Refuser</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        function acceptPendingDB(key, email) {
+            const perms = [];
+            if (document.getElementById(`p-${key}-ena`)?.checked) perms.push('ENA');
+            if (document.getElementById(`p-${key}-fsf`)?.checked) perms.push('FSF');
+            if (document.getElementById(`p-${key}-fondation`)?.checked) perms.push('Fondation');
+
+            db.ref('users').push({ name: email, perms: perms, role: perms.includes('Fondation') ? 'Staff Modérateur' : 'Opérateur Validé' });
+            db.ref('pending_requests/' + key).remove();
+            db.ref('logs').push({ action: "Validation de " + email + " [Perms: " + perms.join(', ') + "]", date: new Date().toLocaleString() });
+        }
+
+        function refusePendingDB(key, email) {
+            db.ref('pending_requests/' + key).remove();
+            db.ref('logs').push({ action: "Refus de la demande pour " + email, date: new Date().toLocaleString() });
+        }
+
+        function listenUsersDB() {
+            db.ref('users').on('value', snapshot => {
+                const container = document.getElementById('users-list-container');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucun utilisateur.</p>`; return; }
+
+                container.innerHTML = Object.keys(data).map(key => {
+                    const u = data[key];
+                    return `
+                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex justify-between items-center text-xs">
+                            <div><span class="font-bold text-white block">${u.name}</span><span class="text-emerald-400 font-mono">${(u.perms || []).join(', ')}</span></div>
+                            <button onclick="banUserDB('${key}', '${u.name}')" class="px-2.5 py-1 bg-red-950 text-red-300 border border-red-800 rounded font-bold cursor-pointer">Bannir</button>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        function banUserDB(key, name) {
+            db.ref('users/' + key).remove();
+            db.ref('logs').push({ action: "Bannissement de " + name, date: new Date().toLocaleString() });
+        }
+
+        function listenLogsDB() {
+            db.ref('logs').on('value', snapshot => {
+                const container = document.getElementById('logs-list-container');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<div>• Aucun log en cours.</div>`; return; }
+                container.innerHTML = Object.values(data).reverse().map(l => `<div>• ${l.action} <span class="text-slate-600">(${l.date})</span></div>`).join('');
+            });
+        }
+
+        // ==========================================
+        //  MODULE ENA WORKSPACE (TOUS LES ONGLET DB)
         // ==========================================
         function renderEnaWorkspace() {
             categoryContentContainer.innerHTML = `
                 <div class="space-y-6">
-                    <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold">
-                        <button onclick="switchEnaTab('unités')" id="tab-btn-unités" class="px-4 py-2 bg-blue-600 text-white rounded-xl">Unités &amp; Sections</button>
-                        <button onclick="switchEnaTab('notes')" id="tab-btn-notes" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl">Notes &amp; Directives</button>
-                        <button onclick="switchEnaTab('plannings')" id="tab-btn-plannings" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl">Plannings Live</button>
+                    <!-- Navigation des 6 sous-onglets ENA -->
+                    <div class="flex gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-bold">
+                        <button onclick="switchEnaTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white rounded-xl cursor-pointer">Tableau de bord</button>
+                        <button onclick="switchEnaTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Documents &amp; Fichiers</button>
+                        <button onclick="switchEnaTab('formations')" id="ena-tab-formations" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Formations</button>
+                        <button onclick="switchEnaTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Unités &amp; Sections</button>
+                        <button onclick="switchEnaTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Plannings</button>
+                        <button onclick="switchEnaTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Notes</button>
                     </div>
 
-                    <!-- 1. UNITÉS -->
-                    <div id="ena-content-unités" class="space-y-4">
+                    <!-- 1. TABLEAU DE BORD -->
+                    <div id="ena-content-tb" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+                                <i class="fa-solid fa-users text-blue-400 text-2xl"></i>
+                                <div><span class="text-[10px] text-slate-400 block font-bold">TOTAL MILITAIRES</span><span class="text-xl font-black text-white" id="stat-militaires-count">0</span></div>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+                                <i class="fa-solid fa-circle-check text-emerald-400 text-2xl"></i>
+                                <div><span class="text-[10px] text-slate-400 block font-bold">TAUX DE RÉUSSITE</span><span class="text-xl font-black text-emerald-400">100%</span></div>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+                                <i class="fa-solid fa-stethoscope text-amber-400 text-2xl"></i>
+                                <div><span class="text-[10px] text-slate-400 block font-bold">VMA À RENOUVELER</span><span class="text-xl font-black text-amber-400">0</span></div>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+                                <i class="fa-solid fa-heart-crack text-red-400 text-2xl"></i>
+                                <div><span class="text-[10px] text-slate-400 block font-bold">VMA PÉRIMÉES</span><span class="text-xl font-black text-red-400">0</span></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="lg:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold text-white uppercase"><i class="fa-solid fa-clock-rotate-left text-blue-400 mr-2"></i> Dernières Formations Évaluées</h3>
+                                <div id="tb-recent-evals" class="divide-y divide-slate-800 text-xs text-slate-300"></div>
+                            </div>
+                            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold text-white uppercase"><i class="fa-solid fa-bullhorn text-amber-400 mr-2"></i> Résumé Opérationnel</h3>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Validées</span><span class="font-bold text-emerald-400" id="tb-valide-count">0</span></div>
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Ajournées</span><span class="font-bold text-red-400">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. DOCUMENTS -->
+                    <div id="ena-content-docs" class="hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <label class="px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl cursor-pointer">
+                                + Importer Fichier (PDF, Image...)
+                                <input type="file" onchange="uploadDocDB(event)" class="hidden">
+                            </label>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            <div id="docs-list-container" class="lg:col-span-4 space-y-2"></div>
+                            <div id="doc-preview-container" class="lg:col-span-8 bg-slate-950 p-6 border border-slate-800 rounded-2xl text-center text-xs text-slate-500">Sélectionnez un document.</div>
+                        </div>
+                    </div>
+
+                    <!-- 3. FORMATIONS -->
+                    <div id="ena-content-formations" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            <form onsubmit="addInstructorDB(event)" class="lg:col-span-4 bg-slate-950 p-4 border border-slate-800 rounded-2xl space-y-3 text-xs">
+                                <h4 class="font-bold text-white uppercase">Ajouter Instructeur</h4>
+                                <input type="text" id="inst-name" required placeholder="Nom complet" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
+                                <select id="inst-role" required class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-300 outline-none">
+                                    <option value="Directeur de l'ENA">Directeur de l'ENA</option>
+                                    <option value="Formateur Principal">Formateur Principal</option>
+                                    <option value="Instructeur">Instructeur</option>
+                                </select>
+                                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded-xl">+ Ajouter</button>
+                            </form>
+                            <div class="lg:col-span-8 bg-slate-950 p-4 border border-slate-800 rounded-2xl space-y-3">
+                                <h4 class="font-bold text-white uppercase text-xs">Corps des Instructeurs Live</h4>
+                                <div id="instructors-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-5 border border-slate-800 rounded-2xl space-y-4">
+                            <h4 class="font-bold text-white uppercase text-xs">Inscrire un Militaire à une Formation</h4>
+                            <form onsubmit="addEvaluationDB(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 text-xs">
+                                <input type="text" id="eval-name" required placeholder="Nom Prénom" class="lg:col-span-3 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
+                                <input type="text" id="eval-grade" required placeholder="Grade" class="lg:col-span-2 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
+                                <input type="text" id="eval-mat" required placeholder="Matricule" class="lg:col-span-2 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
+                                <select id="eval-form" required class="lg:col-span-3 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-300 outline-none">
+                                    <option value="[FGI] Formation Générale Initiale">[FGI] Formation Générale Initiale</option>
+                                    <option value="[CAT1] Brevet Caporal ENA">[CAT1] Brevet Caporal ENA</option>
+                                </select>
+                                <button type="submit" class="lg:col-span-2 bg-blue-600 text-white font-bold py-2.5 rounded-xl cursor-pointer">+ Valider</button>
+                            </form>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-slate-900 text-slate-400 font-mono text-[10px] uppercase">
+                                        <tr><th class="p-3">MILITAIRE</th><th class="p-3">GRADE</th><th class="p-3">MATRICULE</th><th class="p-3">FORMATION</th><th class="p-3">STATUT</th><th class="p-3 text-right">ACTION</th></tr>
+                                    </thead>
+                                    <tbody id="evaluations-table-body" class="divide-y divide-slate-800 text-slate-200"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. UNITÉS -->
+                    <div id="ena-content-unités" class="hidden space-y-4">
                         <div class="flex justify-between items-center">
                             <h3 class="text-sm font-bold text-white">Répertoire des Unités Forces Spéciales</h3>
                             <button onclick="createNewUnitPrompt()" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold cursor-pointer">+ Créer Unité</button>
@@ -227,28 +559,29 @@
                         <div id="units-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                     </div>
 
-                    <!-- 2. NOTES -->
-                    <div id="ena-content-notes" class="hidden space-y-4">
-                        <div class="flex justify-between items-center">
-                            <button onclick="createNewNoteDB()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl cursor-pointer">+ Nouvelle Note</button>
-                        </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <div id="notes-list-container" class="lg:col-span-4 space-y-2"></div>
-                            <div id="note-editor-container" class="lg:col-span-8 bg-slate-950 p-4 border border-slate-800 rounded-xl">
-                                <p class="text-xs text-slate-500 italic">Sélectionnez une note à gauche pour éditer en direct.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3. PLANNINGS -->
+                    <!-- 5. PLANNINGS -->
                     <div id="ena-content-plannings" class="hidden space-y-4">
                         <form onsubmit="addSessionDB(event)" class="bg-slate-950 p-4 border border-slate-800 rounded-xl space-y-3 text-xs">
                             <h4 class="font-bold text-white uppercase">Programmer une Session</h4>
                             <input type="text" id="sess-title" required placeholder="Nom de la session / Formation" class="w-full bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-white outline-none">
                             <input type="datetime-local" id="sess-time" required class="w-full bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-white outline-none">
-                            <button type="submit" class="w-full bg-blue-600 py-2.5 rounded-lg font-bold text-white cursor-pointer">Publier la Session Live</button>
+                            <button type="submit" class="w-full bg-blue-600 py-2.5 rounded-lg font-bold text-white cursor-pointer">Publier Session Live</button>
                         </form>
                         <div id="sessions-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                    </div>
+
+                    <!-- 6. NOTES -->
+                    <div id="ena-content-notes" class="hidden space-y-4">
+                        <div class="flex gap-2">
+                            <button onclick="createNewNoteDB()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl cursor-pointer">+ Nouvelle Note</button>
+                            <button onclick="printNotePDF()" class="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl cursor-pointer"><i class="fa-solid fa-file-pdf mr-1"></i> Imprimer Note (PDF)</button>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            <div id="notes-list-container" class="lg:col-span-4 space-y-2"></div>
+                            <div id="note-editor-container" class="lg:col-span-8 bg-slate-950 p-4 border border-slate-800 rounded-xl">
+                                <p class="text-xs text-slate-500 italic">Sélectionnez une note à gauche.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -256,70 +589,67 @@
             listenUnitsDB();
             listenNotesDB();
             listenSessionsDB();
+            listenDocsDB();
+            listenInstructorsDB();
+            listenEvaluationsDB();
         }
 
-        // --- UNITÉS (LISTEN & WRITE) ---
+        function switchEnaTab(tab) {
+            ['tb', 'docs', 'formations', 'unités', 'plannings', 'notes'].forEach(t => {
+                const el = document.getElementById(`ena-content-${t}`);
+                const btn = document.getElementById(`ena-tab-${t}`);
+                if (t === tab) {
+                    if (el) el.classList.remove('hidden');
+                    if (btn) btn.className = "px-3.5 py-2 bg-blue-600 text-white rounded-xl cursor-pointer";
+                } else {
+                    if (el) el.classList.add('hidden');
+                    if (btn) btn.className = "px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer";
+                }
+            });
+        }
+
+        // LISTENERS REALTIME DATABASE (ENA)
         function listenUnitsDB() {
             db.ref('units').on('value', snapshot => {
                 const container = document.getElementById('units-grid-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) {
-                    container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-3">Aucune unité créée dans la base.</p>`;
-                    return;
-                }
+                let countMilitaires = 0;
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-3">Aucune unité.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
                     const u = data[key];
                     const members = u.members ? Object.values(u.members) : [];
+                    countMilitaires += members.length;
                     return `
                         <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
                             <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                                 <span class="font-bold text-xs text-white">${u.name}</span>
-                                <button onclick="deleteUnitDB('${key}')" class="text-red-400 text-xs hover:text-red-300 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="deleteUnitDB('${key}')" class="text-red-400 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                             </div>
                             <div class="space-y-1.5">
-                                ${members.map(m => `
-                                    <div class="bg-slate-900 p-2 rounded-lg text-xs flex justify-between">
-                                        <span class="font-bold text-slate-200">${m.name}</span>
-                                        <span class="font-mono text-[10px] text-blue-400">${m.matricule}</span>
-                                    </div>
-                                `).join('')}
+                                ${members.map(m => `<div class="bg-slate-900 p-2 rounded-lg text-xs flex justify-between"><span class="font-bold text-slate-200">${m.name}</span><span class="font-mono text-[10px] text-blue-400">${m.matricule}</span></div>`).join('')}
                             </div>
                             <button onclick="addMemberToUnitPrompt('${key}')" class="w-full py-1.5 bg-slate-900 hover:bg-slate-800 text-xs font-bold text-slate-300 rounded-lg border border-slate-800 cursor-pointer">+ Ajouter membre</button>
                         </div>
                     `;
                 }).join('');
+
+                const statEl = document.getElementById('stat-militaires-count');
+                if (statEl) statEl.textContent = countMilitaires;
             });
         }
 
-        function createNewUnitPrompt() {
-            const name = prompt("Nom de la nouvelle unité :");
-            if (name) db.ref('units').push({ name: name });
-        }
+        function createNewUnitPrompt() { const name = prompt("Nom de la nouvelle unité :"); if (name) db.ref('units').push({ name: name }); }
+        function deleteUnitDB(key) { db.ref('units/' + key).remove(); }
+        function addMemberToUnitPrompt(key) { const name = prompt("Nom & Prénom :"); const mat = prompt("Matricule :"); if (name && mat) db.ref('units/' + key + '/members').push({ name: name, matricule: mat }); }
 
-        function deleteUnitDB(key) {
-            db.ref('units/' + key).remove();
-        }
-
-        function addMemberToUnitPrompt(unitKey) {
-            const name = prompt("Nom & Prénom du militaire :");
-            const mat = prompt("Matricule :");
-            if (name && mat) {
-                db.ref('units/' + unitKey + '/members').push({ name: name, matricule: mat });
-            }
-        }
-
-        // --- NOTES (LISTEN & WRITE) ---
         function listenNotesDB() {
             db.ref('notes').on('value', snapshot => {
                 const container = document.getElementById('notes-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) {
-                    container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune note enregistrée.</p>`;
-                    return;
-                }
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune note.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
                     const n = data[key];
@@ -333,146 +663,162 @@
             });
         }
 
-        function createNewNoteDB() {
-            db.ref('notes').push({ title: "Nouvelle Note Sync", content: "" });
-        }
-
+        function createNewNoteDB() { db.ref('notes').push({ title: "Nouvelle Note Sync", content: "" }); }
         function openNoteEditorDB(key, title, content) {
-            activeNoteId = key;
+            selectedNoteId = key;
             const editor = document.getElementById('note-editor-container');
-            if (!editor) return;
-            editor.innerHTML = `
-                <div class="space-y-3">
-                    <input type="text" value="${title}" oninput="updateNoteDB('${key}', 'title', this.value)" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-xs font-bold text-white outline-none">
-                    <textarea oninput="updateNoteDB('${key}', 'content', this.value)" rows="8" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-xs text-slate-200 outline-none resize-none">${content}</textarea>
-                </div>
-            `;
+            if (editor) {
+                editor.innerHTML = `
+                    <div class="space-y-3">
+                        <input type="text" id="active-note-title" value="${title}" oninput="updateNoteDB('${key}', 'title', this.value)" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-xs font-bold text-white outline-none">
+                        <textarea id="active-note-content" oninput="updateNoteDB('${key}', 'content', this.value)" rows="8" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-xs text-slate-200 outline-none resize-none">${content}</textarea>
+                    </div>
+                `;
+            }
+        }
+        function updateNoteDB(key, field, val) { db.ref('notes/' + key + '/' + field).set(val); }
+        function deleteNoteDB(key) { db.ref('notes/' + key).remove(); }
+
+        function printNotePDF() {
+            const title = document.getElementById('active-note-title')?.value || "Note";
+            const content = document.getElementById('active-note-content')?.value || "";
+            const win = window.open('', '', 'width=800,height=600');
+            win.document.write(`<html><head><title>${title}</title></head><body style="font-family:sans-serif;padding:40px;"><h1>${title}</h1><p style="white-space:pre-wrap;">${content}</p></body></html>`);
+            win.document.close();
+            win.print();
         }
 
-        function updateNoteDB(key, field, val) {
-            db.ref('notes/' + key + '/' + field).set(val);
-        }
-
-        function deleteNoteDB(key) {
-            db.ref('notes/' + key).remove();
-            document.getElementById('note-editor-container').innerHTML = `<p class="text-xs text-slate-500 italic">Note supprimée.</p>`;
-        }
-
-        // --- SESSIONS (LISTEN & WRITE) ---
         function listenSessionsDB() {
             db.ref('sessions').on('value', snapshot => {
                 const container = document.getElementById('sessions-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) {
-                    container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-2">Aucune session planifiée.</p>`;
-                    return;
-                }
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-2">Aucune session planifiée.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
                     const s = data[key];
                     return `
                         <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                            <div>
-                                <span class="font-bold text-xs text-white block">${s.title}</span>
-                                <span class="text-[10px] text-blue-400 font-mono"><i class="fa-solid fa-clock"></i> ${s.time}</span>
-                            </div>
+                            <div><span class="font-bold text-xs text-white block">${s.title}</span><span class="text-[10px] text-blue-400 font-mono"><i class="fa-solid fa-clock mr-1"></i>${s.time}</span></div>
                             <button onclick="deleteSessionDB('${key}')" class="text-red-400 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     `;
                 }).join('');
             });
         }
+        function addSessionDB(e) { e.preventDefault(); db.ref('sessions').push({ title: document.getElementById('sess-title').value, time: document.getElementById('sess-time').value }); }
+        function deleteSessionDB(key) { db.ref('sessions/' + key).remove(); }
 
-        function addSessionDB(e) {
-            e.preventDefault();
-            db.ref('sessions').push({
-                title: document.getElementById('sess-title').value,
-                time: document.getElementById('sess-time').value
-            });
-        }
-
-        function deleteSessionDB(key) {
-            db.ref('sessions/' + key).remove();
-        }
-
-        function switchEnaTab(tab) {
-            ['unités', 'notes', 'plannings'].forEach(t => {
-                const el = document.getElementById(`ena-content-${t}`);
-                if (t === tab) el.classList.remove('hidden'); else el.classList.add('hidden');
-            });
-        }
-
-        // ==========================================
-        //  MODULE FONDATION / STAFF (REALTIME DB)
-        // ==========================================
-        function renderFondationWorkspace() {
-            categoryContentContainer.innerHTML = `
-                <div class="space-y-4">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Modération Live</h2>
-                    <div id="pending-container" class="space-y-3"></div>
-                    <div class="pt-4 border-t border-slate-800">
-                        <h3 class="text-xs font-bold text-slate-400 mb-2">Logs système enregistrés en direct :</h3>
-                        <div id="logs-container" class="space-y-1 font-mono text-[11px] text-slate-400 max-h-[200px] overflow-y-auto bg-slate-950 p-3 rounded-xl border border-slate-800"></div>
-                    </div>
-                </div>
-            `;
-            listenPendingDB();
-            listenLogsDB();
-        }
-
-        function listenPendingDB() {
-            db.ref('pending_requests').on('value', snapshot => {
-                const container = document.getElementById('pending-container');
+        function listenDocsDB() {
+            db.ref('docs').on('value', snapshot => {
+                const container = document.getElementById('docs-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) {
-                    container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune demande en attente dans la Realtime DB.</p>`;
-                    return;
-                }
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucun document.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
-                    const p = data[key];
+                    const d = data[key];
                     return `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center">
-                            <div>
-                                <span class="font-bold text-xs text-white block">${p.email || 'Utilisateur'}</span>
-                                <span class="text-[10px] text-amber-400">Demande d'accès pendante</span>
-                            </div>
-                            <button onclick="validerAccèsDB('${key}', '${p.email}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs font-bold cursor-pointer">Valider Accès</button>
+                        <div onclick="previewDocDB('${d.name}')" class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center cursor-pointer">
+                            <span class="font-bold text-xs text-white truncate"><i class="fa-solid fa-file-pdf text-red-400 mr-2"></i>${d.name}</span>
+                            <button onclick="event.stopPropagation(); deleteDocDB('${key}')" class="text-red-400 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     `;
                 }).join('');
             });
         }
+        function uploadDocDB(e) {
+            for (let f of e.target.files) db.ref('docs').push({ name: f.name, size: (f.size/1024).toFixed(1) + ' KB' });
+        }
+        function previewDocDB(name) {
+            const prev = document.getElementById('doc-preview-container');
+            if (prev) prev.innerHTML = `<div class="p-6 bg-slate-900 border border-slate-800 rounded-xl"><i class="fa-solid fa-file-lines text-4xl text-blue-400 mb-2"></i><p>Aperçu du document [ ${name} ]</p></div>`;
+        }
+        function deleteDocDB(key) { db.ref('docs/' + key).remove(); }
 
-        function listenLogsDB() {
-            db.ref('logs').on('value', snapshot => {
-                const container = document.getElementById('logs-container');
+        function listenInstructorsDB() {
+            db.ref('instructors').on('value', snapshot => {
+                const container = document.getElementById('instructors-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) {
-                    container.innerHTML = `<p class="text-slate-600 italic">Aucun log enregistré.</p>`;
-                    return;
-                }
-                container.innerHTML = Object.values(data).reverse().map(l => `<div>• ${l.action} <span class="text-slate-600">(${l.date})</span></div>`).join('');
-            });
-        }
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-2">Aucun instructeur.</p>`; return; }
 
-        function validerAccèsDB(key, email) {
-            db.ref('pending_requests/' + key).remove();
-            db.ref('logs').push({
-                action: "Validation de l'accès pour " + email,
-                date: new Date().toLocaleString('fr-FR')
+                container.innerHTML = Object.keys(data).map(key => {
+                    const i = data[key];
+                    return `
+                        <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
+                            <div><span class="font-bold text-xs text-white block">${i.name}</span><span class="text-[10px] text-blue-400 block">${i.role}</span></div>
+                            <button onclick="deleteInstructorDB('${key}')" class="text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                }).join('');
             });
         }
+        function addInstructorDB(e) { e.preventDefault(); db.ref('instructors').push({ name: document.getElementById('inst-name').value, role: document.getElementById('inst-role').value }); }
+        function deleteInstructorDB(key) { db.ref('instructors/' + key).remove(); }
+
+        function listenEvaluationsDB() {
+            db.ref('evaluations').on('value', snapshot => {
+                const body = document.getElementById('evaluations-table-body');
+                const recent = document.getElementById('tb-recent-evals');
+                const statValide = document.getElementById('tb-valide-count');
+                if (!body) return;
+                const data = snapshot.val();
+                if (!data) { body.innerHTML = `<tr><td colspan="6" class="p-3 text-slate-500 italic text-center">Aucune évaluation.</td></tr>`; if (statValide) statValide.textContent = 0; return; }
+
+                const keys = Object.keys(data);
+                if (statValide) statValide.textContent = keys.length;
+
+                body.innerHTML = keys.map(key => {
+                    const ev = data[key];
+                    return `
+                        <tr>
+                            <td class="p-3 font-bold text-white">${ev.name}</td><td class="p-3 text-slate-300">${ev.grade}</td><td class="p-3 font-mono text-blue-400">${ev.mat}</td><td class="p-3 text-slate-200">${ev.form}</td>
+                            <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></td>
+                            <td class="p-3 text-right"><button onclick="deleteEvaluationDB('${key}')" class="px-2 py-1 bg-red-950 text-red-300 border border-red-800 rounded text-xs"><i class="fa-solid fa-trash"></i></button></td>
+                        </tr>
+                    `;
+                }).join('');
+
+                if (recent) {
+                    recent.innerHTML = keys.slice(-2).map(key => {
+                        const ev = data[key];
+                        return `<div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">${ev.name}</span><span class="text-[10px] text-slate-500">${ev.form}</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis</span></div>`;
+                    }).join('');
+                }
+            });
+        }
+        function addEvaluationDB(e) {
+            e.preventDefault();
+            db.ref('evaluations').push({
+                name: document.getElementById('eval-name').value,
+                grade: document.getElementById('eval-grade').value,
+                mat: document.getElementById('eval-mat').value,
+                form: document.getElementById('eval-form').value
+            });
+        }
+        function deleteEvaluationDB(key) { db.ref('evaluations/' + key).remove(); }
 
         // PARAMÈTRES
-        document.getElementById('brightness-range').addEventListener('input', (e) => {
-            document.documentElement.style.setProperty('--site-brightness', `${e.target.value}%`);
+        brightnessRange.addEventListener('input', (e) => {
+            const val = e.target.value;
+            document.getElementById('brightness-value').textContent = `${val}%`;
+            document.documentElement.style.setProperty('--site-brightness', `${val}%`);
         });
+
+        function setTheme(t) { document.body.setAttribute('data-theme', t); }
+
         document.getElementById('open-settings-btn').addEventListener('click', () => settingsDrawer.classList.remove('hidden'));
         document.getElementById('close-settings-btn').addEventListener('click', () => settingsDrawer.classList.add('hidden'));
+        document.getElementById('edit-profile-btn').addEventListener('click', () => {
+            settingsDrawer.classList.add('hidden');
+            if (userProfile) {
+                document.getElementById('input-username').value = userProfile.username;
+                document.getElementById('input-matricule').value = userProfile.matricule;
+            }
+            profileModal.classList.remove('hidden');
+        });
+
         document.getElementById('logout-btn').addEventListener('click', () => {
             mainDashboard.classList.add('hidden');
             authScreen.classList.remove('hidden');
