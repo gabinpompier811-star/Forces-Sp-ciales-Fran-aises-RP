@@ -3,32 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fondation - Commandement Staff</title>
+    <title>Fondation - Commandement Suprême & Staff</title>
+    <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase Realtime DB SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style>
-        body { background-color: #090d16; }
+        :root { --site-brightness: 100%; --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
+        body[data-theme="dark"] { --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
+        body[data-theme="deep-night"] { --bg-main: #020408; --bg-card: #090d16; --border-card: #131c2e; }
+        body[data-theme="neon"] { --bg-main: #05050a; --bg-card: #0d0e1b; --border-card: #1f2347; }
+        
+        body { background-color: var(--bg-main); filter: brightness(var(--site-brightness)); transition: filter 0.15s ease-out, background-color 0.3s ease; }
+        .custom-card { background-color: var(--bg-card); border-color: var(--border-card); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col p-6 max-w-7xl mx-auto space-y-6">
+<body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-purple-500 selection:text-white">
 
-    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-        <a href="index.html" class="px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Accueil</a>
-        <h1 class="text-lg font-black text-purple-400"><i class="fa-solid fa-shield-cat mr-2"></i> Fondation - Commandement Staff</h1>
-    </div>
+    <!-- EN-TÊTE STAFF FONDATION -->
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-30">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <i class="fa-solid fa-arrow-left"></i> Accueil
+            </a>
+            <div class="h-6 w-px bg-slate-800"></div>
+            <div class="flex items-center gap-2">
+                <div class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
+                    <i class="fa-solid fa-shield-cat text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-black tracking-widest text-sm text-white block">FONDATION - COMMANDEMENT STAFF</span>
+                    <span class="text-[10px] text-purple-400 uppercase tracking-wide flex items-center gap-1 font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping"></span> Niveau d'Accès Suprême
+                    </span>
+                </div>
+            </div>
+        </div>
 
-    <div class="space-y-4">
-        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Validations en Attente</h2>
-        <div id="pending-list" class="space-y-3"></div>
-    </div>
+        <div class="flex items-center gap-3">
+            <div class="hidden sm:flex flex-col text-right border-r border-slate-800 pr-4">
+                <span id="display-username" class="text-xs font-bold text-slate-100">---</span>
+                <span class="text-[10px] text-purple-400 font-mono">AUTORITÉ FONDATION</span>
+            </div>
+        </div>
+    </header>
 
-    <div class="space-y-4 pt-6 border-t border-slate-800">
-        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Membres Actifs &amp; Exclusions</h2>
-        <div id="users-list" class="space-y-3"></div>
-    </div>
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6">
+        
+        <!-- BARRE DE NAVIGATION INTERNE FONDATION -->
+        <div class="flex gap-2 border-b border-slate-800 pb-3 text-xs font-bold overflow-x-auto">
+            <button onclick="switchTab('validations')" id="btn-validations" class="px-4 py-2.5 bg-purple-600 text-white rounded-xl cursor-pointer transition shadow-lg shadow-purple-900/20">Validations en Attente</button>
+            <button onclick="switchTab('members')" id="btn-members" class="px-4 py-2.5 bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 rounded-xl cursor-pointer transition">Membres &amp; Permissions</button>
+            <button onclick="switchTab('announcements')" id="btn-announcements" class="px-4 py-2.5 bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 rounded-xl cursor-pointer transition">Annonces &amp; Directives Staff</button>
+            <button onclick="switchTab('logs')" id="btn-logs" class="px-4 py-2.5 bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 rounded-xl cursor-pointer transition">Registre d'Audit &amp; Logs</button>
+        </div>
 
+        <!-- SECTION 1 : VALIDATIONS EN ATTENTE -->
+        <div id="tab-validations" class="space-y-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-black text-white">Demandes d'Accès Opérateurs</h2>
+                    <p class="text-xs text-slate-400">Examinez les dossiers et attribuez les modules autorisés</p>
+                </div>
+            </div>
+            <div id="pending-list-container" class="space-y-3"></div>
+        </div>
+
+        <!-- SECTION 2 : MEMBRES & PERMISSIONS -->
+        <div id="tab-members" class="hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-black text-white">Répertoire des Membres Actifs</h2>
+                    <p class="text-xs text-slate-400">Modifiez les habilitations ou procédez à l'exclusion d'un opérateur</p>
+                </div>
+            </div>
+            <div id="members-list-container" class="space-y-3"></div>
+        </div>
+
+        <!-- SECTION 3 : ANNONCES & DIRECTIVES STAFF -->
+        <div id="tab-announcements" class="hidden space-y-6">
+            <div class="custom-card border p-6 rounded-3xl space-y-4 shadow-xl">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn text-purple-400"></i> Diffuser une Directive Prioritaire Staff
+                </h3>
+                <form onsubmit="postAnnouncement(event)" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Titre de l'annonce</label>
+                        <input type="text" id="ann-title" required placeholder="ex: Directive Générale de Sécurité" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Contenu de la directive</label>
+                        <textarea id="ann-content" required rows="4" placeholder="Détails de la directive..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 outline-none resize-none focus:border-purple-500"></textarea>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl cursor-pointer shadow-lg shadow-purple-900/30">Publier sur le Réseau</button>
+                </form>
+            </div>
+            <div class="space-y-3">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Directives Actives</h3>
+                <div id="announcements-list-container" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 4 : REGISTRE D'AUDIT & LOGS -->
+        <div id="tab-logs" class="hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-black text-white">Journal d'Audit en Temps Réel</h2>
+                    <p class="text-xs text-slate-400">Historique complet des actions menées sur le portail</p>
+                </div>
+                <button onclick="clearLogs()" class="px-3 py-1.5 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-bold rounded-xl cursor-pointer">Purger les Logs</button>
+            </div>
+            <div id="logs-list-container" class="font-mono text-xs text-slate-300 space-y-2 bg-slate-950 p-5 border border-slate-800 rounded-2xl max-h-[450px] overflow-y-auto"></div>
+        </div>
+
+    </main>
+
+    <!-- SCRIPTS FONDATION SYNC -->
     <script>
         const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
         if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('FONDATION'))) {
@@ -36,31 +134,53 @@
             window.location.href = "index.html";
         }
 
+        document.getElementById('display-username').textContent = currentUser.username || currentUser.email;
+
+        const firebaseConfig = { databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app" };
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Écouter les demandes en attente
-        db.ref('pending_requests').on('value', snap => {
-            const container = document.getElementById('pending-list');
-            const data = snap.val();
-            if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune demande en attente.</p>`; return; }
+        // GESTION DES ONGLETS
+        function switchTab(tab) {
+            ['validations', 'members', 'announcements', 'logs'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`btn-${t}`);
+                if (t === tab) {
+                    el.classList.remove('hidden');
+                    btn.className = "px-4 py-2.5 bg-purple-600 text-white rounded-xl cursor-pointer transition shadow-lg shadow-purple-900/20";
+                } else {
+                    el.classList.add('hidden');
+                    btn.className = "px-4 py-2.5 bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 rounded-xl cursor-pointer transition";
+                }
+            });
+        }
+
+        // 1. ECOUTE ET GESTION DES VALIDATIONS
+        db.ref('pending_requests').on('value', snapshot => {
+            const container = document.getElementById('pending-list-container');
+            const data = snapshot.val();
+            if (!data) { container.innerHTML = `<div class="custom-card border p-8 rounded-2xl text-center text-xs text-slate-500 italic">Aucune demande d'accès en attente.</div>`; return; }
 
             container.innerHTML = Object.keys(data).map(key => {
                 const req = data[key];
                 return `
-                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex justify-between items-center text-xs">
+                    <div class="custom-card border p-5 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-xl">
                         <div>
-                            <span class="font-bold text-white text-sm block">${req.username} (${req.email})</span>
-                            <span class="text-blue-400 font-mono">Matricule : ${req.matricule}</span>
+                            <span class="font-bold text-white text-sm block">${req.username}</span>
+                            <span class="text-xs text-slate-400">E-mail : ${req.email}</span>
+                            <span class="block text-xs text-blue-400 font-mono mt-0.5">Matricule : ${req.matricule}</span>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-900 p-2 rounded-xl">
-                                <label><input type="checkbox" checked id="p-${key}-ENA" class="accent-purple-500"> ENA</label>
-                                <label><input type="checkbox" checked id="p-${key}-MEDICAL" class="accent-purple-500"> Médical</label>
-                                <label><input type="checkbox" checked id="p-${key}-CHAT" class="accent-purple-500"> Chat</label>
-                                <label><input type="checkbox" checked id="p-${key}-FONDATION" class="accent-purple-500"> Fondation</label>
+                        <div class="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked id="p-${key}-ENA" class="accent-purple-500"> ENA</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked id="p-${key}-MEDICAL" class="accent-purple-500"> Médical</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked id="p-${key}-CHAT" class="accent-purple-500"> Chat</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked id="p-${key}-FONDATION" class="accent-purple-500"> Fondation</label>
                             </div>
-                            <button onclick="approveUser('${key}', '${req.email}', '${req.username}', '${req.matricule}')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl cursor-pointer">Accepter</button>
-                            <button onclick="refuseUser('${key}')" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl cursor-pointer">Refuser</button>
+                            <div class="flex gap-2 w-full sm:w-auto">
+                                <button onclick="approveUser('${key}', '${req.email}', '${req.username}', '${req.matricule}')" class="flex-1 sm:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl cursor-pointer">Valider</button>
+                                <button onclick="refuseUser('${key}', '${req.username}')" class="flex-1 sm:flex-none px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl cursor-pointer">Refuser</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -72,37 +192,118 @@
             ['ENA', 'MEDICAL', 'CHAT', 'FONDATION'].forEach(m => {
                 if (document.getElementById(`p-${reqKey}-${m}`)?.checked) perms.push(m);
             });
+
             db.ref('users').push({ email: email, username: username, matricule: matricule, perms: perms });
             db.ref('pending_requests/' + reqKey).remove();
-            db.ref('logs').push({ action: "Approbation de " + username, date: new Date().toLocaleString('fr-FR') });
+            db.ref('logs').push({ action: `Validation du compte de ${username} (${email}) [Perms: ${perms.join(', ')}]`, date: new Date().toLocaleString('fr-FR') });
         }
 
-        function refuseUser(key) { db.ref('pending_requests/' + key).remove(); }
+        function refuseUser(reqKey, username) {
+            db.ref('pending_requests/' + reqKey).remove();
+            db.ref('logs').push({ action: `Refus de la demande pour ${username}`, date: new Date().toLocaleString('fr-FR') });
+        }
 
-        // Écouter les membres validés (pour exclusion / bannissement)
-        db.ref('users').on('value', snap => {
-            const container = document.getElementById('users-list');
-            const data = snap.val();
-            if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucun membre enregistré.</p>`; return; }
+        // 2. ECOUTE ET GESTION DES MEMBRES ACTIFS
+        db.ref('users').on('value', snapshot => {
+            const container = document.getElementById('members-list-container');
+            const data = snapshot.val();
+            if (!data) { container.innerHTML = `<div class="custom-card border p-8 rounded-2xl text-center text-xs text-slate-500 italic">Aucun membre enregistré.</div>`; return; }
 
             container.innerHTML = Object.keys(data).map(key => {
                 const u = data[key];
                 return `
-                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-xs">
+                    <div class="custom-card border p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-xl">
                         <div>
-                            <span class="font-bold text-white text-sm block">${u.username} (${u.email})</span>
-                            <span class="text-emerald-400 font-mono text-[11px]">Permis : ${(u.perms || []).join(', ')}</span>
+                            <span class="font-bold text-white text-sm block">${u.username}</span>
+                            <span class="text-xs text-slate-400">${u.email} • <span class="font-mono text-blue-400">${u.matricule}</span></span>
+                            <span class="block text-[11px] text-emerald-400 font-mono mt-1">Modules autorisés : ${(u.perms || []).join(', ')}</span>
                         </div>
-                        <button onclick="excludeUser('${key}', '${u.username}')" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg font-bold cursor-pointer">Exclure / Bannir</button>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button onclick="editUserPerms('${key}', '${u.username}')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl cursor-pointer">Modifier Accès</button>
+                            <button onclick="excludeUser('${key}', '${u.username}')" class="px-3.5 py-2 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-bold rounded-xl cursor-pointer">Bannir / Exclure</button>
+                        </div>
                     </div>
                 `;
             }).join('');
         });
 
-        function excludeUser(key, username) {
-            if (confirm("Voulez-vous vraiment exclure et bannir " + username + " ?")) {
-                db.ref('users/' + key).remove();
-                db.ref('logs').push({ action: "Exclusion / Bannissement de " + username, date: new Date().toLocaleString('fr-FR') });
+        function excludeUser(userKey, username) {
+            if (confirm(`Voulez-vous vraiment bannir et révoquer l'accès de ${username} ?`)) {
+                db.ref('users/' + userKey).remove();
+                db.ref('logs').push({ action: `Bannissement / Exclusion de l'opérateur ${username}`, date: new Date().toLocaleString('fr-FR') });
+            }
+        }
+
+        function editUserPerms(userKey, username) {
+            const newPerms = prompt(`Entrez les modules autorisés séparés par des virgules (ex: ENA,MEDICAL,CHAT,FONDATION) pour ${username} :`);
+            if (newPerms !== null) {
+                const arr = newPerms.split(',').map(s => s.trim().toUpperCase());
+                db.ref('users/' + userKey + '/perms').set(arr);
+                db.ref('logs').push({ action: `Mise à jour des permissions de ${username} -> [${arr.join(', ')}]`, date: new Date().toLocaleString('fr-FR') });
+            }
+        }
+
+        // 3. ANNONCES & DIRECTIVES STAFF
+        function postAnnouncement(e) {
+            e.preventDefault();
+            const title = document.getElementById('ann-title').value;
+            const content = document.getElementById('ann-content').value;
+
+            db.ref('announcements').push({
+                title: title,
+                content: content,
+                author: currentUser.username,
+                date: new Date().toLocaleString('fr-FR')
+            });
+
+            db.ref('logs').push({ action: `Publication de la directive staff : "${title}"`, date: new Date().toLocaleString('fr-FR') });
+            document.getElementById('ann-title').value = '';
+            document.getElementById('ann-content').value = '';
+            alert("Directive publiée avec succès sur le réseau !");
+        }
+
+        db.ref('announcements').on('value', snapshot => {
+            const container = document.getElementById('announcements-list-container');
+            const data = snapshot.val();
+            if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune directive active.</p>`; return; }
+
+            container.innerHTML = Object.keys(data).map(key => {
+                const a = data[key];
+                return `
+                    <div class="custom-card border p-5 rounded-2xl space-y-2 shadow-xl">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-white text-sm">${a.title}</h4>
+                            <button onclick="deleteAnnouncement('${key}')" class="text-slate-500 hover:text-red-400 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <p class="text-xs text-slate-300 whitespace-pre-wrap">${a.content}</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-800 text-[10px] text-slate-500">
+                            <span>Par : ${a.author}</span>
+                            <span>${a.date}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+
+        function deleteAnnouncement(key) { db.ref('announcements/' + key).remove(); }
+
+        // 4. REGISTRE DES LOGS
+        db.ref('logs').on('value', snapshot => {
+            const container = document.getElementById('logs-list-container');
+            const data = snapshot.val();
+            if (!data) { container.innerHTML = `<div>• Aucun événement enregistré dans les logs.</div>`; return; }
+
+            container.innerHTML = Object.values(data).reverse().map(l => `
+                <div class="flex justify-between items-center border-b border-slate-900 pb-1.5">
+                    <span>• ${l.action}</span>
+                    <span class="text-slate-500 text-[10px] font-mono">${l.date}</span>
+                </div>
+            `).join('');
+        });
+
+        function clearLogs() {
+            if (confirm("Voulez-vous purger l'intégralité du journal d'audit ?")) {
+                db.ref('logs').remove();
             }
         }
     </script>
