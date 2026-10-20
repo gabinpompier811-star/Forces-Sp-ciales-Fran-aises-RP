@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENA & Formations - FSF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        :root { --site-brightness: 100%; --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
+        body { background-color: var(--bg-main); }
+        .custom-card { background-color: var(--bg-card); border-color: var(--border-card); }
+        .rtdb-tree { font-family: monospace; }
+        .rtdb-node-title { color: #e2e8f0; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col p-6 max-w-7xl mx-auto space-y-6">
 
+    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <a href="index.html" class="px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Retour Accueil</a>
+        <h1 class="text-lg font-black text-blue-400"><i class="fa-solid fa-graduation-cap mr-2"></i> Module ENA & Formations</h1>
+    </div>
+
+    <!-- En-tête URL style Capture DB -->
+    <div class="bg-slate-950 p-3.5 border border-slate-800 rounded-2xl flex items-center gap-3">
+        <i class="fa-solid fa-link text-blue-400 text-sm"></i>
+        <span class="text-xs font-mono text-slate-200 truncate">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app</span>
+    </div>
+
+    <!-- VUE ARBORESCENCE RTDB (FIDÈLE À LA CAPTURE) -->
+    <div class="bg-slate-950 p-5 border border-slate-800 rounded-2xl rtdb-tree space-y-3">
+        <div class="text-slate-400 font-mono text-xs border-b border-slate-800/80 pb-3">
+            <span class="text-blue-400 font-bold">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app/</span>
+        </div>
+        <div class="pl-2 space-y-2 text-xs">
+            <div>
+                <div onclick="document.getElementById('rtdb-logs').classList.toggle('hidden')" class="rtdb-node-title"><i class="fa-solid fa-caret-right text-slate-500 mr-1"></i> logs</div>
+                <div id="rtdb-logs" class="hidden pl-6 pt-1 text-[11px] text-slate-400"></div>
+            </div>
+            <div>
+                <div onclick="document.getElementById('rtdb-notifs').classList.toggle('hidden')" class="rtdb-node-title"><i class="fa-solid fa-caret-right text-slate-500 mr-1"></i> notifications</div>
+                <div id="rtdb-notifs" class="hidden pl-6 pt-1 text-[11px] text-slate-400"></div>
+            </div>
+            <div>
+                <div onclick="document.getElementById('rtdb-units').classList.toggle('hidden')" class="rtdb-node-title"><i class="fa-solid fa-caret-right text-slate-500 mr-1"></i> units</div>
+                <div id="rtdb-units" class="hidden pl-6 pt-1 text-[11px] text-slate-400"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
+        if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('ENA'))) {
+            alert("Accès non autorisé à l'ENA !");
+            window.location.href = "index.html";
+        }
+
+        const db = firebase.database();
+        db.ref('logs').on('value', snap => {
+            const el = document.getElementById('rtdb-logs');
+            const d = snap.val();
+            el.innerHTML = d ? Object.keys(d).map(k => `<div>${k}: ${JSON.stringify(d[k])}</div>`).join('') : 'null';
+        });
+        db.ref('notifications').on('value', snap => {
+            const el = document.getElementById('rtdb-notifs');
+            const d = snap.val();
+            el.innerHTML = d ? Object.keys(d).map(k => `<div>${k}: ${JSON.stringify(d[k])}</div>`).join('') : 'null';
+        });
+        db.ref('units').on('value', snap => {
+            const el = document.getElementById('rtdb-units');
+            const d = snap.val();
+            el.innerHTML = d ? Object.keys(d).map(k => `<div>${k}: ${JSON.stringify(d[k])}</div>`).join('') : 'null';
+        });
+    </script>
+</body>
+</html>
