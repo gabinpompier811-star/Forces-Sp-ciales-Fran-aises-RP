@@ -343,12 +343,101 @@
                     `;
                     break;
                 case 'FONDATION':
-                    categoryContentContainer.innerHTML = `
-                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-shield-cat text-purple-400 mr-2"></i> Fondation & Staff</h2>
-                        <p class="text-xs text-slate-400 mb-6">Panneau de contrôle modérateur et sécurité globale.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Ici s'affichera le script de la Fondation.</div>
-                    `;
-                    break;
+                categoryContentContainer.innerHTML = `
+                    <div class="space-y-6">
+                        <!-- Header du module -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                            <div>
+                                <h2 class="text-xl font-bold text-white flex items-center gap-2.5">
+                                    <span class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
+                                        <i class="fa-solid fa-shield-cat text-lg"></i>
+                                    </span>
+                                    Panneau de Contrôle - Fondation &amp; Staff
+                                </h2>
+                                <p class="text-xs text-slate-400 mt-1">Espace réservé à la modération, gestion des accès et sécurité du serveur</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-3 py-1 bg-purple-950/60 border border-purple-800/60 text-purple-300 text-xs font-semibold rounded-full flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                                    Accès Restreint (Staff)
+                                </span>
+                            </div>
+                        </div>
+            
+                        <!-- Grille des outils Staff -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Outil 1 : Whitelist -->
+                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                        <i class="fa-solid fa-user-check text-blue-400"></i> Whitelist Serveur
+                                    </h3>
+                                    <span class="text-[10px] font-mono bg-blue-950 text-blue-400 px-2 py-0.5 rounded">Actif</span>
+                                </div>
+                                <p class="text-xs text-slate-400">Gérer les autorisations d'entrée des nouveaux opérateurs.</p>
+                                <button onclick="alert('Module Whitelist en cours de chargement...')" class="w-full bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-300 font-bold py-2 rounded-xl text-xs transition">
+                                    Gérer la Whitelist
+                                </button>
+                            </div>
+            
+                            <!-- Outil 2 : Sanctions & Logs -->
+                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                        <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Sanctions &amp; Rapports
+                                    </h3>
+                                    <span class="text-[10px] font-mono bg-amber-950 text-amber-400 px-2 py-0.5 rounded">Sécurisé</span>
+                                </div>
+                                <p class="text-xs text-slate-400">Consulter l'historique des avertissements et sanctions administratives.</p>
+                                <button onclick="alert('Module Sanctions en cours de chargement...')" class="w-full bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/30 text-amber-300 font-bold py-2 rounded-xl text-xs transition">
+                                    Voir les Sanctions
+                                </button>
+                            </div>
+            
+                            <!-- Outil 3 : Configuration Globale -->
+                            <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                        <i class="fa-solid fa-gears text-purple-400"></i> Paramètres Serveur
+                                    </h3>
+                                    <span class="text-[10px] font-mono bg-purple-950 text-purple-400 px-2 py-0.5 rounded">Fondateur</span>
+                                </div>
+                                <p class="text-xs text-slate-400">Modifier les configurations globales du portail et des rôles.</p>
+                                <button onclick="alert('Module Paramètres Serveur en cours de chargement...')" class="w-full bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-purple-300 font-bold py-2 rounded-xl text-xs transition">
+                                    Configurer le Portail
+                                </button>
+                            </div>
+                        </div>
+            
+                        <!-- Tableau rapide des membres du Staff connectés ou actifs -->
+                        <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3">
+                            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-users-gear text-purple-400"></i> Hiérarchie &amp; Staff Actif
+                            </h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="text-slate-500 border-b border-slate-800 uppercase font-mono text-[10px]">
+                                        <tr>
+                                            <th class="pb-2">Opérateur / Staff</th>
+                                            <th class="pb-2">Rôle Fondation</th>
+                                            <th class="pb-2">Statut</th>
+                                            <th class="pb-2 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                                        <tr>
+                                            <td class="py-3 font-bold text-white">${userProfile ? userProfile.username : 'Utilisateur'}</td>
+                                            <td class="py-3"><span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 rounded text-[10px]">Fondateur / Développeur</span></td>
+                                            <td class="py-3"><span class="text-emerald-400 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> En Ligne</span></td>
+                                            <td class="py-3 text-right"><button class="text-slate-400 hover:text-white px-2 py-1 bg-slate-900 rounded border border-slate-800">Modifier</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                break;
                 case 'REGIMENTS':
                     categoryContentContainer.innerHTML = `
                         <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments & Unités</h2>
