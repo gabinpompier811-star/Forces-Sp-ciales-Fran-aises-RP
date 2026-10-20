@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Médical & Santé - FSF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        body { background-color: #090d16; }
+        .custom-card { background-color: #0f172a; border-color: #1e293b; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col p-6 max-w-7xl mx-auto space-y-6">
+
+    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <a href="index.html" class="px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Retour Accueil</a>
+        <h1 class="text-lg font-black text-rose-400"><i class="fa-solid fa-notes-medical mr-2"></i> Service Médical &amp; Santé</h1>
+        <button onclick="addMedicalRecord()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl cursor-pointer">+ Nouvelle Fiche</button>
+    </div>
+
+    <div id="medical-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
+        if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('MEDICAL'))) {
+            alert("Accès non autorisé au Service Médical !");
+            window.location.href = "index.html";
+        }
+
+        const firebaseConfig = { databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        db.ref('medical').on('value', snapshot => {
+            const container = document.getElementById('medical-cards-container');
+            const data = snapshot.val();
+            if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic col-span-3 text-center p-6">Aucun dossier médical enregistré.</p>`; return; }
+
+            container.innerHTML = Object.keys(data).map(key => {
+                const m = data[key];
+                return `
+                    <div class="custom-card border p-5 rounded-2xl space-y-3 shadow-xl">
+                        <div class="flex justify-between items-start border-b border-slate-800 pb-3">
+                            <div>
+                                <span class="font-bold text-white text-sm block">${m.name}</span>
+                                <span class="text-xs text-blue-400 font-mono">Matricule : ${m.mat}</span>
+                            </div>
+                            <span class="px-2.5 py-1 bg-rose-950 text-rose-300 border border-rose-800 rounded-lg text-[10px] font-bold">${m.sang || 'A+'}</span>
+                        </div>
+                        <div class="space-y-1.5 text-xs text-slate-300">
+                            <div class="flex justify-between"><span>Aptitude TAP :</span> <span class="${m.tap ? 'text-emerald-400' : 'text-red-400'} font-bold">${m.tap ? 'Apte' : 'Inapte'}</span></div>
+                            <div class="flex justify-between"><span>Statut VMA :</span> <span class="font-mono text-blue-400">${m.vma || '16.5 km/h'}</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-[10px] text-slate-500">Mise à jour : ${m.date || 'Récemment'}</span>
+                            <button onclick="deleteMedical('${key}')" class="text-red-400 hover:text-red-300 text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+
+        function addMedicalRecord() {
+            const name = prompt("Nom & Prénom de l'opérateur :");
+            const mat = prompt("Matricule :");
+            if (name && mat) {
+                db.ref('medical').push({
+                    name: name,
+                    mat: mat,
+                    sang: 'O+',
+                    tap: true,
+                    vma: '17 km/h',
+                    date: new Date().toLocaleDateString('fr-FR')
+                });
+            }
+        }
+
+        function deleteMedical(key) { db.ref('medical/' + key).remove(); }
+    </script>
+</body>
+</html>
