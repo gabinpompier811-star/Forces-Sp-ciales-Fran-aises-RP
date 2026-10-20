@@ -1,56 +1,72 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// Remplacez par vos clés de configuration Firebase
+// Configuration Firebase
 const firebaseConfig = {
-  databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "fsf-rp"
+    databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "fsf-rp"
 };
 
+// Initialisation
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Éléments du DOM
+// Éléments DOM
 const loginForm = document.getElementById("login-form");
 const loginContainer = document.getElementById("login-container");
 const appContainer = document.getElementById("app-container");
 const logoutBtn = document.getElementById("logout-btn");
-
-// Gestion de la Connexion
-loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = document.getElementById("login-email").value;
-    
-    // Simulation de connexion réussi
-    loginContainer.classList.add("hidden");
-    appContainer.classList.remove("hidden");
-
-    // Ajouter un log de connexion dans Firebase
-    ajouterLog(email, "CONNEXION", "Utilisateur connecté au portail");
-});
-
-logoutBtn.addEventListener("click", () => {
-    appContainer.classList.add("hidden");
-    loginContainer.classList.remove("hidden");
-});
-
-// Navigation entre Onglets
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = document.querySelectorAll(".tab-content");
+const logsContainer = document.getElementById("logs-container");
 
+// GESTION DE LA CONNEXION
+if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById("login-email");
+        const email = emailInput ? emailInput.value : "Anonyme";
+
+        // Bascule d'affichage
+        if (loginContainer && appContainer) {
+            loginContainer.classList.add("hidden");
+            appContainer.classList.remove("hidden");
+        }
+
+        // Enregistrer le log de connexion dans Firebase
+        ajouterLog(email, "CONNEXION", "Accès au portail réussi");
+    });
+}
+
+// GESTION DE LA DÉCONNEXION
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        if (loginContainer && appContainer) {
+            appContainer.classList.add("hidden");
+            loginContainer.classList.remove("hidden");
+        }
+    });
+}
+
+// NAVIGATION ENTRE LES ONGLETS
 tabButtons.forEach(button => {
     button.addEventListener("click", () => {
         const targetTab = button.getAttribute("data-tab");
 
+        // Désactiver tous les onglets
         tabButtons.forEach(btn => btn.classList.remove("active"));
         tabContents.forEach(content => content.classList.add("hidden"));
 
+        // Activer l'onglet sélectionné
         button.classList.add("active");
-        document.getElementById(`tab-${targetTab}`).classList.remove("hidden");
+        const selectedContent = document.getElementById(`tab-${targetTab}`);
+        if (selectedContent) {
+            selectedContent.classList.remove("hidden");
+        }
     });
 });
 
-// Fonction pour enregistrer un log dans Firebase
+// FONCTION : ENREGISTRER UN LOG DANS FIREBASE
 function ajouterLog(utilisateur, action, details) {
     const logRef = ref(db, 'logs/');
     const newLogRef = push(logRef);
@@ -61,3 +77,27 @@ function ajouterLog(utilisateur, action, details) {
         details: details
     });
 }
+
+// ÉCOUTER LES LOGS EN TEMPS RÉEL DEPUIS FIREBASE
+const logsRef = ref(db, 'logs/');
+onValue(logsRef, (snapshot) => {
+    const data = snapshot.val();
+    if (logsContainer) {
+        logsContainer.innerHTML = "";
+        if (data) {
+            Object.values(data).reverse().forEach(log => {
+                const logDiv = document.createElement("div");
+                logDiv.className = "log-entry";
+                logDiv.innerHTML = `
+                    <span class="log-date">[${log.date}]</span>
+                    <span class="log-user">${log.utilisateur}</span>
+                    <span class="log-action">${log.action}</span>
+                    <span class="log-details">${log.details}</span>
+                `;
+                logsContainer.appendChild(logDiv);
+            });
+        } else {
+            logsContainer.innerHTML = "<p class='empty-text'>Aucun log enregistré.</p>";
+        }
+    }
+});
