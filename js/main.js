@@ -1,37 +1,63 @@
-// Importation des fonctions de Firebase depuis les serveurs officiels (CDN)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// REMPLACEZ ces valeurs par les vôtres (trouvées dans les paramètres de votre projet Firebase)
+// Remplacez par vos clés de configuration Firebase
 const firebaseConfig = {
-  apiKey: "VOTRE_API_KEY",
-  authDomain: "votre-projet.firebaseapp.com",
   databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "fsf-rp",
-  storageBucket: "fsf-rp.appspot.com",
-  messagingSenderId: "VOTRE_MESSAGING_SENDER_ID",
-  appId: "VOTRE_APP_ID"
+  projectId: "fsf-rp"
 };
 
-// Initialisation de Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Petit test pour vérifier que la page communique bien avec Firebase
-const statusElement = document.getElementById("firebase-status");
+// Éléments du DOM
+const loginForm = document.getElementById("login-form");
+const loginContainer = document.getElementById("login-container");
+const appContainer = document.getElementById("app-container");
+const logoutBtn = document.getElementById("logout-btn");
 
-if (statusElement) {
-    statusElement.textContent = "Connecté avec succès à Firebase ! (Base de données prête)";
-    statusElement.style.color = "lightgreen";
-}
+// Gestion de la Connexion
+loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value;
+    
+    // Simulation de connexion réussi
+    loginContainer.classList.add("hidden");
+    appContainer.classList.remove("hidden");
 
-// Exemple : Fonction pour enregistrer des données de test dans votre Realtime Database
-function ecrireDonneesTest() {
-    set(ref(db, 'test/'), {
-        message: "Le site GitHub est bien connecté à Firebase !",
-        date: new Date().toISOString()
+    // Ajouter un log de connexion dans Firebase
+    ajouterLog(email, "CONNEXION", "Utilisateur connecté au portail");
+});
+
+logoutBtn.addEventListener("click", () => {
+    appContainer.classList.add("hidden");
+    loginContainer.classList.remove("hidden");
+});
+
+// Navigation entre Onglets
+const tabButtons = document.querySelectorAll(".tab-btn");
+const tabContents = document.querySelectorAll(".tab-content");
+
+tabButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        const targetTab = button.getAttribute("data-tab");
+
+        tabButtons.forEach(btn => btn.classList.remove("active"));
+        tabContents.forEach(content => content.classList.add("hidden"));
+
+        button.classList.add("active");
+        document.getElementById(`tab-${targetTab}`).classList.remove("hidden");
+    });
+});
+
+// Fonction pour enregistrer un log dans Firebase
+function ajouterLog(utilisateur, action, details) {
+    const logRef = ref(db, 'logs/');
+    const newLogRef = push(logRef);
+    set(newLogRef, {
+        date: new Date().toLocaleString("fr-FR"),
+        utilisateur: utilisateur,
+        action: action,
+        details: details
     });
 }
-
-// Vous pouvez décommenter la ligne ci-dessous pour tester l'écriture dans votre base de données au premier chargement :
-// ecrireDonneesTest();
