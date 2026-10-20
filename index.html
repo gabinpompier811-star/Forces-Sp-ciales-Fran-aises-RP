@@ -3,25 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forces Spéciales Françaises - RP</title>
-    <!-- Lien vers votre fichier CSS -->
+    <title>Portail Militaire FSF</title>
     <link rel="stylesheet" href="FSF.css">
 </head>
 <body>
 
-    <header>
-        <h1>Forces Spéciales Françaises - RP</h1>
-        <p>Bienvenue sur le portail officiel de gestion.</p>
-    </header>
+    <!-- ÉCRAN DE CONNEXION -->
+    <div id="login-container" class="auth-box">
+        <div class="auth-header">
+            <div class="shield-icon">🛡️</div>
+            <h2>Portail Militaire FSF</h2>
+            <p>Identification requise pour l'accès sécurisé</p>
+        </div>
+        <form id="login-form">
+            <div class="input-group">
+                <label>IDENTIFIANT / EMAIL</label>
+                <input type="email" id="login-email" placeholder="gabin@gmail.com" required>
+            </div>
+            <div class="input-group">
+                <label>MOT DE PASSE</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-primary">Se connecter / S'inscrire</button>
+        </form>
+    </div>
 
-    <main>
-        <section id="status-section">
-            <h2>État de la Connexion</h2>
-            <p id="firebase-status">Chargement de la connexion à Firebase...</p>
-        </section>
-    </main>
+    <!-- DASHBOARD PRINCIPAL (Masqué avant connexion) -->
+    <div id="app-container" class="hidden">
+        <!-- Navigation Supérieure -->
+        <header class="navbar">
+            <div class="nav-brand">📋 Portail FSF</div>
+            <nav class="nav-tabs">
+                <button class="tab-btn active" data-tab="unites">👥 Unités & Sections</button>
+                <button class="tab-btn" data-tab="medical">🎯 Tirs, Médical & Inaptitudes</button>
+                <button class="tab-btn" data-tab="fiches">👤 Fiches & Médical</button>
+                <button class="tab-btn" data-tab="planning">📅 Planning & Sessions</button>
+                <button class="tab-btn" data-tab="notes">📝 Notes</button>
+                <button class="tab-btn" data-tab="logs">📜 Logs</button>
+            </nav>
+            <button id="logout-btn" class="btn-danger">Déconnexion</button>
+        </header>
 
-    <!-- Lien vers votre script principal (en mode module) -->
+        <!-- CONTENU DES ONGLETS -->
+        <main class="content-area">
+            <!-- Onglet 1: Unités & Sections -->
+            <section id="tab-unites" class="tab-content active">
+                <h2>Répertoire des Unités Forces Spéciales</h2>
+                <div class="grid-units">
+                    <div class="card-unit">
+                        <h3>🛡️ CPA 10 <span class="badge">4</span></h3>
+                        <div class="member-list" id="cpa10-list">
+                            <div class="member-item">
+                                <div><strong>Capitaine Noli VELMONT</strong><br><small>FS-027-FR</small></div>
+                                <span class="status-online">●</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-unit">
+                        <h3>🛡️ 13e RDP <span class="badge">0</span></h3>
+                        <p class="empty-text">Aucun membre.</p>
+                    </div>
+                    <div class="card-unit">
+                        <h3>🛡️ Commandos Jaubert <span class="badge">0</span></h3>
+                        <p class="empty-text">Aucun membre.</p>
+                    </div>
+                    <div class="card-unit">
+                        <h3>🛡️ 4e RHFS <span class="badge">0</span></h3>
+                        <p class="empty-text">Aucun membre.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Onglet 2: Tirs & Médical -->
+            <section id="tab-medical" class="tab-content hidden">
+                <h2>Formulaire de Visite Médicale (Aptitude VMA)</h2>
+                <div class="form-card">
+                    <div class="form-row">
+                        <input type="text" placeholder="Militaire Concerné" id="vma-militaire">
+                        <input type="date" id="vma-date">
+                        <input type="text" placeholder="Tension (ex: 12/8)" id="vma-tension">
+                    </div>
+                    <button class="btn-success">Enregistrer Visite Médicale</button>
+                </div>
+            </section>
+
+            <!-- Onglet 3: Fiches & Médical -->
+            <section id="tab-fiches" class="tab-content hidden">
+                <h2>Dossier Militaire & Qualifications</h2>
+                <div class="profile-card">
+                    <div class="user-avatar">👤</div>
+                    <div>
+                        <h3>Noli VELMONT</h3>
+                        <p>Capitaine — FS-027-FR</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Onglet 4: Logs -->
+            <section id="tab-logs" class="tab-content hidden">
+                <h2>Logs d'Activité</h2>
+                <div class="logs-table" id="logs-container">
+                    <p>Chargement des logs...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
