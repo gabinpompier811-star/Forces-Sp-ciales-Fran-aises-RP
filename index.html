@@ -328,17 +328,16 @@
             mainDashboard.classList.remove('hidden');
         }
 
-        // Données pour le module ENA
-        let instructorsList = [
-            { id: '1', name: 'Colonel Alex GIROND', role: "Directeur de l'ENA" },
-            { id: '2', name: 'Commandant Mathis ROSIER', role: "Directeur adjoint" },
-            { id: '3', name: 'Lieutenant Maël LIOGER', role: "Formateur Principal" },
-            { id: '4', name: 'Capitaine John FOX', role: "Instructeur" }
+        // Données dynamiques pour les Plannings et Notes
+        let enaNotes = [
+            { id: '1', title: 'Ce que vous pouvez faire', content: 'Mettre à jour les dossiers de tous les opérateurs.' },
+            { id: '2', title: 'Commandos Jaubert', content: 'Session de qualification maritime prévue en fin de semaine.' },
+            { id: '3', title: 'Mort RP', content: 'Procédure de validation de Mort RP à suivre selon le protocole officiel.' }
         ];
+        let selectedNoteId = '1';
         
-        let formationsList = [
-            { id: '1', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: '[FGI] Formation Générale Initiale', score: 'Admis (20/20)' },
-            { id: '2', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", score: 'Admis (20/20)' }
+        let enaSessions = [
+            { id: '1', formation: '[FGI] Formation Générale Initiale', datetime: '2026-10-19T15:26', location: 'Sur BA FR', instructor: 'Colonel Alex GIROND' }
         ];
         
         // Rendu du Workspace ENA
@@ -347,7 +346,7 @@
                 <div class="space-y-6">
                     <!-- Barre de navigation des sous-onglets ENA -->
                     <div class="flex items-center gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-medium">
-                        <button onclick="switchEnaSubTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
+                        <button onclick="switchEnaSubTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-chart-line"></i> Tableau de bord
                         </button>
                         <button onclick="switchEnaSubTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
@@ -359,92 +358,102 @@
                         <button onclick="switchEnaSubTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-users-rectangle"></i> Unités &amp; Sections
                         </button>
-                        <button onclick="switchEnaSubTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-calendar-days"></i> Plannings
+                        <button onclick="switchEnaSubTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-calendar-days"></i> Plannings &amp; Sessions
                         </button>
                         <button onclick="switchEnaSubTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-clipboard-list"></i> Notes
+                            <i class="fa-solid fa-clipboard-list"></i> Notes &amp; Directives
                         </button>
                     </div>
         
-                    <!-- CONTENU DE L'ONGLET : FORMATIONS (Gestion Instructeurs + Suivi) -->
-                    <div id="ena-content-formations" class="space-y-6">
+                    <!-- CONTENU 1 : PLANNINGS & SESSIONS -->
+                    <div id="ena-content-plannings" class="space-y-6">
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                            <!-- Formulaire d'ajout d'instructeur -->
-                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Ajouter un Instructeur</h3>
-                                <form onsubmit="addInstructor(event)" class="space-y-3">
-                                    <input type="text" id="instructor-name" required placeholder="Nom complet (ex: LCL Alex)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500">
-                                    <select id="instructor-role" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 outline-none focus:border-blue-500">
-                                        <option value="">-- Rôle Instructeur --</option>
-                                        <option value="Directeur de l'ENA">Directeur de l'ENA</option>
-                                        <option value="Directeur adjoint">Directeur adjoint</option>
-                                        <option value="Chef des Instructeurs">Chef des Instructeurs</option>
-                                        <option value="Formateur Principal">Formateur Principal</option>
-                                        <option value="Instructeur">Instructeur</option>
-                                    </select>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">
-                                        + Ajouter Instructeur
+                            
+                            <!-- Formulaire de programmation -->
+                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-calendar-plus text-blue-400"></i> Programmer une Session
+                                </h3>
+                                <form onsubmit="addEnaSession(event)" class="space-y-3">
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Formation</label>
+                                        <select id="session-formation" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none focus:border-blue-500">
+                                            <option value="[FGI] Formation Générale Initiale">[FGI] Formation Générale Initiale</option>
+                                            <option value="[CAT1] Certificat d'Aptitude Technique 1">[CAT1] Certificat d'Aptitude Technique 1</option>
+                                            <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint &amp; Spécialiste</option>
+                                            <option value="[CDU] Cursus de Chef d'Unité">[CDU] Cursus de Chef d'Unité</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Date &amp; Heure</label>
+                                        <input type="datetime-local" id="session-datetime" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Lieu</label>
+                                        <input type="text" id="session-location" required placeholder="ex: Stand B / Sur BA FR" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Instructeur</label>
+                                        <select id="session-instructor" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none focus:border-blue-500">
+                                            <option value="Colonel Alex GIROND (Directeur de l'ENA)">Colonel Alex GIROND (Directeur de l'ENA)</option>
+                                            <option value="Commandant Mathis ROSIER">Commandant Mathis ROSIER</option>
+                                            <option value="Lieutenant Maël LIOGER">Lieutenant Maël LIOGER</option>
+                                            <option value="Capitaine John FOX">Capitaine John FOX</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer shadow-lg shadow-blue-950/50">
+                                        + Créer Session
                                     </button>
                                 </form>
                             </div>
         
-                            <!-- Cartes du Corps des Formateurs -->
-                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Corps des Formateurs / Instructeurs</h3>
-                                <div id="instructors-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-1">
-                                    ${renderInstructorsCards()}
+                            <!-- Cartes des Sessions Planifiées -->
+                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-list-ul text-blue-400"></i> Sessions Planifiées
+                                </h3>
+                                <div id="sessions-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[450px] overflow-y-auto pr-1">
+                                    ${renderEnaSessionsCards()}
                                 </div>
                             </div>
+        
+                        </div>
+                    </div>
+        
+                    <!-- CONTENU 2 : NOTES & DIRECTIVES -->
+                    <div id="ena-content-notes" class="hidden space-y-4">
+                        <div class="flex items-center gap-2">
+                            <button onclick="createNewEnaNote()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg">
+                                <i class="fa-solid fa-plus"></i> Nouvelle Note
+                            </button>
+                            <button onclick="printSelectedNote()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg">
+                                <i class="fa-solid fa-file-pdf"></i> Imprimer Note (PDF)
+                            </button>
                         </div>
         
-                        <!-- Suivi des Formations -->
-                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-list-check text-blue-400"></i> Suivi des Formations &amp; Évaluations
-                            </h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <!-- Liste des notes à gauche -->
+                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2 max-h-[500px] overflow-y-auto">
+                                <div id="notes-list-container" class="space-y-2">
+                                    ${renderEnaNotesList()}
+                                </div>
+                            </div>
         
-                            <form onsubmit="addFormationRecord(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 text-xs">
-                                <input type="text" id="add-mil-name" required placeholder="Nom Prénom" class="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                                <input type="text" id="add-mil-grade" required placeholder="Grade" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                                <input type="text" id="add-mil-matricule" required placeholder="Matricule" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                                <select id="add-mil-formation" required class="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-300 outline-none">
-                                    <option value="">-- Formation --</option>
-                                    <option value="[FGI] Formation Général Initiale">[FGI] Formation Général Initiale</option>
-                                    <option value="[CAT1] Certificat d'Aptitude Technique 1">[CAT1] Certificat d'Aptitude Technique 1</option>
-                                    <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint &amp; Spécialiste</option>
-                                </select>
-                                <button type="submit" class="lg:col-span-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition cursor-pointer">
-                                    + Inscrire
-                                </button>
-                            </form>
-        
-                            <div class="overflow-x-auto border border-slate-800 rounded-xl">
-                                <table class="w-full text-left text-xs">
-                                    <thead class="bg-slate-900 text-slate-400 font-mono text-[10px] uppercase border-b border-slate-800">
-                                        <tr>
-                                            <th class="p-3">MILITAIRE</th>
-                                            <th class="p-3">GRADE</th>
-                                            <th class="p-3">MATRICULE</th>
-                                            <th class="p-3">FORMATION</th>
-                                            <th class="p-3">STATUT</th>
-                                            <th class="p-3 text-right">ACTION</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="formations-table-body" class="divide-y divide-slate-800/60 text-slate-200">
-                                        ${renderFormationsRows()}
-                                    </tbody>
-                                </table>
+                            <!-- Affichage / Éditeur de la note sélectionnée à droite -->
+                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between min-h-[350px]">
+                                <div id="note-editor-container" class="space-y-4">
+                                    ${renderSelectedNoteEditor()}
+                                </div>
                             </div>
                         </div>
                     </div>
         
-                    <!-- BLOCS POUR LES AUTRES ONGLET-ENA (À REMPLIR) -->
+                    <!-- CONTENU DES AUTRES SOUS-ONGLETS -->
                     <div id="ena-content-tb" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Tableau de bord ENA.</div>
                     <div id="ena-content-docs" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Documents &amp; Fichiers ENA.</div>
+                    <div id="ena-content-formations" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Formations ENA.</div>
                     <div id="ena-content-unités" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Unités &amp; Sections ENA.</div>
-                    <div id="ena-content-plannings" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Plannings ENA.</div>
-                    <div id="ena-content-notes" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Notes &amp; Évaluations ENA.</div>
                 </div>
             `;
         }
@@ -680,6 +689,138 @@
             `).join('');
         }
 
+        // Rendu et Actions pour les Plannings
+        function renderEnaSessionsCards() {
+            if (enaSessions.length === 0) {
+                return `<p class="text-xs text-slate-500 italic p-4 text-center col-span-2">Aucune session planifiée pour le moment.</p>`;
+            }
+        
+            return enaSessions.map(s => {
+                const dateObj = new Date(s.datetime);
+                const dateStr = !isNaN(dateObj) ? dateObj.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : s.datetime;
+        
+                return `
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2.5 relative group hover:border-slate-700 transition">
+                        <div class="flex justify-between items-start">
+                            <span class="px-2.5 py-1 bg-blue-950 text-blue-400 border border-blue-800/60 rounded-lg text-[10px] font-bold">${s.formation}</span>
+                            <button onclick="deleteEnaSession('${s.id}')" class="text-slate-500 hover:text-red-400 transition cursor-pointer text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-1 text-xs text-slate-300">
+                            <div class="flex items-center gap-2 text-slate-200 font-medium">
+                                <i class="fa-solid fa-clock text-blue-400 text-[11px]"></i> ${dateStr}
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-400">
+                                <i class="fa-solid fa-location-dot text-red-400 text-[11px]"></i> ${s.location}
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-400 text-[11px]">
+                                <i class="fa-solid fa-user-tie text-purple-400"></i> ${s.instructor}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function addEnaSession(e) {
+            e.preventDefault();
+            enaSessions.push({
+                id: Date.now().toString(),
+                formation: document.getElementById('session-formation').value,
+                datetime: document.getElementById('session-datetime').value,
+                location: document.getElementById('session-location').value,
+                instructor: document.getElementById('session-instructor').value
+            });
+            document.getElementById('sessions-list-container').innerHTML = renderEnaSessionsCards();
+        }
+        
+        function deleteEnaSession(id) {
+            enaSessions = enaSessions.filter(s => s.id !== id);
+            document.getElementById('sessions-list-container').innerHTML = renderEnaSessionsCards();
+        }
+        
+        // Rendu et Actions pour les Notes
+        function renderEnaNotesList() {
+            return enaNotes.map(n => {
+                const isSelected = n.id === selectedNoteId;
+                return `
+                    <div onclick="selectEnaNote('${n.id}')" class="p-3.5 rounded-xl border transition cursor-pointer flex justify-between items-center ${isSelected ? 'bg-blue-950/80 border-blue-500/60 text-white shadow-md' : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'}">
+                        <span class="font-bold text-xs truncate max-w-[80%]">${n.title}</span>
+                        <button onclick="event.stopPropagation(); deleteEnaNote('${n.id}')" class="text-slate-500 hover:text-red-400 transition text-xs p-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderSelectedNoteEditor() {
+            const activeNote = enaNotes.find(n => n.id === selectedNoteId);
+            if (!activeNote) {
+                return `<p class="text-xs text-slate-500 italic">Sélectionnez une note ou créez-en une nouvelle.</p>`;
+            }
+        
+            return `
+                <div class="space-y-3">
+                    <input type="text" value="${activeNote.title}" oninput="updateEnaNoteTitle('${activeNote.id}', this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-sm font-bold text-white outline-none focus:border-blue-500" placeholder="Titre de la note...">
+                    <textarea oninput="updateEnaNoteContent('${activeNote.id}', this.value)" rows="8" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none focus:border-blue-500 resize-none" placeholder="Rédigez le contenu de la note ici...">${activeNote.content}</textarea>
+                </div>
+            `;
+        }
+        
+        function selectEnaNote(id) {
+            selectedNoteId = id;
+            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
+            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
+        }
+        
+        function createNewEnaNote() {
+            const newId = Date.now().toString();
+            enaNotes.push({ id: newId, title: 'Nouvelle Note', content: '' });
+            selectedNoteId = newId;
+            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
+            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
+        }
+        
+        function updateEnaNoteTitle(id, val) {
+            const n = enaNotes.find(item => item.id === id);
+            if (n) n.title = val;
+            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
+        }
+        
+        function updateEnaNoteContent(id, val) {
+            const n = enaNotes.find(item => item.id === id);
+            if (n) n.content = val;
+        }
+        
+        function deleteEnaNote(id) {
+            enaNotes = enaNotes.filter(n => n.id !== id);
+            if (selectedNoteId === id) {
+                selectedNoteId = enaNotes.length > 0 ? enaNotes[0].id : null;
+            }
+            document.getElementById('notes-list-container').innerHTML = renderEnaNotesList();
+            document.getElementById('note-editor-container').innerHTML = renderSelectedNoteEditor();
+        }
+        
+        function printSelectedNote() {
+            const activeNote = enaNotes.find(n => n.id === selectedNoteId);
+            if (!activeNote) return;
+            
+            const win = window.open('', '', 'width=800,height=600');
+            win.document.write(`
+                <html>
+                <head><title>${activeNote.title}</title></head>
+                <body style="font-family: sans-serif; padding: 40px; color: #111;">
+                    <h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">${activeNote.title}</h1>
+                    <p style="white-space: pre-wrap; font-size: 14px; margin-top: 20px;">${activeNote.content}</p>
+                </body>
+                </html>
+            `);
+            win.document.close();
+            win.print();
+        }
+                
         // Génération HTML de la liste des utilisateurs enregistrés
         function renderRegisteredList() {
             return registeredUsers.map(u => `
