@@ -204,14 +204,14 @@
                 </div>
             </div>
 
-            <!-- VUE DYNAMIQUE DES CATEGORIES (S'affiche sans changer de page) -->
+            <!-- VUE DYNAMIQUE DES CATEGORIES -->
             <div id="view-category" class="hidden space-y-6">
                 <button onclick="goHome()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
                 </button>
                 
                 <div id="category-content-container" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl">
-                    <!-- Le contenu injecté dynamiquement s'affichera ici -->
+                    <!-- Injection JS -->
                 </div>
             </div>
 
@@ -276,6 +276,16 @@
 
         let userProfile = JSON.parse(localStorage.getItem('fsf_user_profile')) || null;
         let savedBrightness = localStorage.getItem('fsf_brightness') || "100";
+
+        // Données dynamiques des utilisateurs
+        let pendingRequests = [
+            { id: 'mael', name: 'Maël (Candidat Opérateur)', desc: 'Demandeur souhaite rejoindre le réseau FSF / ENA.', email: 'mael@fsf.fr' }
+        ];
+
+        let registeredUsers = [
+            { id: 'gabin', name: 'gabinpompier811@gmail.com', role: 'Fondateur Suprême (Tous les permis)', perms: ['ENA', 'FSF', 'COS', 'Admin', 'Fondation', 'Régiments'], isOwner: true },
+            { id: 'mael_user', name: 'mael.operateur@fsf.fr', role: 'Opérateur Validé', perms: ['ENA', 'FSF'], isOwner: false }
+        ];
 
         document.documentElement.style.setProperty('--site-brightness', `${savedBrightness}%`);
         brightnessRange.value = savedBrightness;
@@ -355,107 +365,7 @@
                     `;
                     break;
                 case 'FONDATION':
-                    categoryContentContainer.innerHTML = `
-                        <div class="space-y-6">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-                                <div>
-                                    <h2 class="text-xl font-bold text-white flex items-center gap-2.5">
-                                        <span class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
-                                            <i class="fa-solid fa-shield-cat text-lg"></i>
-                                        </span>
-                                        Panneau de Contrôle - Fondation &amp; Administration Totale
-                                    </h2>
-                                    <p class="text-xs text-slate-400 mt-1">Gestion des accès, attributions des modules et modération globale</p>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 bg-purple-950/60 border border-purple-800/60 text-purple-300 text-xs font-semibold rounded-full flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
-                                        ${isSuperAdmin ? 'Accès Suprême (Fondateur)' : 'Accès Restreint'}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-2 border-b border-slate-800 pb-3">
-                                <button onclick="switchFondationTab('validation')" id="btn-tab-validation" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer">
-                                    <i class="fa-solid fa-user-check mr-1.5"></i> Validations en Attente (1)
-                                </button>
-                                <button onclick="switchFondationTab('utilisateurs')" id="btn-tab-utilisateurs" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
-                                    <i class="fa-solid fa-users-gear mr-1.5"></i> Gestion des Opérateurs
-                                </button>
-                            </div>
-
-                            <div id="fondation-tab-validation" class="space-y-4">
-                                <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
-                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                        <i class="fa-solid fa-clock text-amber-400"></i> Demandes d'accès au portail en attente
-                                    </h3>
-                                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                        <div class="space-y-1">
-                                            <div class="flex items-center gap-2">
-                                                <span class="font-bold text-white text-sm">Maël (Candidat Opérateur)</span>
-                                                <span class="text-[10px] bg-amber-950 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded font-mono">En attente</span>
-                                            </div>
-                                            <p class="text-xs text-slate-400">Demandeur souhaite rejoindre le réseau FSF / ENA.</p>
-                                        </div>
-                                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
-                                            <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1.5 text-[11px] text-slate-300">
-                                                <span class="font-bold text-slate-400 block mb-1">Accès aux modules :</span>
-                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="mael-ena"> ENA</label>
-                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="mael-fsf"> FSF</label>
-                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="mael-cos"> COS / EMA</label>
-                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="mael-admin"> Administration</label>
-                                            </div>
-                                            <div class="flex gap-2">
-                                                <button onclick="validerDemandeMael('accepter')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
-                                                    <i class="fa-solid fa-check mr-1"></i> Accepter
-                                                </button>
-                                                <button onclick="validerDemandeMael('refuser')" class="bg-red-600 hover:bg-red-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
-                                                    <i class="fa-solid fa-xmark mr-1"></i> Refuser
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="fondation-tab-utilisateurs" class="hidden space-y-4">
-                                <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
-                                    <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                        <i class="fa-solid fa-users text-blue-400"></i> Annuaire des Comptes &amp; Permissions Globales
-                                    </h3>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-left text-xs">
-                                            <thead class="text-slate-500 border-b border-slate-800 uppercase font-mono text-[10px]">
-                                                <tr>
-                                                    <th class="pb-2.5">Identifiant / E-mail</th>
-                                                    <th class="pb-2.5">Rôle / Statut</th>
-                                                    <th class="pb-2.5">Permissions Modules</th>
-                                                    <th class="pb-2.5 text-right">Actions Administratives</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="divide-y divide-slate-800/60 text-slate-300">
-                                                <tr>
-                                                    <td class="py-3 font-bold text-white">gabinpompier811@gmail.com</td>
-                                                    <td class="py-3"><span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 rounded font-bold text-[10px]">Fondateur Suprême (Tous les permis)</span></td>
-                                                    <td class="py-3 font-mono text-emerald-400">ENA, FSF, COS, Admin, Fondation, Régiments</td>
-                                                    <td class="py-3 text-right"><span class="text-slate-500 italic">Protégé (Accès Total)</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="py-3 font-bold text-white">mael.operateur@fsf.fr</td>
-                                                    <td class="py-3"><span class="px-2 py-0.5 bg-blue-950 text-blue-400 border border-blue-800 rounded text-[10px]">Opérateur Validé</span></td>
-                                                    <td class="py-3 font-mono text-slate-400">ENA, FSF</td>
-                                                    <td class="py-3 text-right space-x-2">
-                                                        <button onclick="modifierUtilisateur('Maël')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded transition cursor-pointer">Modifier</button>
-                                                        <button onclick="bannirUtilisateur('Maël')" class="px-2.5 py-1 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 rounded transition cursor-pointer">Bannir</button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    renderFondationModule(isSuperAdmin);
                     break;
                 case 'REGIMENTS':
                     categoryContentContainer.innerHTML = `
@@ -465,6 +375,218 @@
                     `;
                     break;
             }
+        }
+
+        // Rendu complet du module Fondation
+        function renderFondationModule(isSuperAdmin) {
+            categoryContentContainer.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2.5">
+                                <span class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
+                                    <i class="fa-solid fa-shield-cat text-lg"></i>
+                                </span>
+                                Panneau de Contrôle - Fondation &amp; Administration Totale
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-1">Gestion des accès, attributions des modules et modération globale</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-purple-950/60 border border-purple-800/60 text-purple-300 text-xs font-semibold rounded-full flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                                ${isSuperAdmin ? 'Accès Suprême (Fondateur)' : 'Accès Modérateur'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 border-b border-slate-800 pb-3">
+                        <button onclick="switchFondationTab('validation')" id="btn-tab-validation" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer">
+                            <i class="fa-solid fa-user-check mr-1.5"></i> Validations en Attente (${pendingRequests.length})
+                        </button>
+                        <button onclick="switchFondationTab('utilisateurs')" id="btn-tab-utilisateurs" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
+                            <i class="fa-solid fa-users-gear mr-1.5"></i> Gestion des Opérateurs (${registeredUsers.length})
+                        </button>
+                    </div>
+
+                    <!-- ONGLET 1 : VALIDATIONS EN ATTENTE -->
+                    <div id="fondation-tab-validation" class="space-y-4">
+                        <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
+                            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-clock text-amber-400"></i> Demandes d'accès au portail en attente
+                            </h3>
+                            <div id="pending-container" class="space-y-3">
+                                ${renderPendingList()}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 2 : GESTION DES UTILISATEURS -->
+                    <div id="fondation-tab-utilisateurs" class="hidden space-y-4">
+                        <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
+                            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-users text-blue-400"></i> Annuaire des Comptes &amp; Permissions Globales
+                            </h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="text-slate-500 border-b border-slate-800 uppercase font-mono text-[10px]">
+                                        <tr>
+                                            <th class="pb-2.5">Identifiant / E-mail</th>
+                                            <th class="pb-2.5">Rôle / Statut</th>
+                                            <th class="pb-2.5">Permissions Modules</th>
+                                            <th class="pb-2.5 text-right">Actions Administratives</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="registered-users-body" class="divide-y divide-slate-800/60 text-slate-300">
+                                        ${renderRegisteredList()}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Génération HTML des demandes en attente
+        function renderPendingList() {
+            if (pendingRequests.length === 0) {
+                return `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`;
+            }
+
+            return pendingRequests.map(req => `
+                <div id="card-${req.id}" class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white text-sm">${req.name}</span>
+                            <span class="text-[10px] bg-amber-950 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded font-mono">En attente</span>
+                        </div>
+                        <p class="text-xs text-slate-400">${req.desc}</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1 text-[11px] text-slate-300">
+                            <span class="font-bold text-slate-400 block mb-1">Accès aux modules :</span>
+                            <div class="grid grid-cols-2 gap-x-3 gap-y-1">
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="${req.id}-ena"> ENA</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" checked class="accent-purple-500" id="${req.id}-fsf"> FSF</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-cos"> COS / EMA</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-admin"> Admin</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-fondation"> Fondation (Staff)</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="accent-purple-500" id="${req.id}-regiments"> Régiments</label>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="validerDemandeInstant('${req.id}', 'accepter')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
+                                <i class="fa-solid fa-check mr-1"></i> Accepter
+                            </button>
+                            <button onclick="validerDemandeInstant('${req.id}', 'refuser')" class="bg-red-600 hover:bg-red-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">
+                                <i class="fa-solid fa-xmark mr-1"></i> Refuser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Génération HTML de la liste des utilisateurs enregistrés
+        function renderRegisteredList() {
+            return registeredUsers.map(u => `
+                <tr id="row-${u.id}">
+                    <td class="py-3 font-bold text-white">${u.name}</td>
+                    <td class="py-3"><span class="px-2 py-0.5 ${u.isOwner ? 'bg-purple-950 text-purple-400 border-purple-800' : 'bg-blue-950 text-blue-400 border-blue-800'} border rounded font-bold text-[10px]">${u.role}</span></td>
+                    <td class="py-3 font-mono text-emerald-400" id="perms-display-${u.id}">${u.perms.join(', ')}</td>
+                    <td class="py-3 text-right">
+                        ${u.isOwner ? '<span class="text-slate-500 italic">Protégé (Accès Total)</span>' : `
+                            <div class="flex justify-end gap-2">
+                                <button onclick="toggleEditUserPerms('${u.id}')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded transition cursor-pointer">Modifier</button>
+                                <button onclick="bannirUtilisateurInstant('${u.id}')" class="px-2.5 py-1 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 rounded transition cursor-pointer">Bannir</button>
+                            </div>
+                        `}
+                    </td>
+                </tr>
+                <tr id="edit-panel-${u.id}" class="hidden bg-slate-950/90">
+                    <td colspan="4" class="p-4 border-b border-slate-800">
+                        <div class="space-y-3">
+                            <span class="text-xs font-bold text-purple-400 block">Sélectionnez les accès autorisés pour ${u.name} :</span>
+                            <div class="grid grid-cols-3 gap-2 text-xs">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('ENA') ? 'checked' : ''} id="edit-${u.id}-ENA" class="accent-purple-500"> ENA</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('FSF') ? 'checked' : ''} id="edit-${u.id}-FSF" class="accent-purple-500"> FSF</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('COS') ? 'checked' : ''} id="edit-${u.id}-COS" class="accent-purple-500"> COS / EMA</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('Admin') ? 'checked' : ''} id="edit-${u.id}-Admin" class="accent-purple-500"> Administration</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('Fondation') ? 'checked' : ''} id="edit-${u.id}-Fondation" class="accent-purple-500"> Fondation (Staff)</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${u.perms.includes('Régiments') ? 'checked' : ''} id="edit-${u.id}-Régiments" class="accent-purple-500"> Régiments</label>
+                            </div>
+                            <button onclick="sauvegarderUserPerms('${u.id}')" class="mt-2 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-bold transition cursor-pointer">
+                                Enregistrer les modifications
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Validation sans pop-up de confirmation
+        function validerDemandeInstant(reqId, action) {
+            const req = pendingRequests.find(r => r.id === reqId);
+            if (!req) return;
+
+            if (action === 'accepter') {
+                const perms = [];
+                if (document.getElementById(`${reqId}-ena`)?.checked) perms.push('ENA');
+                if (document.getElementById(`${reqId}-fsf`)?.checked) perms.push('FSF');
+                if (document.getElementById(`${reqId}-cos`)?.checked) perms.push('COS');
+                if (document.getElementById(`${reqId}-admin`)?.checked) perms.push('Admin');
+                if (document.getElementById(`${reqId}-fondation`)?.checked) perms.push('Fondation');
+                if (document.getElementById(`${reqId}-regiments`)?.checked) perms.push('Régiments');
+
+                registeredUsers.push({
+                    id: reqId + '_user',
+                    name: req.email,
+                    role: perms.includes('Fondation') ? 'Modérateur Staff' : 'Opérateur Validé',
+                    perms: perms,
+                    isOwner: false
+                });
+            }
+
+            // Supprimer la demande sans aucun message de pop-up
+            pendingRequests = pendingRequests.filter(r => r.id !== reqId);
+            
+            // Re-rendre le module Fondation en direct
+            const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
+            renderFondationModule(isSuperAdmin);
+        }
+
+        // Modification en direct des permissions d'un utilisateur
+        function toggleEditUserPerms(userId) {
+            const panel = document.getElementById(`edit-panel-${userId}`);
+            if (panel) panel.classList.toggle('hidden');
+        }
+
+        function sauvegarderUserPerms(userId) {
+            const user = registeredUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            const newPerms = [];
+            ['ENA', 'FSF', 'COS', 'Admin', 'Fondation', 'Régiments'].forEach(p => {
+                const cb = document.getElementById(`edit-${userId}-${p}`);
+                if (cb && cb.checked) newPerms.push(p);
+            });
+
+            user.perms = newPerms;
+            user.role = newPerms.includes('Fondation') ? 'Modérateur Staff' : 'Opérateur Validé';
+
+            const display = document.getElementById(`perms-display-${userId}`);
+            if (display) display.textContent = newPerms.join(', ');
+
+            toggleEditUserPerms(userId);
+        }
+
+        // Bannissement instantané
+        function bannirUtilisateurInstant(userId) {
+            registeredUsers = registeredUsers.filter(u => u.id !== userId);
+            const row = document.getElementById(`row-${userId}`);
+            const panel = document.getElementById(`edit-panel-${userId}`);
+            if (row) row.remove();
+            if (panel) panel.remove();
         }
 
         function switchFondationTab(tabName) {
@@ -483,24 +605,6 @@
                 tabUtilisateurs.classList.remove('hidden');
                 btnUtilisateurs.className = "px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold transition cursor-pointer";
                 btnValidation.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer";
-            }
-        }
-
-        function validerDemandeMael(action) {
-            if (action === 'accepter') {
-                alert("✔ Demande acceptée pour Maël ! Ses accès autorisés ont été enregistrés.");
-            } else {
-                alert("❌ La demande d'accès de Maël a été refusée.");
-            }
-        }
-
-        function modifierUtilisateur(nom) {
-            prompt(`Modifier les permissions et cases autorisées pour ${nom} :`);
-        }
-
-        function bannirUtilisateur(nom) {
-            if (confirm(`Êtes-vous sûr de vouloir bannir ${nom} du portail ?`)) {
-                alert(`${nom} a été banni avec succès.`);
             }
         }
 
