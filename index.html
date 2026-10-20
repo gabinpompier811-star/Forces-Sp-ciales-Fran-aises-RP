@@ -1095,137 +1095,150 @@
                 </div>
             </section>
 
-            <!-- CHANGELOG COMPLET DE V1.0 A V10.0 -->
+            <!-- CHANGELOG COMPLET DE V1.0.0 A V10.0.0 -->
             <section id="tab-changelog" class="tab-content hidden h-full p-4 overflow-y-auto custom-scroll space-y-4">
-                <div class="bg-card p-4 rounded-xl border">
+                <div class="bg-card p-4 rounded-xl border border-slate-800 backdrop-blur-md">
                     <h2 class="text-sm font-bold text-white flex items-center gap-2 mb-1">
-                        <i class="fa-solid fa-code-branch text-blue-500"></i> Historique Exhaustif des Mises à Jour (v1.0 à v10.0)
+                        <i class="fa-solid fa-code-branch text-blue-500"></i> Historique Exhaustif des Versions (v1.0.0 à v10.0.0)
                     </h2>
-                    <p class="text-xs text-slate-400">Chronologie complète de toutes les évolutions du portail</p>
+                    <p class="text-xs text-slate-400">Chronologie complète du portail FSF / ENA (Position 1: MAJ Majeures | Position 2: MAJ Moyennes | Position 3: Patchs &amp; Correctifs)</p>
                 </div>
-
+            
                 <div class="space-y-3 max-w-4xl mx-auto">
-
-                    <!-- VERSION 10.0 -->
-                    <div class="bg-card border rounded-xl p-4 space-y-2 border-emerald-500/50">
+            
+                    <!-- VERSION 10.0.0 (MAJEURE - POSITION 1) -->
+                    <div class="bg-card border rounded-xl p-4 space-y-2 border-emerald-500/60 shadow-lg shadow-emerald-950/20">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-emerald-400"><i class="fa-solid fa-check-double mr-1"></i> Version 10.0 - Référentiel Complet ENA & Visite Médicale (2 mois)</span>
-                            <span class="text-[10px] text-slate-500 font-mono">19/10/2026</span>
+                            <span class="font-bold text-xs text-emerald-400"><i class="fa-solid fa-star mr-1"></i> Version 10.0.0 - Référentiel ENA &amp; Péremption VMA (2 mois)</span>
+                            <span class="text-[10px] text-slate-500 font-mono">20/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>🎓 Intégration du Référentiel ENA Complet :</strong> Ajout de tous les diplômes officiels ([FGI], [CAT1], [CME], [CC1], [FG1/BS1], [FG2/BSTAT], [BM2], [FG3], [FAE], [CDU], [DEM]) avec correspondance exacte des grades.</li>
-                            <li><strong>🩺 Suivi Visite Médicale (2 mois) :</strong> Vérification automatique de l'aptitude. Après 60 jours sans VMA, l'opérateur bascule automatiquement en VMA Périmée / Inapte.</li>
-                            <li><strong>📁 Onglet "Créer Dossier" & 🗑️ Suppression d'Opérateur :</strong> Outils administratifs renforcés.</li>
+                            <li><strong>🎓 Référentiel ENA Complet :</strong> Intégration des diplômes officiels ([FGI], [CAT1], [CME], [CC1], [FG1/BS1], [FG2/BSTAT], [BM2], [FG3], [FAE], [CDU], [DEM]).</li>
+                            <li><strong>🩺 Suivi Visite Médicale (2 mois) :</strong> Contrôle automatique des 60 jours sans VMA avec bascule en statut "Inapte / VMA Périmée".</li>
+                            <li><strong>📁 Administration Rapprochée :</strong> Ajout des modules "Créer Dossier" et suppression définitive d'opérateur.</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 9.0 -->
+            
+                    <!-- VERSION 9.0.0 (MAJEURE - POSITION 1) -->
                     <div class="bg-card border rounded-xl p-4 space-y-2 border-blue-500/50">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-blue-400"><i class="fa-solid fa-certificate mr-1"></i> Version 9.0 - Module Qualifications, Permis & Spécialités de Combat</span>
+                            <span class="font-bold text-xs text-blue-400"><i class="fa-solid fa-certificate mr-1"></i> Version 9.0.0 - Qualifications, Permis &amp; Spécialités de Combat</span>
                             <span class="text-[10px] text-slate-500 font-mono">19/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>Qualifications & Spécialités :</strong> Attribuer les brevets, permis et spécialités de combat.</li>
+                            <li><strong>🪂 Brevets &amp; Attestations :</strong> Gestion du brevet parachutiste, CQB et qualifications d'avancement.</li>
+                            <li><strong>🚘 Habilitations Véhicules :</strong> Permis Pilote Blindés (VBCI/VAB/VBMR/GBC), Tourelliste, Mécanicien et Permis B/C/D/SPL.</li>
+                            <li><strong>🎯 Postes de Combat :</strong> Attribution des spécialités (Tireur d'Élite, TP, Spotteur, Sanitaire, Transmetteur, Opérateur Drone).</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 8.0 -->
+            
+                    <!-- VERSION 8.0.0 (MAJEURE - POSITION 1) -->
                     <div class="bg-card border rounded-xl p-4 space-y-2 border-amber-500/40">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-amber-400"><i class="fa-solid fa-user-shield mr-1"></i> Version 8.0 - Hiérarchie Stricte à 6 Rôles (RBAC) & Sécurité</span>
+                            <span class="font-bold text-xs text-amber-400"><i class="fa-solid fa-user-shield mr-1"></i> Version 8.0.0 - Hiérarchie Stricte à 6 Rôles (RBAC) &amp; Sécurité</span>
                             <span class="text-[10px] text-slate-500 font-mono">18/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>Hiérarchie à 6 Rôles :</strong> Intégration des rôles Fondateur, Co-Fondateur, Administrateur, Modérateur, Personnel ENA et Personnel Opérateur.</li>
+                            <li><strong>Système RBAC :</strong> Gestion des rôles Fondateur, Co-Fondateur, Admin, Modérateur, ENA et Opérateur.</li>
+                            <li><strong>Whitelist &amp; Accès :</strong> Filtrage strict des adresses autorisées à rejoindre le portail.</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 7.5 -->
-                    <div class="bg-card border rounded-xl p-4 space-y-2">
+            
+                    <!-- VERSIONS 7.2.4 A 7.5.1 (MODULE SANTE & NOTIFICATIONS) -->
+                    <div class="bg-card border border-slate-800 rounded-xl p-4 space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-red-400"><i class="fa-solid fa-notes-medical mr-1"></i> Version 7.5 - Fiche Médicale de Combat (VMA) & Personnalisation UI</span>
+                            <span class="font-bold text-xs text-red-400"><i class="fa-solid fa-notes-medical mr-1"></i> Versions 7.0.0 à 7.5.1 - Fiche Médicale VMA &amp; Traçabilité Logs</span>
                             <span class="text-[10px] text-slate-500 font-mono">18/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>Dossier Médical Militaire :</strong> Suivi du groupe sanguin et des visites VMA.</li>
+                            <li><strong>v7.5.1 (Petite) :</strong> Correctif d'alignement des badges d'aptitude médicale.</li>
+                            <li><strong>v7.5.0 (Moyenne) :</strong> Implémentation du dossier médical complet VMA (tension, audition, groupe sanguin).</li>
+                            <li><strong>v7.2.0 (Moyenne) :</strong> Ajout du centre de notifications dropdown avec alertes directes.</li>
+                            <li><strong>v7.0.0 (Majeure) :</strong> Lancement du module de traçabilité des logs d'activité Firebase.</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 7.0 -->
-                    <div class="bg-card border rounded-xl p-4 space-y-2">
+            
+                    <!-- VERSIONS 6.1.1 A 6.3.0 (CARNET DE TIRS ET GITA) -->
+                    <div class="bg-card border border-slate-800 rounded-xl p-4 space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-cyan-400"><i class="fa-solid fa-bell mr-1"></i> Version 7.0 - Centre de Notifications & Traçabilité Logs</span>
+                            <span class="font-bold text-xs text-emerald-400"><i class="fa-solid fa-crosshair mr-1"></i> Versions 6.0.0 à 6.3.0 - Registre de Tirs &amp; Inaptitudes GITA</span>
                             <span class="text-[10px] text-slate-500 font-mono">18/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>Menu Notifications Dropdown :</strong> Alertes en direct.</li>
+                            <li><strong>v6.3.0 (Moyenne) :</strong> Registre des déclarations d'inaptitude temporaire GITA (Sport, Tir, Saut, Totale).</li>
+                            <li><strong>v6.1.0 (Moyenne) :</strong> Carnet de tir de précision multi-armes (HK416, Glock, SCAR-H, PGM) avec barèmes (/20, /50, /100).</li>
+                            <li><strong>v6.0.1 (Petite) :</strong> Validation dynamique des scores numériques sur le formulaire.</li>
+                            <li><strong>v6.0.0 (Majeure) :</strong> Déploiement du pôle Armement &amp; Contrôle d'inaptitude.</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 6.0 -->
-                    <div class="bg-card border rounded-xl p-4 space-y-2">
+            
+                    <!-- VERSIONS 5.0.1 A 5.2.0 (REPERTOIRE ET FILTRES) -->
+                    <div class="bg-card border border-slate-800 rounded-xl p-4 space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-emerald-400"><i class="fa-solid fa-crosshair mr-1"></i> Version 6.0 - Carnet de Tirs & Registre des Inaptitudes (GITA)</span>
+                            <span class="font-bold text-xs text-purple-400"><i class="fa-solid fa-users-viewfinder mr-1"></i> Versions 5.0.0 à 5.2.0 - Répertoire Unités Forces Spéciales</span>
                             <span class="text-[10px] text-slate-500 font-mono">18/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>Carnet de Tir :</strong> Enregistrement des tirs par arme.</li>
+                            <li><strong>v5.2.0 (Moyenne) :</strong> Filtres sélectifs par régiment (CPA 10, 13e RDP, Commandos Jaubert, GCP, 4e RHFS, N/A).</li>
+                            <li><strong>v5.1.0 (Moyenne) :</strong> Mise à jour en direct des compteurs d'effectifs par section.</li>
+                            <li><strong>v5.0.1 (Petite) :</strong> Ajustement de l'espancement des cartes d'opérateurs en vue mobile.</li>
+                            <li><strong>v5.0.0 (Majeure) :</strong> Refonte visuelle du tableau des régiments.</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 5.0 -->
-                    <div class="bg-card border rounded-xl p-4 space-y-2">
+            
+                    <!-- VERSIONS 4.0.1 A 4.2.0 (DIPLOMES PDF ET DECORATIONS) -->
+                    <div class="bg-card border border-slate-800 rounded-xl p-4 space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-purple-400"><i class="fa-solid fa-users-viewfinder mr-1"></i> Version 5.0 - Répertoire Unités Forces Spéciales & Filtres</span>
+                            <span class="font-bold text-xs text-amber-400"><i class="fa-solid fa-certificate mr-1"></i> Versions 4.0.0 à 4.2.0 - Diplômes PDF &amp; Décorations</span>
                             <span class="text-[10px] text-slate-500 font-mono">18/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>Unités & Sections :</strong> Organisation par régiment.</li>
+                            <li><strong>v4.2.0 (Moyenne) :</strong> Registre des médailles, citations et décorations régimentaires.</li>
+                            <li><strong>v4.1.0 (Moyenne) :</strong> Générateur de diplômes ENA imprimables au format PDF.</li>
+                            <li><strong>v4.0.1 (Petite) :</strong> Correction de la mise en page lors de l'export PDF via `html2pdf.js`.</li>
+                            <li><strong>v4.0.0 (Majeure) :</strong> Integration du moteur d'impression de documents officiels.</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 4.0 -->
-                    <div class="bg-card border rounded-xl p-4 space-y-2">
+            
+                    <!-- VERSIONS 3.0.1 A 3.1.2 (NOTES & PLANNING) -->
+                    <div class="bg-card border border-slate-800 rounded-xl p-4 space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-amber-400"><i class="fa-solid fa-certificate mr-1"></i> Version 4.0 - Diplômes PDF Officiels, Décorations & Exports Excel</span>
-                            <span class="text-[10px] text-slate-500 font-mono">18/10/2026</span>
+                            <span class="font-bold text-xs text-cyan-400"><i class="fa-solid fa-folder-open mr-1"></i> Versions 3.0.0 à 3.1.2 - Notes Internes &amp; Agenda</span>
+                            <span class="text-[10px] text-slate-500 font-mono">17/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li><strong>Générateur de Diplômes :</strong> Brevets officiels ENA imprimables.</li>
+                            <li><strong>v3.1.2 (Petite) :</strong> Correction du bug de suppression des notes individuelles.</li>
+                            <li><strong>v3.1.0 (Moyenne) :</strong> Impression PDF des notes de service.</li>
+                            <li><strong>v3.0.0 (Majeure) :</strong> Déploiement de l'onglet Notes et gestionnaire de documents.</li>
                         </ul>
                     </div>
-
-                    <!-- VERSION 3.0 à 1.0 -->
-                    <div class="bg-card border rounded-xl p-4 space-y-2">
+            
+                    <!-- VERSIONS 2.0.1 A 2.2.0 (FIREBASE & SESSIONS) -->
+                    <div class="bg-card border border-slate-800 rounded-xl p-4 space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
-                            <span class="font-bold text-xs text-slate-400"><i class="fa-solid fa-flag mr-1"></i> Versions 3.0 à 1.0 - Fondations, Dashboard & Interface</span>
+                            <span class="font-bold text-xs text-blue-400"><i class="fa-solid fa-database mr-1"></i> Versions 2.0.0 à 2.2.0 - Synchronisation Firebase &amp; Sessions</span>
+                            <span class="text-[10px] text-slate-500 font-mono">16/10/2026</span>
+                        </div>
+                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+                            <li><strong>v2.2.0 (Moyenne) :</strong> Planning et suivi des sessions de formation ENA.</li>
+                            <li><strong>v2.0.1 (Petite) :</strong> Patch de connexion à la base Realtime Database Europe-West1.</li>
+                            <li><strong>v2.0.0 (Majeure) :</strong> Integration complète du SDK Firebase v9 compat.</li>
+                        </ul>
+                    </div>
+            
+                    <!-- VERSION 1.0.0 (LANCEMENT MAJEUR) -->
+                    <div class="bg-card border border-slate-800 rounded-xl p-4 space-y-2">
+                        <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
+                            <span class="font-bold text-xs text-slate-400"><i class="fa-solid fa-flag mr-1"></i> Version 1.0.0 - Fondations &amp; Interface Tactile (Lancement Initial)</span>
                             <span class="text-[10px] text-slate-500 font-mono">15/10/2026</span>
                         </div>
                         <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                            <li>Mise en place des bases de données et de l'interface tactile.</li>
+                            <li>Création de la structure globale HTML/Tailwind CSS, écran d'authentification sécurisé et hébergement initial sur GitHub Pages.</li>
                         </ul>
                     </div>
-
+            
                 </div>
             </section>
-
-            <!-- LOGS -->
-            <section id="tab-logs" class="tab-content hidden h-full p-4 flex flex-col space-y-3">
-                <div class="flex items-center justify-between bg-card p-3 rounded-xl border">
-                    <h2 class="text-sm font-bold text-white"><i class="fa-solid fa-receipt text-blue-500"></i> Logs d'Activité</h2>
-                    <button id="btnExportLogsPDF" onclick="generatePDF('pdfLogsContainer', 'Logs_Activites_ENA.pdf')" class="bg-red-600 hover:bg-red-500 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                </div>
-                <div id="pdfLogsContainer" class="flex-1 bg-card rounded-xl border p-2 overflow-y-auto custom-scroll">
-                    <table class="w-full text-left">
-                        <thead class="bg-input text-slate-400 text-[10px] uppercase"><tr><th class="p-2">Date</th><th class="p-2">Utilisateur</th><th class="p-2">Action</th><th class="p-2">Détails</th></tr></thead>
-                        <tbody id="logsTable"></tbody>
-                    </table>
-                </div>
-            </section>
-
-        </main>
-    </div>
 
     <!-- JavaScript & Logic Firebase -->
     <script>
