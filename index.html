@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Stratégique FSF / ENA - Système Complet</title>
+    <title>Portail Stratégique FSF / ENA - Sécurité Strict Restreinte</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -35,7 +35,7 @@
                     <i class="fa-solid fa-shield-halved text-4xl"></i>
                 </div>
                 <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL D'ACCÈS SÉCURISÉ</h1>
-                <p class="text-xs text-slate-400">Authentification &amp; Réseau Realtime DB</p>
+                <p class="text-xs text-slate-400">Authentification Réseau Realtime DB</p>
             </div>
 
             <form id="auth-form" class="space-y-4">
@@ -54,15 +54,15 @@
         </div>
     </div>
 
-    <!-- 2. MODAL D'INITIALISATION DU PSEUDO -->
+    <!-- 2. MODAL INITIALISATION PROFIL (NOUVEAU COMPTE) -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-lg custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
                 <div class="inline-flex p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 mb-1">
                     <i class="fa-solid fa-user-gear text-3xl"></i>
                 </div>
-                <h2 class="text-xl font-bold text-white">Création du Profil Opérateur</h2>
-                <p class="text-xs text-slate-400">Renseignez vos identifiants de service</p>
+                <h2 class="text-xl font-bold text-white">Création de la Demande d'Accès</h2>
+                <p class="text-xs text-slate-400">Renseignez vos identifiants pour soumission à la Fondation</p>
             </div>
 
             <form id="profile-form" class="space-y-4 text-xs">
@@ -74,30 +74,32 @@
                     <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur</label>
                     <input type="text" id="input-matricule" placeholder="ex: FS-027-FR" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 outline-none">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">Soumettre pour Validation <i class="fa-solid fa-paper-plane ml-2"></i></button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">
+                    Envoyer à la Fondation <i class="fa-solid fa-paper-plane ml-2"></i>
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- 3. PAGE DE PATIENTEMENT (EN ATTENTE DE VALIDATION FONDATION) -->
+    <!-- 3. ÉCRAN DE PATIENTEMENT STRICT (SI NON ACCEPTE) -->
     <div id="pending-approval-screen" class="hidden flex-1 flex items-center justify-center p-4 bg-slate-950">
         <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-6">
             <div class="inline-flex p-4 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 animate-pulse">
                 <i class="fa-solid fa-clock-rotate-left text-4xl"></i>
             </div>
             <div class="space-y-2">
-                <h2 class="text-2xl font-black text-white">COMPTE EN ATTENTE DE VALIDATION</h2>
+                <h2 class="text-2xl font-black text-white">ACCÈS EN ATTENTE DE VALIDATION</h2>
                 <p class="text-xs text-slate-400 leading-relaxed">
-                    Votre demande d'accès a bien été transmise aux administrateurs de la <span class="text-purple-400 font-bold">Fondation</span>.<br>
-                    Veuillez patienter pendant l'attribution de vos permis d'accès.
+                    Votre demande d'accès est actuellement en cours d'examen par la <span class="text-purple-400 font-bold">Fondation</span>.<br>
+                    Vous devez être accepté et recevoir vos permissions pour accéder au portail.
                 </p>
             </div>
             <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-left space-y-1 font-mono text-[11px] text-slate-400">
                 <div class="flex justify-between"><span>Identifiant:</span> <span id="pending-user-email" class="text-white">---</span></div>
-                <div class="flex justify-between"><span>Statut du compte:</span> <span class="text-amber-400 font-bold">En attente de revue Staff</span></div>
+                <div class="flex justify-between"><span>Statut du compte:</span> <span class="text-amber-400 font-bold">En attente d'approbation Staff</span></div>
             </div>
-            <p class="text-[10px] text-slate-500 italic">Cette page se débloquera automatiquement dès validation par le Staff.</p>
-            <button onclick="logout()" class="px-4 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 rounded-xl text-xs font-bold transition">Déconnexion</button>
+            <p class="text-[10px] text-slate-500 italic">Dès que la Fondation valide votre profil, cet écran disparaîtra automatiquement.</p>
+            <button onclick="logout()" class="px-4 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 rounded-xl text-xs font-bold transition cursor-pointer">Déconnexion</button>
         </div>
     </div>
 
@@ -111,7 +113,7 @@
                 <div>
                     <span class="font-black tracking-widest text-sm text-white block">PORTAIL DE COMMANDEMENT</span>
                     <span class="text-[10px] text-emerald-400 uppercase tracking-wide flex items-center gap-1 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Realtime DB Connected
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Sync Live Actif
                     </span>
                 </div>
             </div>
@@ -132,21 +134,21 @@
         </header>
 
         <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
-            <!-- ACCUEIL CATEGORIES -->
+            <!-- ACCUEIL CATEGORIES AUTORISEES -->
             <div id="view-home" class="space-y-8">
                 <div class="flex justify-between items-center border-b border-slate-800/80 pb-6">
                     <div>
-                        <h2 class="text-2xl font-black text-white tracking-wide">SÉLECTIONNEZ VOTRE ESPACE</h2>
-                        <p class="text-xs text-slate-400 mt-1">Accès autorisé selon vos permissions accordées par la Fondation</p>
+                        <h2 class="text-2xl font-black text-white tracking-wide">VOS ESPACES AUTORISÉS</h2>
+                        <p class="text-xs text-slate-400 mt-1">Accès restreint selon vos permissions validées par la Fondation</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="categories-grid">
-                    <!-- Généré dynamiquement selon les perms du membre -->
+                    <!-- Cartes injectées uniquement si autorisées -->
                 </div>
             </div>
 
-            <!-- CONTENU DYNAMIQUE DES CATEGORIES -->
+            <!-- CONTENU DYNAMIQUE DE LA CATEGORIE SELECTIONNEE -->
             <div id="view-category" class="hidden space-y-6">
                 <button onclick="goHome()" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
@@ -190,9 +192,8 @@
         </div>
     </div>
 
-    <!-- 6. JAVASCRIPT LOGIQUE & FIREBASE REALTIME DB -->
+    <!-- 6. SCRIPT AVEC SÉCURITÉ ET RESTRICTION D'ACCÈS TOTALE -->
     <script>
-        // CONFIG REALTIME DB
         const firebaseConfig = {
             databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app"
         };
@@ -217,7 +218,7 @@
         // CONNEXION
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('user-email').value;
+            const email = document.getElementById('user-email').value.trim().toLowerCase();
             currentUser = { email: email, isOwner: email === 'gabinpompier811@gmail.com' };
             localStorage.setItem('fsf_user_session', JSON.stringify(currentUser));
             authScreen.classList.add('hidden');
@@ -229,7 +230,6 @@
             const username = document.getElementById('input-username').value;
             const matricule = document.getElementById('input-matricule').value || 'FS-001-FR';
             
-            // Envoyer la demande d'accès à la Fondation dans la Realtime DB
             db.ref('pending_requests').push({
                 email: currentUser.email,
                 username: username,
@@ -241,50 +241,62 @@
             checkUserApprovalState();
         });
 
-        // VERIFICATION TEMPS RÉEL DE L'APPROBATION D'UN COMPTE
+        // VÉRIFICATION D'APPROBATION SÉCURISÉE EN TEMPS RÉEL
         function checkUserApprovalState() {
             if (!currentUser) return;
 
-            // Le Fondateur Suprême passe directement sans restriction
+            // gabinpompier811@gmail.com = accès suprême immédiat à toutes les sections
             if (currentUser.isOwner) {
                 currentUser.username = "Fondateur Suprême";
                 currentUser.matricule = "FS-001-OWNER";
-                currentUser.perms = ['ENA', 'FSF', 'COS', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'];
+                currentUser.perms = ['ENA', 'FSF', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'];
+                pendingApprovalScreen.classList.add('hidden');
                 loadDashboard();
                 return;
             }
 
             document.getElementById('pending-user-email').textContent = currentUser.email;
 
-            // Écouter si l'utilisateur est validé dans la table `users`
+            // Vérifier la base de données `users`
             db.ref('users').on('value', snapshot => {
                 const users = snapshot.val();
                 let foundUser = null;
+
                 if (users) {
                     Object.keys(users).forEach(k => {
-                        if (users[k].email === currentUser.email) foundUser = users[k];
+                        if (users[k].email && users[k].email.toLowerCase() === currentUser.email.toLowerCase()) {
+                            foundUser = users[k];
+                        }
                     });
                 }
 
                 if (foundUser) {
-                    // UTILISATEUR VALIDÉ !
+                    // COMPTE VALIDÉ PAR LA FONDATION
                     currentUser.username = foundUser.username || currentUser.email;
                     currentUser.matricule = foundUser.matricule || 'FS-000-FR';
-                    currentUser.perms = foundUser.perms || ['ENA'];
+                    currentUser.perms = foundUser.perms || []; // Permissions exactes données
+                    
                     pendingApprovalScreen.classList.add('hidden');
+                    profileModal.classList.add('hidden');
                     loadDashboard();
                 } else {
-                    // PAS ENCORE VALIDÉ -> S'ASSURER QU'IL EST EN DEMANDE PENDANTE
+                    // COMPTE NON ENCORE VALIDÉ PAR LA FONDATION
+                    mainDashboard.classList.add('hidden');
+
                     db.ref('pending_requests').once('value', pSnap => {
                         const pendings = pSnap.val();
                         let isPending = false;
                         if (pendings) {
-                            Object.values(pendings).forEach(p => { if (p.email === currentUser.email) isPending = true; });
+                            Object.values(pendings).forEach(p => {
+                                if (p.email && p.email.toLowerCase() === currentUser.email.toLowerCase()) isPending = true;
+                            });
                         }
 
                         if (!isPending) {
                             profileModal.classList.remove('hidden');
+                            pendingApprovalScreen.classList.add('hidden');
                         } else {
+                            profileModal.classList.add('hidden');
                             pendingApprovalScreen.classList.remove('hidden');
                         }
                     });
@@ -299,11 +311,12 @@
             mainDashboard.classList.remove('hidden');
         }
 
+        // RENDU STRICT DES CARTES SELON LES PERMISSIONS ACCORDÉES
         function renderCategoryGrid() {
             const grid = document.getElementById('categories-grid');
-            const perms = currentUser.perms || [];
+            const userPerms = currentUser.perms || [];
 
-            const cats = [
+            const allCategories = [
                 { key: 'ENA', title: 'ENA & Formations', desc: 'Tableau de bord, documents, instructeurs, unités, plannings, notes.', icon: 'fa-graduation-cap', color: 'blue' },
                 { key: 'FSF', title: 'Forces Spéciales Françaises', desc: 'Dossiers opérateurs, VMA et aptitudes.', icon: 'fa-user-ninja', color: 'red' },
                 { key: 'COS_EMA', title: 'COS / EMA', desc: 'Commandement des Opérations & État-Major.', icon: 'fa-star', color: 'amber' },
@@ -312,28 +325,59 @@
                 { key: 'REGIMENTS', title: 'Régiments', desc: 'Répertoire des unités spécialisées.', icon: 'fa-person-military-rifle', color: 'cyan' }
             ];
 
-            grid.innerHTML = cats.map(c => {
-                const hasAccess = currentUser.isOwner || perms.includes(c.key);
-                return `
-                    <button onclick="${hasAccess ? `openCategory('${c.key}')` : ''}" class="group text-left custom-card border ${hasAccess ? `hover:border-${c.color}-500/60 cursor-pointer` : 'opacity-40 cursor-not-allowed'} p-6 rounded-3xl transition-all shadow-xl flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-${c.color}-500/10 border border-${c.color}-500/20 rounded-2xl text-${c.color}-400 w-fit"><i class="fa-solid ${c.icon} text-2xl"></i></div>
-                            <h3 class="font-bold text-lg text-white">${c.title}</h3>
-                            <p class="text-xs text-slate-400">${c.desc}</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-${c.color}-400 font-semibold">
-                            <span>${hasAccess ? 'Accéder' : 'Accès Restreint (Fondation)'}</span> <i class="fa-solid ${hasAccess ? 'fa-chevron-right' : 'fa-lock'}"></i>
-                        </div>
-                    </button>
+            // Filtrer uniquement les catégories autorisées
+            const allowedCategories = allCategories.filter(c => currentUser.isOwner || userPerms.includes(c.key));
+
+            if (allowedCategories.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-3 p-8 bg-slate-950 border border-slate-800 rounded-3xl text-center space-y-3">
+                        <i class="fa-solid fa-lock text-amber-400 text-3xl"></i>
+                        <h3 class="font-bold text-white text-base">Aucun module attribué pour le moment</h3>
+                        <p class="text-xs text-slate-400">La Fondation ne vous a attribué aucune catégorie pour l'instant. Veuillez contacter un administrateur.</p>
+                    </div>
                 `;
-            }).join('');
+                return;
+            }
+
+            grid.innerHTML = allowedCategories.map(c => `
+                <button onclick="openCategory('${c.key}')" class="group text-left custom-card border hover:border-${c.color}-500/60 p-6 rounded-3xl transition-all shadow-xl flex flex-col justify-between cursor-pointer">
+                    <div class="space-y-4">
+                        <div class="p-3.5 bg-${c.color}-500/10 border border-${c.color}-500/20 rounded-2xl text-${c.color}-400 w-fit"><i class="fa-solid ${c.icon} text-2xl"></i></div>
+                        <h3 class="font-bold text-lg text-white group-hover:text-${c.color}-400 transition">${c.title}</h3>
+                        <p class="text-xs text-slate-400">${c.desc}</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-${c.color}-400 font-semibold">
+                        <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+                    </div>
+                </button>
+            `).join('');
         }
 
+        // OUVERTURE SÉCURISÉE D'UNE CATÉGORIE
         function openCategory(key) {
+            const userPerms = currentUser.perms || [];
+            if (!currentUser.isOwner && !userPerms.includes(key)) {
+                categoryContentContainer.innerHTML = `
+                    <div class="text-center py-12 space-y-4">
+                        <i class="fa-solid fa-shield-halved text-5xl text-red-500"></i>
+                        <h2 class="text-xl font-bold text-white">ACCÈS RESTREINT</h2>
+                        <p class="text-xs text-slate-400">Vous n'avez pas l'autorisation d'accéder au module ${key}.</p>
+                    </div>
+                `;
+                viewHome.classList.add('hidden');
+                viewCategory.classList.remove('hidden');
+                return;
+            }
+
             viewHome.classList.add('hidden');
             viewCategory.classList.remove('hidden');
+
             if (key === 'ENA') renderEnaWorkspace();
             if (key === 'FONDATION') renderFondationWorkspace();
+            if (key === 'FSF') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> FSF - Opérateurs</h2><p class="text-xs text-slate-400">Espace Forces Spéciales Françaises.</p>`;
+            if (key === 'COS_EMA') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2><p class="text-xs text-slate-400">Espace État-Major.</p>`;
+            if (key === 'ADMINISTRATION') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-emerald-400 mr-2"></i> Administration</h2><p class="text-xs text-slate-400">Espace Registres &amp; Fichiers.</p>`;
+            if (key === 'REGIMENTS') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments</h2><p class="text-xs text-slate-400">Espace Régiments.</p>`;
         }
 
         function goHome() {
@@ -347,7 +391,7 @@
         }
 
         // ==========================================
-        //  MODULE FONDATION (STAFF, TCHAT, PERMS, BANS)
+        //  MODULE FONDATION (STAFF, ROLES, LOGS DB)
         // ==========================================
         function renderFondationWorkspace() {
             categoryContentContainer.innerHTML = `
@@ -355,28 +399,25 @@
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                         <div>
                             <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Centre de Commandement Staff</h2>
-                            <p class="text-xs text-slate-400">Gestion des utilisateurs, exclusions, canaux de discussion et logs</p>
+                            <p class="text-xs text-slate-400">Gestion des utilisateurs, exclusions, canal de discussion et logs</p>
                         </div>
                     </div>
 
                     <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold overflow-x-auto">
                         <button onclick="switchFondationTab('validations')" id="f-btn-validations" class="px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer">Validations en Attente</button>
-                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Gestion des Membres &amp; Exclusions</button>
-                        <button onclick="switchFondationTab('chat')" id="f-btn-chat" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Messagerie / Canal Staff</button>
+                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Membres &amp; Exclusions</button>
+                        <button onclick="switchFondationTab('chat')" id="f-btn-chat" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Canal Staff</button>
                         <button onclick="switchFondationTab('logs')" id="f-btn-logs" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Logs Staff</button>
                     </div>
 
-                    <!-- 1. VALIDATIONS -->
                     <div id="f-content-validations" class="space-y-3">
                         <div id="pending-list-container" class="space-y-3"></div>
                     </div>
 
-                    <!-- 2. GESTION UTILISATEURS & BANS -->
                     <div id="f-content-users" class="hidden space-y-3">
                         <div id="users-list-container" class="space-y-3"></div>
                     </div>
 
-                    <!-- 3. TCHAT STAFF DÉDIÉ -->
                     <div id="f-content-chat" class="hidden space-y-4">
                         <div id="staff-chat-messages" class="p-4 bg-slate-950 border border-slate-800 rounded-2xl h-[300px] overflow-y-auto space-y-2 text-xs"></div>
                         <form onsubmit="sendStaffMessageDB(event)" class="flex gap-2">
@@ -385,7 +426,6 @@
                         </form>
                     </div>
 
-                    <!-- 4. LOGS STAFF -->
                     <div id="f-content-logs" class="hidden space-y-3">
                         <div id="logs-list-container" class="font-mono text-xs text-slate-400 space-y-1 max-h-[300px] overflow-y-auto bg-slate-950 p-4 border border-slate-800 rounded-xl"></div>
                     </div>
@@ -496,7 +536,7 @@
 
         function excludeUserDB(userKey, username) {
             db.ref('users/' + userKey).remove();
-            db.ref('logs').push({ action: "Exclusion / Bannissement de l'utilisateur " + username, date: new Date().toLocaleString('fr-FR') });
+            db.ref('logs').push({ action: "Exclusion / Bannissement de " + username, date: new Date().toLocaleString('fr-FR') });
         }
 
         function editUserPermsPrompt(userKey, username) {
@@ -508,7 +548,6 @@
             }
         }
 
-        // TCHAT STAFF LIVE
         function listenStaffChatDB() {
             db.ref('staff_chat').on('value', snapshot => {
                 const container = document.getElementById('staff-chat-messages');
@@ -546,22 +585,20 @@
             }
         }
 
-        function deleteStaffMessageDB(key) {
-            db.ref('staff_chat/' + key).remove();
-        }
+        function deleteStaffMessageDB(key) { db.ref('staff_chat/' + key).remove(); }
 
         function listenLogsDB() {
             db.ref('logs').on('value', snapshot => {
                 const container = document.getElementById('logs-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) { container.innerHTML = `<div>• Aucun journal d'événement enregistrés.</div>`; return; }
+                if (!data) { container.innerHTML = `<div>• Aucun log.</div>`; return; }
                 container.innerHTML = Object.values(data).reverse().map(l => `<div>• ${l.action} <span class="text-slate-600">(${l.date})</span></div>`).join('');
             });
         }
 
         // ==========================================
-        //  MODULE ENA WORKSPACE (TOUS LES ONGLET DB)
+        //  MODULE ENA WORKSPACE (COMPLET REALTIME)
         // ==========================================
         function renderEnaWorkspace() {
             categoryContentContainer.innerHTML = `
@@ -598,7 +635,7 @@
 
                     <div id="ena-content-docs" class="hidden space-y-4">
                         <label class="px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl cursor-pointer inline-block">
-                            + Importer Fichier (PDF, Image...)
+                            + Importer Fichier
                             <input type="file" onchange="uploadDocDB(event)" class="hidden">
                         </label>
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -711,7 +748,7 @@
             });
         }
 
-        function createNewUnitPrompt() { const name = prompt("Nom de la nouvelle unité :"); if (name) db.ref('units').push({ name: name }); }
+        function createNewUnitPrompt() { const name = prompt("Nom de l'unité :"); if (name) db.ref('units').push({ name: name }); }
         function deleteUnitDB(key) { db.ref('units/' + key).remove(); }
         function addMemberToUnitPrompt(key) { const name = prompt("Nom & Prénom :"); const mat = prompt("Matricule :"); if (name && mat) db.ref('units/' + key + '/members').push({ name: name, matricule: mat }); }
 
@@ -838,7 +875,7 @@
         document.getElementById('open-settings-btn').addEventListener('click', () => settingsDrawer.classList.remove('hidden'));
         document.getElementById('close-settings-btn').addEventListener('click', () => settingsDrawer.classList.add('hidden'));
 
-        // DÉMARRAGE AUTOMATIQUE
+        // INITIALISATION AUTOMATIQUE
         if (currentUser) {
             authScreen.classList.add('hidden');
             checkUserApprovalState();
