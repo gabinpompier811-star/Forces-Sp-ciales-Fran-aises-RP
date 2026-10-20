@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- FORMULAIRE DE CONNEXION -->
+    <!-- CONNEXION -->
     <div id="login-container" class="auth-box">
         <div class="auth-header">
             <div class="shield-icon">&#128737;</div>
@@ -28,29 +28,37 @@
         </form>
     </div>
 
-    <!-- TABLEAU DE BORD PRINCIPAL -->
+    <!-- DASHBOARD PRINCIPAL -->
     <div id="app-container" class="hidden">
         <header class="navbar">
-            <div class="nav-brand">Portail FSF</div>
+            <div class="nav-brand">&#128203; Portail FSF</div>
             <nav class="nav-tabs">
-                <button class="tab-btn active" data-tab="unites">Unités &amp; Sections</button>
-                <button class="tab-btn" data-tab="medical">Tirs, Médical &amp; Inaptitudes</button>
-                <button class="tab-btn" data-tab="fiches">Fiches &amp; Médical</button>
-                <button class="tab-btn" data-tab="planning">Planning &amp; Sessions</button>
-                <button class="tab-btn" data-tab="notes">Notes</button>
-                <button class="tab-btn" data-tab="logs">Logs</button>
+                <button class="tab-btn active" data-tab="unites">&#128101; Unités &amp; Sections</button>
+                <button class="tab-btn" data-tab="medical">&#127919; Tirs, Médical &amp; Inaptitudes</button>
+                <button class="tab-btn" data-tab="fiches">&#128104;&#8205;&#9877;&#65039; Fiches &amp; Médical</button>
+                <button class="tab-btn" data-tab="planning">&#128197; Planning &amp; Sessions</button>
+                <button class="tab-btn" data-tab="notes">&#128221; Notes</button>
+                <button class="tab-btn" data-tab="updates">&#128260; Mises à jour</button>
+                <button class="tab-btn" data-tab="logs">&#128220; Logs</button>
             </nav>
             <button id="logout-btn" class="btn-danger">Déconnexion</button>
         </header>
 
         <main class="content-area">
-            <!-- Onglet Unités -->
+
+            <!-- 1. UNITÉS & SECTIONS -->
             <section id="tab-unites" class="tab-content active">
                 <h2>Répertoire des Unités Forces Spéciales</h2>
+                <p class="subtitle">Effectifs engagés par régiment spécialisé</p>
+
                 <div class="grid-units">
                     <div class="card-unit">
-                        <h3>CPA 10 <span class="badge">4</span></h3>
-                        <div class="member-list">
+                        <h3>N/A (Sans affectation) <span class="badge" id="count-na">0</span></h3>
+                        <div class="member-list" id="list-na"><p class="empty-text">Aucun membre.</p></div>
+                    </div>
+                    <div class="card-unit">
+                        <h3>CPA 10 <span class="badge" id="count-cpa10">1</span></h3>
+                        <div class="member-list" id="list-cpa10">
                             <div class="member-item">
                                 <div><strong>Capitaine Noli VELMONT</strong><br><small>FS-027-FR</small></div>
                                 <span class="status-online">&#9679;</span>
@@ -58,51 +66,253 @@
                         </div>
                     </div>
                     <div class="card-unit">
-                        <h3>13e RDP <span class="badge">0</span></h3>
-                        <p class="empty-text">Aucun membre.</p>
+                        <h3>13e RDP <span class="badge" id="count-rdp">0</span></h3>
+                        <div class="member-list" id="list-rdp"><p class="empty-text">Aucun membre.</p></div>
                     </div>
                     <div class="card-unit">
-                        <h3>Commandos Jaubert <span class="badge">0</span></h3>
-                        <p class="empty-text">Aucun membre.</p>
+                        <h3>Commandos Jaubert (Marine) <span class="badge" id="count-jaubert">0</span></h3>
+                        <div class="member-list" id="list-jaubert"><p class="empty-text">Aucun membre.</p></div>
                     </div>
                     <div class="card-unit">
-                        <h3>4e RHFS <span class="badge">0</span></h3>
-                        <p class="empty-text">Aucun membre.</p>
+                        <h3>Groupe de Commandos Parachutistes (GCP) <span class="badge" id="count-gcp">0</span></h3>
+                        <div class="member-list" id="list-gcp"><p class="empty-text">Aucun membre.</p></div>
+                    </div>
+                    <div class="card-unit">
+                        <h3>4e RHFS <span class="badge" id="count-rhfs">0</span></h3>
+                        <div class="member-list" id="list-rhfs"><p class="empty-text">Aucun membre.</p></div>
                     </div>
                 </div>
             </section>
 
-            <!-- Onglet Médical -->
+            <!-- 2. TIRS, MÉDICAL & INAPTITUDES -->
             <section id="tab-medical" class="tab-content hidden">
-                <h2>Formulaire de Visite Médicale (Aptitude VMA)</h2>
+                <h2>&#10084;&#65039; Formulaire de Visite Médicale (Aptitude VMA Obligatoire tous les 2 Mois)</h2>
                 <div class="form-card">
                     <div class="form-row">
-                        <input type="text" placeholder="Militaire Concerné" id="vma-militaire">
-                        <input type="date" id="vma-date">
-                        <input type="text" placeholder="Tension (ex: 12/8)" id="vma-tension">
+                        <div class="input-group">
+                            <label>MILITAIRE CONCERNÉ</label>
+                            <input type="text" id="vma-militaire" placeholder="Capitaine Noli VELMONT">
+                        </div>
+                        <div class="input-group">
+                            <label>DATE DE LA VISITE</label>
+                            <input type="date" id="vma-date">
+                        </div>
+                        <div class="input-group">
+                            <label>TENSION ARTÉRIELLE</label>
+                            <input type="text" id="vma-tension" placeholder="ex: 12/8">
+                        </div>
+                        <div class="input-group">
+                            <label>TAILLE / POIDS</label>
+                            <input type="text" id="vma-taille-poids" placeholder="ex: 180 cm / 78 kg">
+                        </div>
                     </div>
-                    <button class="btn-success">Enregistrer Visite Médicale</button>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>TEST VISION (/10)</label>
+                            <input type="text" id="vma-vision" placeholder="10/10">
+                        </div>
+                        <div class="input-group">
+                            <label>TEST AUDITIF</label>
+                            <select id="vma-auditif">
+                                <option>Audition Normale</option>
+                                <option>Audition Réduite</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>APTITUDE DÉCIDÉE</label>
+                            <select id="vma-aptitude">
+                                <option>Apte Service FS</option>
+                                <option>Inapte Temporaire</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="btn-save-vma" class="btn-danger-red">Enregistrer Visite Médicale</button>
+                </div>
+
+                <div class="grid-2col">
+                    <div class="form-card">
+                        <h3>Enregistrer un Score de Tir</h3>
+                        <div class="input-group">
+                            <label>TIREUR</label>
+                            <input type="text" id="tir-militaire" placeholder="Capitaine Noli VELMONT">
+                        </div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label>ARME</label>
+                                <select id="tir-arme">
+                                    <option>HK416</option>
+                                    <option>Glock 17</option>
+                                    <option>PGM Hécate II</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>SCORE OBTENU</label>
+                                <input type="number" id="tir-score" placeholder="/100">
+                            </div>
+                        </div>
+                        <button id="btn-save-tir" class="btn-danger-red">Enregistrer Tir</button>
+                    </div>
+
+                    <div class="form-card">
+                        <h3>Inaptitude Médicale Temporaire (GITA)</h3>
+                        <div class="input-group">
+                            <label>MILITAIRE</label>
+                            <input type="text" id="gita-militaire" placeholder="Nom du militaire">
+                        </div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label>TYPE</label>
+                                <select id="gita-type">
+                                    <option>Sport</option>
+                                    <option>Tir / Combat</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>FIN DE L'INAPTITUDE</label>
+                                <input type="date" id="gita-fin">
+                            </div>
+                        </div>
+                        <button id="btn-save-gita" class="btn-warning">Déclarer Inapte</button>
+                    </div>
                 </div>
             </section>
 
-            <!-- Onglet Fiches -->
+            <!-- 3. FICHES & QUALIFICATIONS -->
             <section id="tab-fiches" class="tab-content hidden">
-                <h2>Dossier Militaire &amp; Qualifications</h2>
-                <div class="profile-card">
-                    <div>
-                        <h3>Noli VELMONT</h3>
-                        <p>Capitaine — FS-027-FR</p>
+                <h2>Dossier Militaire, Qualifications &amp; Suivi Médical (VMA)</h2>
+                
+                <div class="profile-header">
+                    <div class="profile-info">
+                        <div class="user-avatar">&#128104;&#8205;&#9877;&#65039;</div>
+                        <div>
+                            <h3>Noli VELMONT</h3>
+                            <p>Capitaine — FS-027-FR</p>
+                        </div>
+                    </div>
+                    <div class="unit-badge-box">
+                        <small>UNITÉ</small>
+                        <p><strong>CPA 10</strong></p>
+                    </div>
+                    <div class="unit-badge-box">
+                        <small>BREVETS VALIDÉS</small>
+                        <p><strong class="highlight-green">10</strong></p>
+                    </div>
+                </div>
+
+                <h3>Qualifications &amp; Spécialités</h3>
+                <div class="grid-3col">
+                    <div class="qualif-card">
+                        <h4>Brevets &amp; Attestations</h4>
+                        <div class="qualif-item valid"><span>Brevet Parachutiste</span> <span class="tag-valid">Validé</span></div>
+                        <div class="qualif-item valid"><span>Qualification CQB</span> <span class="tag-valid">Validé</span></div>
+                        <div class="qualif-item valid"><span>FGI Validé</span> <span class="tag-valid">Validé</span></div>
+                        <div class="qualif-item invalid"><span>CAT1 (Brevet Caporal)</span> <span class="tag-invalid">Non validé</span></div>
+                    </div>
+                    <div class="qualif-card">
+                        <h4>Permis &amp; Véhicules</h4>
+                        <div class="qualif-item valid"><span>Pilote Blindés (VBCI/VAB)</span> <span class="tag-valid">Validé</span></div>
+                        <div class="qualif-item valid"><span>Opérateur Tourelle</span> <span class="tag-valid">Validé</span></div>
+                        <div class="qualif-item valid"><span>Permis B</span> <span class="tag-valid">Validé</span></div>
+                        <div class="qualif-item valid"><span>Permis C</span> <span class="tag-valid">Validé</span></div>
+                    </div>
+                    <div class="qualif-card">
+                        <h4>Spécialités de Combat</h4>
+                        <div class="qualif-item invalid"><span>Tireur d'Élite (TE)</span> <span class="tag-invalid">Non validé</span></div>
+                        <div class="qualif-item invalid"><span>Spotteur</span> <span class="tag-invalid">Non validé</span></div>
+                        <div class="qualif-item invalid"><span>Médecin / Sanitaire</span> <span class="tag-invalid">Non validé</span></div>
+                        <div class="qualif-item invalid"><span>Opérateur Drone</span> <span class="tag-invalid">Non validé</span></div>
                     </div>
                 </div>
             </section>
 
-            <!-- Onglet Logs -->
+            <!-- 4. PLANNING & SESSIONS -->
+            <section id="tab-planning" class="tab-content hidden">
+                <h2>Planning &amp; Sessions de Formation</h2>
+                <div class="grid-2col">
+                    <div class="form-card">
+                        <h3>Programmer une Session</h3>
+                        <div class="input-group">
+                            <label>FORMATION</label>
+                            <select id="session-formation">
+                                <option>[FGI] Formation Générale Initiale</option>
+                                <option>[CQB] Combat en Milieu Clos</option>
+                                <option>[TE] Formation Tireur d'Élite</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>DATE &amp; HEURE</label>
+                            <input type="datetime-local" id="session-date">
+                        </div>
+                        <div class="input-group">
+                            <label>LIEU</label>
+                            <input type="text" id="session-lieu" placeholder="ex: Stand B / Zone A">
+                        </div>
+                        <button id="btn-save-session" class="btn-primary">Créer Session</button>
+                    </div>
+
+                    <div class="form-card">
+                        <h3>Sessions Planifiées</h3>
+                        <div id="sessions-list">
+                            <div class="session-box">
+                                <strong>[FGI] Formation Générale Initiale</strong>
+                                <p><small>&#128336; 19/10/2026 à 15:26</small></p>
+                                <p><small>&#128205; Sur BA FR</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. NOTES -->
+            <section id="tab-notes" class="tab-content hidden">
+                <h2>Notes Internes</h2>
+                <div class="grid-2col">
+                    <div class="form-card">
+                        <h3>Nouvelle Note</h3>
+                        <div class="input-group">
+                            <label>TITRE</label>
+                            <input type="text" id="note-title" placeholder="Ex: Commandos Jaubert">
+                        </div>
+                        <div class="input-group">
+                            <label>CONTENU</label>
+                            <textarea id="note-content" placeholder="Écrivez votre note..." rows="5"></textarea>
+                        </div>
+                        <button id="btn-save-note" class="btn-primary">Enregistrer la Note</button>
+                    </div>
+                    <div class="form-card">
+                        <h3>Mes Notes</h3>
+                        <div id="notes-list"><p class="empty-text">Aucune note pour l'instant.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. MISES À JOUR -->
+            <section id="tab-updates" class="tab-content hidden">
+                <h2>Journal des Mises à jour du Portail</h2>
+                <div class="updates-list">
+                    <div class="update-card">
+                        <h4>&#128100; Version 8.0 - Hiérarchie Stricte &amp; Sécurité</h4>
+                        <p>Intégration des rôles Fondateur, Administrateur, Personnel Opérateur.</p>
+                    </div>
+                    <div class="update-card">
+                        <h4>&#129657; Version 7.5 - Fiche Médicale de Combat (VMA)</h4>
+                        <p>Dossier médical militaire et suivi des visites VMA.</p>
+                    </div>
+                    <div class="update-card">
+                        <h4>&#127919; Version 6.0 - Carnet de Tirs &amp; Inaptitudes (GITA)</h4>
+                        <p>Enregistrement du tir de précision et des déclarations d'inaptitude.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. LOGS -->
             <section id="tab-logs" class="tab-content hidden">
                 <h2>Logs d'Activité</h2>
                 <div class="logs-table" id="logs-container">
                     <p>Chargement des logs...</p>
                 </div>
             </section>
+
         </main>
     </div>
 
