@@ -328,20 +328,213 @@
             mainDashboard.classList.remove('hidden');
         }
 
+        // Données pour le module ENA
+        let instructorsList = [
+            { id: '1', name: 'Colonel Alex GIROND', role: "Directeur de l'ENA" },
+            { id: '2', name: 'Commandant Mathis ROSIER', role: "Directeur adjoint" },
+            { id: '3', name: 'Lieutenant Maël LIOGER', role: "Formateur Principal" },
+            { id: '4', name: 'Capitaine John FOX', role: "Instructeur" }
+        ];
+        
+        let formationsList = [
+            { id: '1', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: '[FGI] Formation Générale Initiale', score: 'Admis (20/20)' },
+            { id: '2', name: 'Noli VELMONT', grade: 'Capitaine', matricule: 'FS-027-FR', unit: 'CPA 10', formation: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", score: 'Admis (20/20)' }
+        ];
+        
+        // Rendu du Workspace ENA
+        function renderEnaWorkspace() {
+            categoryContentContainer.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Barre de navigation des sous-onglets ENA -->
+                    <div class="flex items-center gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-medium">
+                        <button onclick="switchEnaSubTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-chart-line"></i> Tableau de bord
+                        </button>
+                        <button onclick="switchEnaSubTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-file-contract"></i> Documents &amp; Fichiers
+                        </button>
+                        <button onclick="switchEnaSubTab('formations')" id="ena-tab-formations" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-graduation-cap"></i> Formations
+                        </button>
+                        <button onclick="switchEnaSubTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-users-rectangle"></i> Unités &amp; Sections
+                        </button>
+                        <button onclick="switchEnaSubTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-calendar-days"></i> Plannings
+                        </button>
+                        <button onclick="switchEnaSubTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-clipboard-list"></i> Notes
+                        </button>
+                    </div>
+        
+                    <!-- CONTENU DE L'ONGLET : FORMATIONS (Gestion Instructeurs + Suivi) -->
+                    <div id="ena-content-formations" class="space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <!-- Formulaire d'ajout d'instructeur -->
+                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Ajouter un Instructeur</h3>
+                                <form onsubmit="addInstructor(event)" class="space-y-3">
+                                    <input type="text" id="instructor-name" required placeholder="Nom complet (ex: LCL Alex)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500">
+                                    <select id="instructor-role" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 outline-none focus:border-blue-500">
+                                        <option value="">-- Rôle Instructeur --</option>
+                                        <option value="Directeur de l'ENA">Directeur de l'ENA</option>
+                                        <option value="Directeur adjoint">Directeur adjoint</option>
+                                        <option value="Chef des Instructeurs">Chef des Instructeurs</option>
+                                        <option value="Formateur Principal">Formateur Principal</option>
+                                        <option value="Instructeur">Instructeur</option>
+                                    </select>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">
+                                        + Ajouter Instructeur
+                                    </button>
+                                </form>
+                            </div>
+        
+                            <!-- Cartes du Corps des Formateurs -->
+                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Corps des Formateurs / Instructeurs</h3>
+                                <div id="instructors-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-1">
+                                    ${renderInstructorsCards()}
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Suivi des Formations -->
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4">
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-blue-400"></i> Suivi des Formations &amp; Évaluations
+                            </h3>
+        
+                            <form onsubmit="addFormationRecord(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 text-xs">
+                                <input type="text" id="add-mil-name" required placeholder="Nom Prénom" class="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                                <input type="text" id="add-mil-grade" required placeholder="Grade" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                                <input type="text" id="add-mil-matricule" required placeholder="Matricule" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                                <select id="add-mil-formation" required class="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-300 outline-none">
+                                    <option value="">-- Formation --</option>
+                                    <option value="[FGI] Formation Général Initiale">[FGI] Formation Général Initiale</option>
+                                    <option value="[CAT1] Certificat d'Aptitude Technique 1">[CAT1] Certificat d'Aptitude Technique 1</option>
+                                    <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint &amp; Spécialiste</option>
+                                </select>
+                                <button type="submit" class="lg:col-span-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition cursor-pointer">
+                                    + Inscrire
+                                </button>
+                            </form>
+        
+                            <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-slate-900 text-slate-400 font-mono text-[10px] uppercase border-b border-slate-800">
+                                        <tr>
+                                            <th class="p-3">MILITAIRE</th>
+                                            <th class="p-3">GRADE</th>
+                                            <th class="p-3">MATRICULE</th>
+                                            <th class="p-3">FORMATION</th>
+                                            <th class="p-3">STATUT</th>
+                                            <th class="p-3 text-right">ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="formations-table-body" class="divide-y divide-slate-800/60 text-slate-200">
+                                        ${renderFormationsRows()}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- BLOCS POUR LES AUTRES ONGLET-ENA (À REMPLIR) -->
+                    <div id="ena-content-tb" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Tableau de bord ENA.</div>
+                    <div id="ena-content-docs" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Documents &amp; Fichiers ENA.</div>
+                    <div id="ena-content-unités" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Unités &amp; Sections ENA.</div>
+                    <div id="ena-content-plannings" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Plannings ENA.</div>
+                    <div id="ena-content-notes" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Notes &amp; Évaluations ENA.</div>
+                </div>
+            `;
+        }
+        
+        // Gestion des sous-onglets ENA
+        function switchEnaSubTab(tab) {
+            const tabs = ['tb', 'docs', 'formations', 'unités', 'plannings', 'notes'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`ena-tab-${t}`);
+                const content = document.getElementById(`ena-content-${t}`);
+                if (t === tab) {
+                    btn.className = "px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer";
+                    content.classList.add('hidden');
+                }
+            });
+        }
+        
+        function renderInstructorsCards() {
+            return instructorsList.map(inst => `
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-white text-xs">${inst.name}</h4>
+                        <span class="text-[10px] text-blue-400 block">${inst.role}</span>
+                    </div>
+                    <button onclick="deleteInstructor('${inst.id}')" class="text-slate-500 hover:text-red-400 text-xs transition cursor-pointer">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function renderFormationsRows() {
+            return formationsList.map(f => `
+                <tr>
+                    <td class="p-3 font-bold text-white">${f.name}</td>
+                    <td class="p-3 text-slate-300">${f.grade}</td>
+                    <td class="p-3 font-mono text-blue-400">${f.matricule}</td>
+                    <td class="p-3 text-slate-200">${f.formation}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">${f.score}</span></td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteFormationRecord('${f.id}')" class="px-2 py-1 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 rounded text-xs transition cursor-pointer">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function addInstructor(e) {
+            e.preventDefault();
+            instructorsList.push({ id: Date.now().toString(), name: document.getElementById('instructor-name').value, role: document.getElementById('instructor-role').value });
+            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
+        }
+        
+        function deleteInstructor(id) {
+            instructorsList = instructorsList.filter(i => i.id !== id);
+            document.getElementById('instructors-cards-grid').innerHTML = renderInstructorsCards();
+        }
+        
+        function addFormationRecord(e) {
+            e.preventDefault();
+            formationsList.push({
+                id: Date.now().toString(),
+                name: document.getElementById('add-mil-name').value,
+                grade: document.getElementById('add-mil-grade').value,
+                matricule: document.getElementById('add-mil-matricule').value,
+                formation: document.getElementById('add-mil-formation').value,
+                score: 'Admis (20/20)'
+            });
+            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
+        }
+        
+        function deleteFormationRecord(id) {
+            formationsList = formationsList.filter(f => f.id !== id);
+            document.getElementById('formations-table-body').innerHTML = renderFormationsRows();
+        }
+        
         // Navigation interne par catégorie
         function openCategory(categoryKey) {
             viewHome.classList.add('hidden');
             viewCategory.classList.remove('hidden');
-
+        
             const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
-
+        
             switch(categoryKey) {
                 case 'ENA':
-                    categoryContentContainer.innerHTML = `
-                        <h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-graduation-cap text-blue-400 mr-2"></i> ENA & Formations</h2>
-                        <p class="text-xs text-slate-400 mb-6">Module de gestion des examens et cursus militaires.</p>
-                        <div class="p-6 bg-slate-950 border border-slate-800 rounded-2xl text-xs text-slate-300">Emplacement prêt pour le script ENA.</div>
-                    `;
+                    renderEnaWorkspace();
                     break;
                 case 'FSF':
                     categoryContentContainer.innerHTML = `
