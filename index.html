@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="dark" data-accent="blue">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"f content="width=device-width, initial-scale=1.0">
     <title>Portail Stratégique & Opérationnel</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -340,13 +340,45 @@
             { id: '1', formation: '[FGI] Formation Générale Initiale', datetime: '2026-10-19T15:26', location: 'Sur BA FR', instructor: 'Colonel Alex GIROND' }
         ];
         
-        // Rendu du Workspace ENA
+        // Données dynamiques
+        let enaDocs = [
+            { id: '1', name: '[CAT1] Brevet Caporal ENA.pdf', size: '1.2 MB', date: '20/10/2026' }
+        ];
+        
+        let enaUnits = {
+            'CPA 10': [
+                { name: 'Capitaine Noli VELMONT', matricule: 'FS-027-FR', active: true },
+                { name: 'Soldat de 1er Classe Nino POTIER', matricule: 'JY-099-FR', active: true },
+                { name: 'Commandant Rosier Mathis', matricule: 'RM-002-FR', active: true },
+                { name: 'Sergent-Chef Simon RENARD', matricule: 'RT-767-FR', active: true }
+            ],
+            '4e RHFS': [
+                { name: 'Sous-Lieutenant Jake HARPER', matricule: 'ME-500-FR', active: true }
+            ],
+            '13e RDP': [
+                { name: '1e Classe VALMON marius', matricule: 'HG-452-VJ', active: true },
+                { name: '1e Classe APPOLOGNIA justinien', matricule: 'BC-654-TX', active: true }
+            ],
+            'Commandos Jaubert (marine)': [
+                { name: 'Capitaine de vaisseau Alex GIROND', matricule: 'AZ-051-DR', active: true },
+                { name: 'Lieutenant de vaisseau FOX John', matricule: 'BI-000-DC', active: true }
+            ],
+            'Groupe de Commandos Parachutistes (GCP)': [],
+            'N/A (Sans affectation)': [
+                { name: 'Soldat de 1er Classe Alice RENOIR', matricule: 'AF-109-FR', active: true },
+                { name: 'Soldat MATRAT Mike', matricule: 'GH-245-FR', active: false },
+                { name: 'Soldat HUBERT Julien', matricule: 'TY-356-FR', active: false },
+                { name: 'Soldat de 1er Classe ORNIDON Léo', matricule: 'OP-025-FR', active: false }
+            ]
+        };
+        
+        // Rendu principal ENA Workspace
         function renderEnaWorkspace() {
             categoryContentContainer.innerHTML = `
                 <div class="space-y-6">
-                    <!-- Barre de navigation des sous-onglets ENA -->
+                    <!-- Barre de sous-onglets ENA -->
                     <div class="flex items-center gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-medium">
-                        <button onclick="switchEnaSubTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
+                        <button onclick="switchEnaSubTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-chart-line"></i> Tableau de bord
                         </button>
                         <button onclick="switchEnaSubTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
@@ -358,7 +390,7 @@
                         <button onclick="switchEnaSubTab('unités')" id="ena-tab-unités" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-users-rectangle"></i> Unités &amp; Sections
                         </button>
-                        <button onclick="switchEnaSubTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-blue-600 text-white font-bold rounded-xl transition flex items-center gap-2 cursor-pointer">
+                        <button onclick="switchEnaSubTab('plannings')" id="ena-tab-plannings" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-calendar-days"></i> Plannings &amp; Sessions
                         </button>
                         <button onclick="switchEnaSubTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl transition flex items-center gap-2 cursor-pointer">
@@ -366,94 +398,105 @@
                         </button>
                     </div>
         
-                    <!-- CONTENU 1 : PLANNINGS & SESSIONS -->
-                    <div id="ena-content-plannings" class="space-y-6">
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                            
-                            <!-- Formulaire de programmation -->
-                            <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-solid fa-calendar-plus text-blue-400"></i> Programmer une Session
-                                </h3>
-                                <form onsubmit="addEnaSession(event)" class="space-y-3">
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Formation</label>
-                                        <select id="session-formation" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none focus:border-blue-500">
-                                            <option value="[FGI] Formation Générale Initiale">[FGI] Formation Générale Initiale</option>
-                                            <option value="[CAT1] Certificat d'Aptitude Technique 1">[CAT1] Certificat d'Aptitude Technique 1</option>
-                                            <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint &amp; Spécialiste</option>
-                                            <option value="[CDU] Cursus de Chef d'Unité">[CDU] Cursus de Chef d'Unité</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Date &amp; Heure</label>
-                                        <input type="datetime-local" id="session-datetime" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Lieu</label>
-                                        <input type="text" id="session-location" required placeholder="ex: Stand B / Sur BA FR" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Instructeur</label>
-                                        <select id="session-instructor" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none focus:border-blue-500">
-                                            <option value="Colonel Alex GIROND (Directeur de l'ENA)">Colonel Alex GIROND (Directeur de l'ENA)</option>
-                                            <option value="Commandant Mathis ROSIER">Commandant Mathis ROSIER</option>
-                                            <option value="Lieutenant Maël LIOGER">Lieutenant Maël LIOGER</option>
-                                            <option value="Capitaine John FOX">Capitaine John FOX</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer shadow-lg shadow-blue-950/50">
-                                        + Créer Session
-                                    </button>
-                                </form>
-                            </div>
+                    <!-- 1. TABLEAU DE BORD (Statistiques & Résumé) -->
+                    <div id="ena-content-tb" class="space-y-6">
+                        <!-- Filtre d'Unité -->
+                        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+                            <span class="text-xs font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-filter text-blue-400"></i> Filtrer les Statistiques par Unité :
+                            </span>
+                            <select onchange="filterDashboardStats(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none">
+                                <option value="all">Toutes les Unités</option>
+                                <option value="CPA 10">CPA 10</option>
+                                <option value="13e RDP">13e RDP</option>
+                                <option value="Commandos Jaubert (marine)">Commandos Jaubert</option>
+                                <option value="4e RHFS">4e RHFS</option>
+                            </select>
+                        </div>
         
-                            <!-- Cartes des Sessions Planifiées -->
-                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-solid fa-list-ul text-blue-400"></i> Sessions Planifiées
-                                </h3>
-                                <div id="sessions-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[450px] overflow-y-auto pr-1">
-                                    ${renderEnaSessionsCards()}
+                        <!-- 4 Cartes d'indicateurs -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl"><i class="fa-solid fa-users text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">Total Militaires</span><span class="text-xl font-black text-white" id="stat-total-militaires">15</span></div>
+                            </div>
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl"><i class="fa-solid fa-circle-check text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">Taux de Réussite</span><span class="text-xl font-black text-emerald-400">100%</span></div>
+                            </div>
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl"><i class="fa-solid fa-stethoscope text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">VMA à Renouveler (&lt;15J)</span><span class="text-xl font-black text-amber-400">0</span></div>
+                            </div>
+                            <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-4">
+                                <div class="p-3 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl"><i class="fa-solid fa-heart-crack text-xl"></i></div>
+                                <div><span class="text-[10px] text-slate-400 uppercase font-bold block">VMA Périmées (&gt;2 mois)</span><span class="text-xl font-black text-red-400">0</span></div>
+                            </div>
+                        </div>
+        
+                        <!-- Résumé opérationnel & Dernières évaluations -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <div class="lg:col-span-7 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-400"></i> Dernières Formations Évaluées</h3>
+                                <div class="divide-y divide-slate-800/60 text-xs text-slate-300">
+                                    <div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">Capitaine Noli VELMONT</span><span class="text-[10px] text-slate-500">[CDU] Cursus de Chef d'Unité</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></div>
+                                    <div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">Capitaine Noli VELMONT</span><span class="text-[10px] text-slate-500">[FG2 / BSTAT] Brevet d'Adjoint</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></div>
                                 </div>
                             </div>
-        
+                            <div class="lg:col-span-5 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-bullhorn text-amber-400"></i> Résumé Opérationnel</h3>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Validées (Admis)</span><span class="font-bold text-emerald-400">3</span></div>
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Ajournées (Échecs)</span><span class="font-bold text-red-400">0</span></div>
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Demandes en Attente d'Examen</span><span class="font-bold text-amber-400">0</span></div>
+                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Inaptitudes temporaires (GITA)</span><span class="font-bold text-slate-400">0</span></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
         
-                    <!-- CONTENU 2 : NOTES & DIRECTIVES -->
-                    <div id="ena-content-notes" class="hidden space-y-4">
-                        <div class="flex items-center gap-2">
-                            <button onclick="createNewEnaNote()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg">
-                                <i class="fa-solid fa-plus"></i> Nouvelle Note
-                            </button>
-                            <button onclick="printSelectedNote()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg">
-                                <i class="fa-solid fa-file-pdf"></i> Imprimer Note (PDF)
-                            </button>
+                    <!-- 2. DOCUMENTS & FICHIERS -->
+                    <div id="ena-content-docs" class="hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <label class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-2 shadow-lg">
+                                <i class="fa-solid fa-file-arrow-up"></i> Importer Fichiers (Photos, PDF...)
+                                <input type="file" id="file-uploader" onchange="uploadEnaFile(event)" class="hidden" multiple>
+                            </label>
+                            <span class="text-[11px] text-slate-500 font-mono"><i class="fa-solid fa-cloud"></i> Stockage local sécurisé</span>
                         </div>
         
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                            <!-- Liste des notes à gauche -->
                             <div class="lg:col-span-4 bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2 max-h-[500px] overflow-y-auto">
-                                <div id="notes-list-container" class="space-y-2">
-                                    ${renderEnaNotesList()}
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Fichiers Enregistrés</h3>
+                                <div id="docs-list-container" class="space-y-2">
+                                    ${renderEnaDocsList()}
                                 </div>
                             </div>
-        
-                            <!-- Affichage / Éditeur de la note sélectionnée à droite -->
-                            <div class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between min-h-[350px]">
-                                <div id="note-editor-container" class="space-y-4">
-                                    ${renderSelectedNoteEditor()}
-                                </div>
+                            <div id="doc-preview-container" class="lg:col-span-8 bg-slate-950/80 border border-slate-800 rounded-2xl p-6 flex flex-col justify-center items-center text-slate-500 text-xs min-h-[350px]">
+                                <i class="fa-solid fa-file-pdf text-4xl mb-2 text-slate-700"></i>
+                                <span>Sélectionnez un document à gauche pour prévisualiser</span>
                             </div>
                         </div>
                     </div>
         
-                    <!-- CONTENU DES AUTRES SOUS-ONGLETS -->
-                    <div id="ena-content-tb" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Tableau de bord ENA.</div>
-                    <div id="ena-content-docs" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Documents &amp; Fichiers ENA.</div>
-                    <div id="ena-content-formations" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Formations ENA.</div>
-                    <div id="ena-content-unités" class="hidden p-6 bg-slate-950/80 border border-slate-800 rounded-2xl text-xs text-slate-400">Section Unités &amp; Sections ENA.</div>
+                    <!-- 3. UNITÉS & SECTIONS -->
+                    <div id="ena-content-unités" class="hidden space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <div>
+                                <h3 class="text-sm font-bold text-white flex items-center gap-2"><i class="fa-solid fa-users-rectangle text-blue-400"></i> Répertoire des Unités Forces Spéciales</h3>
+                                <p class="text-[11px] text-slate-400">Effectifs engagés par régiment spécialisé</p>
+                            </div>
+                        </div>
+        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            ${renderEnaUnitsCards()}
+                        </div>
+                    </div>
+        
+                    <!-- CONTENUS PRÉCÉDENTS (Formations, Plannings, Notes) -->
+                    <div id="ena-content-formations" class="hidden space-y-6"></div>
+                    <div id="ena-content-plannings" class="hidden space-y-6"></div>
+                    <div id="ena-content-notes" class="hidden space-y-4"></div>
                 </div>
             `;
         }
