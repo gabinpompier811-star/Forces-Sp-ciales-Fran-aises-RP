@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Stratégique & Opérationnel FSF / ENA - Complet & Sync</title>
+    <title>Portail Stratégique FSF / ENA - Système Complet</title>
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Firebase SDK Compat (App & Realtime Database) -->
+    <!-- Firebase Realtime DB SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -23,53 +23,46 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #090d16; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- 1. PAGE DE CONNEXION -->
+    <!-- 1. ÉCRAN DE CONNEXION -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <div class="w-full max-w-md custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-3">
                 <div class="inline-flex p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 shadow-inner">
-                    <i class="fa-solid fa-wifi text-4xl animate-pulse"></i>
+                    <i class="fa-solid fa-shield-halved text-4xl"></i>
                 </div>
-                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL DE COMMANDEMENT</h1>
-                <p class="text-xs text-slate-400">Connexion Réseau Synchronisée Live</p>
+                <h1 class="text-2xl font-black tracking-wider text-white">PORTAIL D'ACCÈS SÉCURISÉ</h1>
+                <p class="text-xs text-slate-400">Authentification &amp; Réseau Realtime DB</p>
             </div>
 
             <form id="auth-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Identifiant / Email</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
-                        <input type="email" id="user-email" required placeholder="gabinpompier811@gmail.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 outline-none text-slate-100">
-                    </div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Adresse E-mail</label>
+                    <input type="email" id="user-email" required placeholder="gabinpompier811@gmail.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-slate-100">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Mot de passe</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
-                        <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm focus:border-blue-500 outline-none text-slate-100">
-                    </div>
+                    <input type="password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 outline-none text-slate-100">
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg cursor-pointer">
-                    Connexion au Système <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                    Connexion au Réseau <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- 2. MODAL CONFIGURATION PROFIL -->
+    <!-- 2. MODAL D'INITIALISATION DU PSEUDO -->
     <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-lg custom-card border rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
                 <div class="inline-flex p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 mb-1">
                     <i class="fa-solid fa-user-gear text-3xl"></i>
                 </div>
-                <h2 class="text-xl font-bold text-white">Initialisation du Profil Opérateur</h2>
-                <p class="text-xs text-slate-400">Renseignez votre nom d'affichage et votre matricule</p>
+                <h2 class="text-xl font-bold text-white">Création du Profil Opérateur</h2>
+                <p class="text-xs text-slate-400">Renseignez vos identifiants de service</p>
             </div>
 
             <form id="profile-form" class="space-y-4 text-xs">
@@ -81,12 +74,34 @@
                     <label class="block font-bold text-slate-300 mb-1.5">Matricule / Code Opérateur</label>
                     <input type="text" id="input-matricule" placeholder="ex: FS-027-FR" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 outline-none">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">Valider le Profil <i class="fa-solid fa-check ml-2"></i></button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">Soumettre pour Validation <i class="fa-solid fa-paper-plane ml-2"></i></button>
             </form>
         </div>
     </div>
 
-    <!-- 3. TABLEAU DE BORD PRINCIPAL -->
+    <!-- 3. PAGE DE PATIENTEMENT (EN ATTENTE DE VALIDATION FONDATION) -->
+    <div id="pending-approval-screen" class="hidden flex-1 flex items-center justify-center p-4 bg-slate-950">
+        <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-6">
+            <div class="inline-flex p-4 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 animate-pulse">
+                <i class="fa-solid fa-clock-rotate-left text-4xl"></i>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-black text-white">COMPTE EN ATTENTE DE VALIDATION</h2>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Votre demande d'accès a bien été transmise aux administrateurs de la <span class="text-purple-400 font-bold">Fondation</span>.<br>
+                    Veuillez patienter pendant l'attribution de vos permis d'accès.
+                </p>
+            </div>
+            <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-left space-y-1 font-mono text-[11px] text-slate-400">
+                <div class="flex justify-between"><span>Identifiant:</span> <span id="pending-user-email" class="text-white">---</span></div>
+                <div class="flex justify-between"><span>Statut du compte:</span> <span class="text-amber-400 font-bold">En attente de revue Staff</span></div>
+            </div>
+            <p class="text-[10px] text-slate-500 italic">Cette page se débloquera automatiquement dès validation par le Staff.</p>
+            <button onclick="logout()" class="px-4 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 rounded-xl text-xs font-bold transition">Déconnexion</button>
+        </div>
+    </div>
+
+    <!-- 4. TABLEAU DE BORD PRINCIPAL -->
     <div id="main-dashboard" class="hidden flex-1 flex flex-col">
         <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-3">
@@ -96,7 +111,7 @@
                 <div>
                     <span class="font-black tracking-widest text-sm text-white block">PORTAIL DE COMMANDEMENT</span>
                     <span class="text-[10px] text-emerald-400 uppercase tracking-wide flex items-center gap-1 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Realtime DB Synced
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Realtime DB Connected
                     </span>
                 </div>
             </div>
@@ -110,92 +125,28 @@
                     <i class="fa-solid fa-gear text-blue-400"></i>
                     <span class="hidden md:inline">Paramètres</span>
                 </button>
-                <button id="logout-btn" class="p-2.5 bg-red-950/50 hover:bg-red-900/80 border border-red-800/60 text-red-300 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <button onclick="logout()" class="p-2.5 bg-red-950/50 hover:bg-red-900/80 border border-red-800/60 text-red-300 rounded-xl transition flex items-center gap-2 text-xs font-bold cursor-pointer">
                     <i class="fa-solid fa-power-off"></i>
                 </button>
             </div>
         </header>
 
         <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
-            <!-- VUE ACCUEIL -->
+            <!-- ACCUEIL CATEGORIES -->
             <div id="view-home" class="space-y-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-6">
                     <div>
                         <h2 class="text-2xl font-black text-white tracking-wide">SÉLECTIONNEZ VOTRE ESPACE</h2>
-                        <p class="text-xs text-slate-400 mt-1">Accès direct aux départements opérationnels</p>
+                        <p class="text-xs text-slate-400 mt-1">Accès autorisé selon vos permissions accordées par la Fondation</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <button onclick="openCategory('ENA')" class="group text-left custom-card border hover:border-blue-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-graduation-cap text-2xl"></i></div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition">ENA &amp; Formations</h3>
-                            <p class="text-xs text-slate-400">Tableau de bord, documents, instructeurs, unités, plannings et notes.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-blue-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                        </div>
-                    </button>
-
-                    <button onclick="openCategory('FSF')" class="group text-left custom-card border hover:border-red-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-user-ninja text-2xl"></i></div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-red-400 transition">Forces Spéciales Françaises</h3>
-                            <p class="text-xs text-slate-400">Dossiers opérateurs, aptitudes médicales VMA et tirs.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-red-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                        </div>
-                    </button>
-
-                    <button onclick="openCategory('COS_EMA')" class="group text-left custom-card border hover:border-amber-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-star text-2xl"></i></div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-amber-400 transition">COS / EMA</h3>
-                            <p class="text-xs text-slate-400">Commandement des Opérations &amp; État-Major.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-amber-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                        </div>
-                    </button>
-
-                    <button onclick="openCategory('ADMINISTRATION')" class="group text-left custom-card border hover:border-emerald-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-folder-tree text-2xl"></i></div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-emerald-400 transition">Administration</h3>
-                            <p class="text-xs text-slate-400">Gestion des dossiers officiels, fichiers et registres.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-emerald-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                        </div>
-                    </button>
-
-                    <button onclick="openCategory('FONDATION')" class="group text-left custom-card border hover:border-purple-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-purple-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-shield-cat text-2xl"></i></div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-purple-400 transition">Fondation (Staff)</h3>
-                            <p class="text-xs text-slate-400">Espace modérateurs, rôles, validations et logs du staff.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-purple-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                        </div>
-                    </button>
-
-                    <button onclick="openCategory('REGIMENTS')" class="group text-left custom-card border hover:border-cyan-500/60 p-6 rounded-3xl transition-all shadow-xl cursor-pointer flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <div class="p-3.5 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 w-fit group-hover:scale-110 transition"><i class="fa-solid fa-person-military-rifle text-2xl"></i></div>
-                            <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition">Régiments</h3>
-                            <p class="text-xs text-slate-400">Répertoire des effectifs spécialisés.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-cyan-400 font-semibold">
-                            <span>Accéder</span> <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-                        </div>
-                    </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="categories-grid">
+                    <!-- Généré dynamiquement selon les perms du membre -->
                 </div>
             </div>
 
-            <!-- VUE CATEGORIE DYNAMIQUE -->
+            <!-- CONTENU DYNAMIQUE DES CATEGORIES -->
             <div id="view-category" class="hidden space-y-6">
                 <button onclick="goHome()" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-arrow-left"></i> Retour au menu principal
@@ -205,18 +156,18 @@
         </main>
     </div>
 
-    <!-- 4. PANNEAU PARAMÈTRES AVANCÉS -->
+    <!-- 5. PANNEAU DE PARAMÈTRES AVANCÉS -->
     <div id="settings-drawer" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex justify-end">
         <div class="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 shadow-2xl space-y-6 flex flex-col justify-between overflow-y-auto">
             <div class="space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-sliders text-blue-400"></i> Paramètres Avancés</h3>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-sliders text-blue-400"></i> Paramètres</h3>
                     <button id="close-settings-btn" class="p-2 text-slate-400 hover:text-white rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
 
                 <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
                     <div class="flex justify-between items-center">
-                        <label class="text-xs font-bold text-slate-300 flex items-center gap-2"><i class="fa-solid fa-sun text-amber-400"></i> Luminosité de l'Écran</label>
+                        <label class="text-xs font-bold text-slate-300"><i class="fa-solid fa-sun text-amber-400 mr-2"></i>Luminosité</label>
                         <span id="brightness-value" class="text-xs font-mono font-bold text-blue-400">100%</span>
                     </div>
                     <input type="range" id="brightness-range" min="30" max="100" value="100" class="w-full accent-blue-500 cursor-pointer">
@@ -225,25 +176,23 @@
                 <div class="space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
                     <label class="text-xs font-bold text-slate-300 block">Thème Graphique</label>
                     <div class="grid grid-cols-3 gap-2 text-xs">
-                        <button onclick="setTheme('dark')" class="p-2.5 bg-slate-900 border border-slate-700 hover:border-blue-500 rounded-xl text-center font-bold">Sombre</button>
-                        <button onclick="setTheme('deep-night')" class="p-2.5 bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl text-center font-bold">Nuit</button>
-                        <button onclick="setTheme('neon')" class="p-2.5 bg-indigo-950/40 border border-indigo-800 hover:border-indigo-500 rounded-xl text-center font-bold">Néon</button>
+                        <button onclick="setTheme('dark')" class="p-2.5 bg-slate-900 border border-slate-700 hover:border-blue-500 rounded-xl font-bold">Sombre</button>
+                        <button onclick="setTheme('deep-night')" class="p-2.5 bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl font-bold">Nuit</button>
+                        <button onclick="setTheme('neon')" class="p-2.5 bg-indigo-950/40 border border-indigo-800 hover:border-indigo-500 rounded-xl font-bold">Néon</button>
                     </div>
                 </div>
 
                 <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <h4 class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2"><i class="fa-solid fa-user text-blue-400"></i> Modifier mon profil</h4>
-                    <button id="edit-profile-btn" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-pen-to-square"></i> Pseudo &amp; Matricule
-                    </button>
+                    <h4 class="text-xs font-bold text-slate-300 mb-2"><i class="fa-solid fa-user text-blue-400 mr-2"></i>Profil</h4>
+                    <button id="edit-profile-btn" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs py-2.5 rounded-xl font-bold">Modifier Pseudo / Matricule</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 5. JAVASCRIPT REALTIME COMPLET -->
+    <!-- 6. JAVASCRIPT LOGIQUE & FIREBASE REALTIME DB -->
     <script>
-        // CONFIGURATION REALTIME DATABASE
+        // CONFIG REALTIME DB
         const firebaseConfig = {
             databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app"
         };
@@ -251,11 +200,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let userProfile = JSON.parse(localStorage.getItem('fsf_user_profile')) || null;
-        let selectedNoteId = null;
+        let currentUser = JSON.parse(localStorage.getItem('fsf_user_session')) || null;
+        let selectedNoteKey = null;
 
-        // Éléments DOM
         const authScreen = document.getElementById('auth-screen');
+        const pendingApprovalScreen = document.getElementById('pending-approval-screen');
         const mainDashboard = document.getElementById('main-dashboard');
         const authForm = document.getElementById('auth-form');
         const profileModal = document.getElementById('profile-modal');
@@ -269,42 +218,122 @@
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('user-email').value;
-            userProfile = { email: email, username: email.split('@')[0], matricule: 'FS-001-FR' };
-            localStorage.setItem('fsf_user_profile', JSON.stringify(userProfile));
+            currentUser = { email: email, isOwner: email === 'gabinpompier811@gmail.com' };
+            localStorage.setItem('fsf_user_session', JSON.stringify(currentUser));
             authScreen.classList.add('hidden');
-            if (!userProfile.usernameSet) {
-                profileModal.classList.remove('hidden');
-            } else {
-                loadDashboard();
-            }
+            checkUserApprovalState();
         });
 
         profileForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            userProfile.username = document.getElementById('input-username').value;
-            userProfile.matricule = document.getElementById('input-matricule').value || 'FS-001-FR';
-            userProfile.usernameSet = true;
-            localStorage.setItem('fsf_user_profile', JSON.stringify(userProfile));
+            const username = document.getElementById('input-username').value;
+            const matricule = document.getElementById('input-matricule').value || 'FS-001-FR';
+            
+            // Envoyer la demande d'accès à la Fondation dans la Realtime DB
+            db.ref('pending_requests').push({
+                email: currentUser.email,
+                username: username,
+                matricule: matricule,
+                date: new Date().toLocaleString('fr-FR')
+            });
+
             profileModal.classList.add('hidden');
-            loadDashboard();
+            checkUserApprovalState();
         });
 
+        // VERIFICATION TEMPS RÉEL DE L'APPROBATION D'UN COMPTE
+        function checkUserApprovalState() {
+            if (!currentUser) return;
+
+            // Le Fondateur Suprême passe directement sans restriction
+            if (currentUser.isOwner) {
+                currentUser.username = "Fondateur Suprême";
+                currentUser.matricule = "FS-001-OWNER";
+                currentUser.perms = ['ENA', 'FSF', 'COS', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'];
+                loadDashboard();
+                return;
+            }
+
+            document.getElementById('pending-user-email').textContent = currentUser.email;
+
+            // Écouter si l'utilisateur est validé dans la table `users`
+            db.ref('users').on('value', snapshot => {
+                const users = snapshot.val();
+                let foundUser = null;
+                if (users) {
+                    Object.keys(users).forEach(k => {
+                        if (users[k].email === currentUser.email) foundUser = users[k];
+                    });
+                }
+
+                if (foundUser) {
+                    // UTILISATEUR VALIDÉ !
+                    currentUser.username = foundUser.username || currentUser.email;
+                    currentUser.matricule = foundUser.matricule || 'FS-000-FR';
+                    currentUser.perms = foundUser.perms || ['ENA'];
+                    pendingApprovalScreen.classList.add('hidden');
+                    loadDashboard();
+                } else {
+                    // PAS ENCORE VALIDÉ -> S'ASSURER QU'IL EST EN DEMANDE PENDANTE
+                    db.ref('pending_requests').once('value', pSnap => {
+                        const pendings = pSnap.val();
+                        let isPending = false;
+                        if (pendings) {
+                            Object.values(pendings).forEach(p => { if (p.email === currentUser.email) isPending = true; });
+                        }
+
+                        if (!isPending) {
+                            profileModal.classList.remove('hidden');
+                        } else {
+                            pendingApprovalScreen.classList.remove('hidden');
+                        }
+                    });
+                }
+            });
+        }
+
         function loadDashboard() {
-            document.getElementById('display-username').textContent = userProfile.username;
-            document.getElementById('display-matricule').textContent = userProfile.matricule;
+            document.getElementById('display-username').textContent = currentUser.username;
+            document.getElementById('display-matricule').textContent = currentUser.matricule;
+            renderCategoryGrid();
             mainDashboard.classList.remove('hidden');
+        }
+
+        function renderCategoryGrid() {
+            const grid = document.getElementById('categories-grid');
+            const perms = currentUser.perms || [];
+
+            const cats = [
+                { key: 'ENA', title: 'ENA & Formations', desc: 'Tableau de bord, documents, instructeurs, unités, plannings, notes.', icon: 'fa-graduation-cap', color: 'blue' },
+                { key: 'FSF', title: 'Forces Spéciales Françaises', desc: 'Dossiers opérateurs, VMA et aptitudes.', icon: 'fa-user-ninja', color: 'red' },
+                { key: 'COS_EMA', title: 'COS / EMA', desc: 'Commandement des Opérations & État-Major.', icon: 'fa-star', color: 'amber' },
+                { key: 'ADMINISTRATION', title: 'Administration', desc: 'Gestion des dossiers et registres.', icon: 'fa-folder-tree', color: 'emerald' },
+                { key: 'FONDATION', title: 'Fondation (Staff)', desc: 'Validations, gestion membres, messagerie & logs.', icon: 'fa-shield-cat', color: 'purple' },
+                { key: 'REGIMENTS', title: 'Régiments', desc: 'Répertoire des unités spécialisées.', icon: 'fa-person-military-rifle', color: 'cyan' }
+            ];
+
+            grid.innerHTML = cats.map(c => {
+                const hasAccess = currentUser.isOwner || perms.includes(c.key);
+                return `
+                    <button onclick="${hasAccess ? `openCategory('${c.key}')` : ''}" class="group text-left custom-card border ${hasAccess ? `hover:border-${c.color}-500/60 cursor-pointer` : 'opacity-40 cursor-not-allowed'} p-6 rounded-3xl transition-all shadow-xl flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-3.5 bg-${c.color}-500/10 border border-${c.color}-500/20 rounded-2xl text-${c.color}-400 w-fit"><i class="fa-solid ${c.icon} text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-white">${c.title}</h3>
+                            <p class="text-xs text-slate-400">${c.desc}</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-${c.color}-400 font-semibold">
+                            <span>${hasAccess ? 'Accéder' : 'Accès Restreint (Fondation)'}</span> <i class="fa-solid ${hasAccess ? 'fa-chevron-right' : 'fa-lock'}"></i>
+                        </div>
+                    </button>
+                `;
+            }).join('');
         }
 
         function openCategory(key) {
             viewHome.classList.add('hidden');
             viewCategory.classList.remove('hidden');
-            const isSuperAdmin = userProfile && userProfile.email === "gabinpompier811@gmail.com";
             if (key === 'ENA') renderEnaWorkspace();
-            if (key === 'FONDATION') renderFondationWorkspace(isSuperAdmin);
-            if (key === 'FSF') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-user-ninja text-red-400 mr-2"></i> FSF - Opérateurs</h2><p class="text-xs text-slate-400">Espace FSF en direct.</p>`;
-            if (key === 'COS_EMA') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-star text-amber-400 mr-2"></i> COS / EMA</h2><p class="text-xs text-slate-400">Espace État-Major.</p>`;
-            if (key === 'ADMINISTRATION') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-folder-tree text-emerald-400 mr-2"></i> Administration</h2><p class="text-xs text-slate-400">Espace Registres.</p>`;
-            if (key === 'REGIMENTS') categoryContentContainer.innerHTML = `<h2 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-person-military-rifle text-cyan-400 mr-2"></i> Régiments</h2><p class="text-xs text-slate-400">Espace Régiments.</p>`;
+            if (key === 'FONDATION') renderFondationWorkspace();
         }
 
         function goHome() {
@@ -312,47 +341,65 @@
             viewHome.classList.remove('hidden');
         }
 
+        function logout() {
+            localStorage.removeItem('fsf_user_session');
+            location.reload();
+        }
+
         // ==========================================
-        //  MODULE FONDATION (STAFF, ROLES, LOGS DB)
+        //  MODULE FONDATION (STAFF, TCHAT, PERMS, BANS)
         // ==========================================
-        function renderFondationWorkspace(isSuperAdmin) {
+        function renderFondationWorkspace() {
             categoryContentContainer.innerHTML = `
                 <div class="space-y-6">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                         <div>
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Administration Live</h2>
-                            <p class="text-xs text-slate-400">Gestion des rôles, validations et suivi du staff</p>
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-shield-cat text-purple-400"></i> Fondation - Centre de Commandement Staff</h2>
+                            <p class="text-xs text-slate-400">Gestion des utilisateurs, exclusions, canaux de discussion et logs</p>
                         </div>
-                        <span class="px-3 py-1 bg-purple-950 border border-purple-800 text-purple-300 text-xs font-semibold rounded-full">${isSuperAdmin ? 'Fondateur' : 'Modérateur'}</span>
                     </div>
 
-                    <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold">
+                    <div class="flex gap-2 border-b border-slate-800 pb-2 text-xs font-bold overflow-x-auto">
                         <button onclick="switchFondationTab('validations')" id="f-btn-validations" class="px-4 py-2 bg-purple-600 text-white rounded-xl cursor-pointer">Validations en Attente</button>
-                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Gestion Opérateurs</button>
+                        <button onclick="switchFondationTab('users')" id="f-btn-users" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Gestion des Membres &amp; Exclusions</button>
+                        <button onclick="switchFondationTab('chat')" id="f-btn-chat" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Messagerie / Canal Staff</button>
                         <button onclick="switchFondationTab('logs')" id="f-btn-logs" class="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Logs Staff</button>
                     </div>
 
+                    <!-- 1. VALIDATIONS -->
                     <div id="f-content-validations" class="space-y-3">
                         <div id="pending-list-container" class="space-y-3"></div>
                     </div>
 
+                    <!-- 2. GESTION UTILISATEURS & BANS -->
                     <div id="f-content-users" class="hidden space-y-3">
-                        <div id="users-list-container" class="space-y-2"></div>
+                        <div id="users-list-container" class="space-y-3"></div>
                     </div>
 
+                    <!-- 3. TCHAT STAFF DÉDIÉ -->
+                    <div id="f-content-chat" class="hidden space-y-4">
+                        <div id="staff-chat-messages" class="p-4 bg-slate-950 border border-slate-800 rounded-2xl h-[300px] overflow-y-auto space-y-2 text-xs"></div>
+                        <form onsubmit="sendStaffMessageDB(event)" class="flex gap-2">
+                            <input type="text" id="staff-chat-input" required placeholder="Saisissez un message de service..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none">
+                            <button type="submit" class="px-5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs cursor-pointer">Envoyer</button>
+                        </form>
+                    </div>
+
+                    <!-- 4. LOGS STAFF -->
                     <div id="f-content-logs" class="hidden space-y-3">
                         <div id="logs-list-container" class="font-mono text-xs text-slate-400 space-y-1 max-h-[300px] overflow-y-auto bg-slate-950 p-4 border border-slate-800 rounded-xl"></div>
                     </div>
                 </div>
             `;
 
-            listenPendingDB();
+            listenPendingRequestsDB();
             listenUsersDB();
+            listenStaffChatDB();
             listenLogsDB();
         }
 
         function switchFondationTab(tab) {
-            ['validations', 'users', 'logs'].forEach(t => {
+            ['validations', 'users', 'chat', 'logs'].forEach(t => {
                 const el = document.getElementById(`f-content-${t}`);
                 const btn = document.getElementById(`f-btn-${t}`);
                 if (t === tab) {
@@ -365,26 +412,34 @@
             });
         }
 
-        function listenPendingDB() {
+        function listenPendingRequestsDB() {
             db.ref('pending_requests').on('value', snapshot => {
                 const container = document.getElementById('pending-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucune demande en attente.</p>`; return; }
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucune demande d'accès en attente.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
                     const req = data[key];
                     return `
-                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div><span class="font-bold text-white text-sm block">${req.email || req.name}</span><span class="text-xs text-slate-400">Demande d'accès</span></div>
-                            <div class="flex items-center gap-2">
-                                <div class="grid grid-cols-3 gap-2 text-[10px] bg-slate-900 p-2 rounded-lg border border-slate-800">
-                                    <label><input type="checkbox" checked id="p-${key}-ena" class="accent-purple-500"> ENA</label>
-                                    <label><input type="checkbox" checked id="p-${key}-fsf" class="accent-purple-500"> FSF</label>
-                                    <label><input type="checkbox" id="p-${key}-fondation" class="accent-purple-500"> Fondation</label>
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <span class="font-bold text-white text-sm block">${req.username} (${req.email})</span>
+                                <span class="text-xs text-blue-400 font-mono">Matricule : ${req.matricule}</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                                <div class="grid grid-cols-3 gap-2 text-[11px] bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-ENA" class="accent-purple-500"> ENA</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked id="p-${key}-FSF" class="accent-purple-500"> FSF</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-COS_EMA" class="accent-purple-500"> COS</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-ADMINISTRATION" class="accent-purple-500"> Admin</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-FONDATION" class="accent-purple-500"> Fondation</label>
+                                    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="p-${key}-REGIMENTS" class="accent-purple-500"> Régiments</label>
                                 </div>
-                                <button onclick="acceptPendingDB('${key}', '${req.email || req.name}')" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl cursor-pointer">Accepter</button>
-                                <button onclick="refusePendingDB('${key}', '${req.email || req.name}')" class="px-3 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl cursor-pointer">Refuser</button>
+                                <div class="flex gap-2">
+                                    <button onclick="approveUserDB('${key}', '${req.email}', '${req.username}', '${req.matricule}')" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl cursor-pointer">Accepter</button>
+                                    <button onclick="refuseUserDB('${key}', '${req.email}')" class="px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl cursor-pointer">Refuser</button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -392,20 +447,26 @@
             });
         }
 
-        function acceptPendingDB(key, email) {
+        function approveUserDB(reqKey, email, username, matricule) {
             const perms = [];
-            if (document.getElementById(`p-${key}-ena`)?.checked) perms.push('ENA');
-            if (document.getElementById(`p-${key}-fsf`)?.checked) perms.push('FSF');
-            if (document.getElementById(`p-${key}-fondation`)?.checked) perms.push('Fondation');
+            ['ENA', 'FSF', 'COS_EMA', 'ADMINISTRATION', 'FONDATION', 'REGIMENTS'].forEach(m => {
+                if (document.getElementById(`p-${reqKey}-${m}`)?.checked) perms.push(m);
+            });
 
-            db.ref('users').push({ name: email, perms: perms, role: perms.includes('Fondation') ? 'Staff Modérateur' : 'Opérateur Validé' });
-            db.ref('pending_requests/' + key).remove();
-            db.ref('logs').push({ action: "Validation de " + email + " [Perms: " + perms.join(', ') + "]", date: new Date().toLocaleString() });
+            db.ref('users').push({
+                email: email,
+                username: username,
+                matricule: matricule,
+                perms: perms
+            });
+
+            db.ref('pending_requests/' + reqKey).remove();
+            db.ref('logs').push({ action: "Approbation du membre " + username + " (" + email + ")", date: new Date().toLocaleString('fr-FR') });
         }
 
-        function refusePendingDB(key, email) {
-            db.ref('pending_requests/' + key).remove();
-            db.ref('logs').push({ action: "Refus de la demande pour " + email, date: new Date().toLocaleString() });
+        function refuseUserDB(reqKey, email) {
+            db.ref('pending_requests/' + reqKey).remove();
+            db.ref('logs').push({ action: "Refus d'accès pour " + email, date: new Date().toLocaleString('fr-FR') });
         }
 
         function listenUsersDB() {
@@ -413,23 +474,80 @@
                 const container = document.getElementById('users-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucun utilisateur.</p>`; return; }
+                if (!data) { container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 text-center">Aucun utilisateur approuvé dans le système.</p>`; return; }
 
                 container.innerHTML = Object.keys(data).map(key => {
                     const u = data[key];
                     return `
-                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex justify-between items-center text-xs">
-                            <div><span class="font-bold text-white block">${u.name}</span><span class="text-emerald-400 font-mono">${(u.perms || []).join(', ')}</span></div>
-                            <button onclick="banUserDB('${key}', '${u.name}')" class="px-2.5 py-1 bg-red-950 text-red-300 border border-red-800 rounded font-bold cursor-pointer">Bannir</button>
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-bold text-white text-sm block">${u.username} (${u.email})</span>
+                                <span class="text-emerald-400 font-mono text-[11px]">Permis : ${(u.perms || []).join(', ')}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editUserPermsPrompt('${key}', '${u.username}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-bold cursor-pointer">Modifier</button>
+                                <button onclick="excludeUserDB('${key}', '${u.username}')" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-lg font-bold cursor-pointer">Exclure / Bannir</button>
+                            </div>
                         </div>
                     `;
                 }).join('');
             });
         }
 
-        function banUserDB(key, name) {
-            db.ref('users/' + key).remove();
-            db.ref('logs').push({ action: "Bannissement de " + name, date: new Date().toLocaleString() });
+        function excludeUserDB(userKey, username) {
+            db.ref('users/' + userKey).remove();
+            db.ref('logs').push({ action: "Exclusion / Bannissement de l'utilisateur " + username, date: new Date().toLocaleString('fr-FR') });
+        }
+
+        function editUserPermsPrompt(userKey, username) {
+            const newPermsStr = prompt("Entrez les catégories autorisées séparées par une virgule (ex: ENA,FSF,FONDATION) pour " + username + " :");
+            if (newPermsStr !== null) {
+                const permsArray = newPermsStr.split(',').map(s => s.trim().toUpperCase());
+                db.ref('users/' + userKey + '/perms').set(permsArray);
+                db.ref('logs').push({ action: "Mise à jour des accès pour " + username + " -> " + permsArray.join(', '), date: new Date().toLocaleString('fr-FR') });
+            }
+        }
+
+        // TCHAT STAFF LIVE
+        function listenStaffChatDB() {
+            db.ref('staff_chat').on('value', snapshot => {
+                const container = document.getElementById('staff-chat-messages');
+                if (!container) return;
+                const data = snapshot.val();
+                if (!data) { container.innerHTML = `<p class="text-slate-500 italic text-center p-4">Aucun message dans le canal Staff.</p>`; return; }
+
+                container.innerHTML = Object.keys(data).map(key => {
+                    const m = data[key];
+                    return `
+                        <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-purple-400 mr-2">${m.author}:</span>
+                                <span class="text-slate-200">${m.text}</span>
+                                <span class="block text-[9px] text-slate-500 font-mono mt-0.5">${m.date}</span>
+                            </div>
+                            <button onclick="deleteStaffMessageDB('${key}')" class="text-slate-600 hover:text-red-400 text-xs p-1"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    `;
+                }).join('');
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        function sendStaffMessageDB(e) {
+            e.preventDefault();
+            const input = document.getElementById('staff-chat-input');
+            if (input && input.value.trim() !== '') {
+                db.ref('staff_chat').push({
+                    author: currentUser.username,
+                    text: input.value.trim(),
+                    date: new Date().toLocaleTimeString('fr-FR')
+                });
+                input.value = '';
+            }
+        }
+
+        function deleteStaffMessageDB(key) {
+            db.ref('staff_chat/' + key).remove();
         }
 
         function listenLogsDB() {
@@ -437,7 +555,7 @@
                 const container = document.getElementById('logs-list-container');
                 if (!container) return;
                 const data = snapshot.val();
-                if (!data) { container.innerHTML = `<div>• Aucun log en cours.</div>`; return; }
+                if (!data) { container.innerHTML = `<div>• Aucun journal d'événement enregistrés.</div>`; return; }
                 container.innerHTML = Object.values(data).reverse().map(l => `<div>• ${l.action} <span class="text-slate-600">(${l.date})</span></div>`).join('');
             });
         }
@@ -448,7 +566,6 @@
         function renderEnaWorkspace() {
             categoryContentContainer.innerHTML = `
                 <div class="space-y-6">
-                    <!-- Navigation des 6 sous-onglets ENA -->
                     <div class="flex gap-1 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-bold">
                         <button onclick="switchEnaTab('tb')" id="ena-tab-tb" class="px-3.5 py-2 bg-blue-600 text-white rounded-xl cursor-pointer">Tableau de bord</button>
                         <button onclick="switchEnaTab('docs')" id="ena-tab-docs" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Documents &amp; Fichiers</button>
@@ -458,7 +575,6 @@
                         <button onclick="switchEnaTab('notes')" id="ena-tab-notes" class="px-3.5 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl cursor-pointer">Notes</button>
                     </div>
 
-                    <!-- 1. TABLEAU DE BORD -->
                     <div id="ena-content-tb" class="space-y-6">
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
@@ -478,37 +594,19 @@
                                 <div><span class="text-[10px] text-slate-400 block font-bold">VMA PÉRIMÉES</span><span class="text-xl font-black text-red-400">0</span></div>
                             </div>
                         </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                            <div class="lg:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
-                                <h3 class="text-xs font-bold text-white uppercase"><i class="fa-solid fa-clock-rotate-left text-blue-400 mr-2"></i> Dernières Formations Évaluées</h3>
-                                <div id="tb-recent-evals" class="divide-y divide-slate-800 text-xs text-slate-300"></div>
-                            </div>
-                            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
-                                <h3 class="text-xs font-bold text-white uppercase"><i class="fa-solid fa-bullhorn text-amber-400 mr-2"></i> Résumé Opérationnel</h3>
-                                <div class="space-y-2 text-xs">
-                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Validées</span><span class="font-bold text-emerald-400" id="tb-valide-count">0</span></div>
-                                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex justify-between"><span>Formations Ajournées</span><span class="font-bold text-red-400">0</span></div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- 2. DOCUMENTS -->
                     <div id="ena-content-docs" class="hidden space-y-4">
-                        <div class="flex justify-between items-center">
-                            <label class="px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl cursor-pointer">
-                                + Importer Fichier (PDF, Image...)
-                                <input type="file" onchange="uploadDocDB(event)" class="hidden">
-                            </label>
-                        </div>
+                        <label class="px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl cursor-pointer inline-block">
+                            + Importer Fichier (PDF, Image...)
+                            <input type="file" onchange="uploadDocDB(event)" class="hidden">
+                        </label>
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
                             <div id="docs-list-container" class="lg:col-span-4 space-y-2"></div>
                             <div id="doc-preview-container" class="lg:col-span-8 bg-slate-950 p-6 border border-slate-800 rounded-2xl text-center text-xs text-slate-500">Sélectionnez un document.</div>
                         </div>
                     </div>
 
-                    <!-- 3. FORMATIONS -->
                     <div id="ena-content-formations" class="hidden space-y-6">
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
                             <form onsubmit="addInstructorDB(event)" class="lg:col-span-4 bg-slate-950 p-4 border border-slate-800 rounded-2xl space-y-3 text-xs">
@@ -526,31 +624,8 @@
                                 <div id="instructors-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
                             </div>
                         </div>
-
-                        <div class="bg-slate-950 p-5 border border-slate-800 rounded-2xl space-y-4">
-                            <h4 class="font-bold text-white uppercase text-xs">Inscrire un Militaire à une Formation</h4>
-                            <form onsubmit="addEvaluationDB(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 text-xs">
-                                <input type="text" id="eval-name" required placeholder="Nom Prénom" class="lg:col-span-3 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
-                                <input type="text" id="eval-grade" required placeholder="Grade" class="lg:col-span-2 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
-                                <input type="text" id="eval-mat" required placeholder="Matricule" class="lg:col-span-2 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
-                                <select id="eval-form" required class="lg:col-span-3 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-slate-300 outline-none">
-                                    <option value="[FGI] Formation Générale Initiale">[FGI] Formation Générale Initiale</option>
-                                    <option value="[CAT1] Brevet Caporal ENA">[CAT1] Brevet Caporal ENA</option>
-                                </select>
-                                <button type="submit" class="lg:col-span-2 bg-blue-600 text-white font-bold py-2.5 rounded-xl cursor-pointer">+ Valider</button>
-                            </form>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-xs">
-                                    <thead class="bg-slate-900 text-slate-400 font-mono text-[10px] uppercase">
-                                        <tr><th class="p-3">MILITAIRE</th><th class="p-3">GRADE</th><th class="p-3">MATRICULE</th><th class="p-3">FORMATION</th><th class="p-3">STATUT</th><th class="p-3 text-right">ACTION</th></tr>
-                                    </thead>
-                                    <tbody id="evaluations-table-body" class="divide-y divide-slate-800 text-slate-200"></tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- 4. UNITÉS -->
                     <div id="ena-content-unités" class="hidden space-y-4">
                         <div class="flex justify-between items-center">
                             <h3 class="text-sm font-bold text-white">Répertoire des Unités Forces Spéciales</h3>
@@ -559,7 +634,6 @@
                         <div id="units-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                     </div>
 
-                    <!-- 5. PLANNINGS -->
                     <div id="ena-content-plannings" class="hidden space-y-4">
                         <form onsubmit="addSessionDB(event)" class="bg-slate-950 p-4 border border-slate-800 rounded-xl space-y-3 text-xs">
                             <h4 class="font-bold text-white uppercase">Programmer une Session</h4>
@@ -570,16 +644,15 @@
                         <div id="sessions-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                     </div>
 
-                    <!-- 6. NOTES -->
                     <div id="ena-content-notes" class="hidden space-y-4">
                         <div class="flex gap-2">
                             <button onclick="createNewNoteDB()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl cursor-pointer">+ Nouvelle Note</button>
-                            <button onclick="printNotePDF()" class="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl cursor-pointer"><i class="fa-solid fa-file-pdf mr-1"></i> Imprimer Note (PDF)</button>
+                            <button onclick="printNotePDF()" class="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl cursor-pointer"><i class="fa-solid fa-file-pdf mr-1"></i> Imprimer PDF</button>
                         </div>
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
                             <div id="notes-list-container" class="lg:col-span-4 space-y-2"></div>
                             <div id="note-editor-container" class="lg:col-span-8 bg-slate-950 p-4 border border-slate-800 rounded-xl">
-                                <p class="text-xs text-slate-500 italic">Sélectionnez une note à gauche.</p>
+                                <p class="text-xs text-slate-500 italic">Sélectionnez une note.</p>
                             </div>
                         </div>
                     </div>
@@ -591,7 +664,6 @@
             listenSessionsDB();
             listenDocsDB();
             listenInstructorsDB();
-            listenEvaluationsDB();
         }
 
         function switchEnaTab(tab) {
@@ -608,7 +680,6 @@
             });
         }
 
-        // LISTENERS REALTIME DATABASE (ENA)
         function listenUnitsDB() {
             db.ref('units').on('value', snapshot => {
                 const container = document.getElementById('units-grid-container');
@@ -665,7 +736,7 @@
 
         function createNewNoteDB() { db.ref('notes').push({ title: "Nouvelle Note Sync", content: "" }); }
         function openNoteEditorDB(key, title, content) {
-            selectedNoteId = key;
+            selectedNoteKey = key;
             const editor = document.getElementById('note-editor-container');
             if (editor) {
                 editor.innerHTML = `
@@ -727,9 +798,7 @@
                 }).join('');
             });
         }
-        function uploadDocDB(e) {
-            for (let f of e.target.files) db.ref('docs').push({ name: f.name, size: (f.size/1024).toFixed(1) + ' KB' });
-        }
+        function uploadDocDB(e) { for (let f of e.target.files) db.ref('docs').push({ name: f.name, size: (f.size/1024).toFixed(1) + ' KB' }); }
         function previewDocDB(name) {
             const prev = document.getElementById('doc-preview-container');
             if (prev) prev.innerHTML = `<div class="p-6 bg-slate-900 border border-slate-800 rounded-xl"><i class="fa-solid fa-file-lines text-4xl text-blue-400 mb-2"></i><p>Aperçu du document [ ${name} ]</p></div>`;
@@ -747,7 +816,7 @@
                     const i = data[key];
                     return `
                         <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                            <div><span class="font-bold text-xs text-white block">${i.name}</span><span class="text-[10px] text-blue-400 block">${i.role}</span></div>
+                            <div><span class="font-bold text-white text-xs block">${i.name}</span><span class="text-[10px] text-blue-400 block">${i.role}</span></div>
                             <button onclick="deleteInstructorDB('${key}')" class="text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     `;
@@ -757,50 +826,8 @@
         function addInstructorDB(e) { e.preventDefault(); db.ref('instructors').push({ name: document.getElementById('inst-name').value, role: document.getElementById('inst-role').value }); }
         function deleteInstructorDB(key) { db.ref('instructors/' + key).remove(); }
 
-        function listenEvaluationsDB() {
-            db.ref('evaluations').on('value', snapshot => {
-                const body = document.getElementById('evaluations-table-body');
-                const recent = document.getElementById('tb-recent-evals');
-                const statValide = document.getElementById('tb-valide-count');
-                if (!body) return;
-                const data = snapshot.val();
-                if (!data) { body.innerHTML = `<tr><td colspan="6" class="p-3 text-slate-500 italic text-center">Aucune évaluation.</td></tr>`; if (statValide) statValide.textContent = 0; return; }
-
-                const keys = Object.keys(data);
-                if (statValide) statValide.textContent = keys.length;
-
-                body.innerHTML = keys.map(key => {
-                    const ev = data[key];
-                    return `
-                        <tr>
-                            <td class="p-3 font-bold text-white">${ev.name}</td><td class="p-3 text-slate-300">${ev.grade}</td><td class="p-3 font-mono text-blue-400">${ev.mat}</td><td class="p-3 text-slate-200">${ev.form}</td>
-                            <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis (20/20)</span></td>
-                            <td class="p-3 text-right"><button onclick="deleteEvaluationDB('${key}')" class="px-2 py-1 bg-red-950 text-red-300 border border-red-800 rounded text-xs"><i class="fa-solid fa-trash"></i></button></td>
-                        </tr>
-                    `;
-                }).join('');
-
-                if (recent) {
-                    recent.innerHTML = keys.slice(-2).map(key => {
-                        const ev = data[key];
-                        return `<div class="py-2.5 flex justify-between items-center"><div><span class="font-bold text-white block">${ev.name}</span><span class="text-[10px] text-slate-500">${ev.form}</span></div><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold rounded text-[10px]">Admis</span></div>`;
-                    }).join('');
-                }
-            });
-        }
-        function addEvaluationDB(e) {
-            e.preventDefault();
-            db.ref('evaluations').push({
-                name: document.getElementById('eval-name').value,
-                grade: document.getElementById('eval-grade').value,
-                mat: document.getElementById('eval-mat').value,
-                form: document.getElementById('eval-form').value
-            });
-        }
-        function deleteEvaluationDB(key) { db.ref('evaluations/' + key).remove(); }
-
         // PARAMÈTRES
-        brightnessRange.addEventListener('input', (e) => {
+        document.getElementById('brightness-range').addEventListener('input', (e) => {
             const val = e.target.value;
             document.getElementById('brightness-value').textContent = `${val}%`;
             document.documentElement.style.setProperty('--site-brightness', `${val}%`);
@@ -810,19 +837,12 @@
 
         document.getElementById('open-settings-btn').addEventListener('click', () => settingsDrawer.classList.remove('hidden'));
         document.getElementById('close-settings-btn').addEventListener('click', () => settingsDrawer.classList.add('hidden'));
-        document.getElementById('edit-profile-btn').addEventListener('click', () => {
-            settingsDrawer.classList.add('hidden');
-            if (userProfile) {
-                document.getElementById('input-username').value = userProfile.username;
-                document.getElementById('input-matricule').value = userProfile.matricule;
-            }
-            profileModal.classList.remove('hidden');
-        });
 
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            mainDashboard.classList.add('hidden');
-            authScreen.classList.remove('hidden');
-        });
+        // DÉMARRAGE AUTOMATIQUE
+        if (currentUser) {
+            authScreen.classList.add('hidden');
+            checkUserApprovalState();
+        }
     </script>
 </body>
 </html>
