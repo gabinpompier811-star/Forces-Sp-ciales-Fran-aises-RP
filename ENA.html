@@ -122,22 +122,22 @@
     <!-- CONTENU PRINCIPAL -->
     <main>
 
-        <!-- 1. ONGLET FORMATION -->
-        <div id="content-formation" class="tab-pane hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Formulaire Ajouter un Instructeur -->
-                <div class="card space-y-4">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
-                        ➕ Ajouter un Instructeur
-                    </h3>
-                    <form id="formAddInstructeur" class="space-y-3 text-xs">
+        <!-- ONGLET FORMATION -->
+        <div id="content-formation" class="tab-pane space-y-6 formation-theme">
+        
+            <!-- HAUT : DEUX COLONNES (AJOUTER INSTRUCTEUR & CORPS DES FORMATEURS) -->
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                
+                <!-- CARTE 1 : Ajouter un Instructeur -->
+                <div class="f-card" style="display: flex; flex-direction: column; gap: 16px;">
+                    <h3 style="font-size: 14px; font-weight: 800; color: #ffffff;">Ajouter un Instructeur</h3>
+                    
+                    <form id="formAddInstructeur" style="display: flex; flex-direction: column; gap: 14px;">
                         <div>
-                            <label>Nom complet</label>
-                            <input type="text" id="instNom" placeholder="ex: LCL Alex GIROND" required>
+                            <input type="text" id="instNom" class="f-input" placeholder="Nom complet (ex: LCL Alex)" required>
                         </div>
                         <div>
-                            <label>Rôle Instructeur</label>
-                            <select id="instRole" required>
+                            <select id="instRole" class="f-select" required>
                                 <option value="">-- Rôle Instructeur --</option>
                                 <option value="Directeur de l'ENA">Directeur de l'ENA</option>
                                 <option value="Directeur adjoint">Directeur adjoint</option>
@@ -147,46 +147,117 @@
                                 <option value="Aspirant Instructeur">Aspirant Instructeur</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn-submit" style="width: 100%;">Ajouter Instructeur</button>
+                        <button type="submit" class="btn-blue-primary" style="margin-top: 5px;">+ Ajouter Instructeur</button>
                     </form>
                 </div>
-
-                <!-- Corps des Formateurs / Instructeurs -->
-                <div class="card lg:col-span-2 space-y-4">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
-                        🎖️ Corps des Formateurs / Instructeurs
-                    </h3>
-                    <div id="instructeursContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-56 overflow-y-auto custom-scroll pr-1">
-                        <!-- Rempli en JS -->
+        
+                <!-- CARTE 2 : Corps des Formateurs / Instructeurs -->
+                <div class="f-card" style="display: flex; flex-direction: column; gap: 16px;">
+                    <h3 style="font-size: 14px; font-weight: 800; color: #ffffff;">Corps des Formateurs / Instructeurs</h3>
+                    
+                    <div id="instructeursGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 220px; overflow-y: auto;">
+                        
+                        <div class="instructor-card">
+                            <div>
+                                <div class="instructor-name">Colonel Alex GIROND</div>
+                                <div class="instructor-role">Directeur de l'ENA</div>
+                            </div>
+                            <div class="instructor-icon">👤</div>
+                        </div>
+        
+                        <div class="instructor-card">
+                            <div>
+                                <div class="instructor-name">Commandant Mathis ROSIER</div>
+                                <div class="instructor-role">Directeur adjoint</div>
+                            </div>
+                            <div class="instructor-icon">👤</div>
+                        </div>
+        
+                        <div class="instructor-card">
+                            <div>
+                                <div class="instructor-name">Lieutenant Maël LIOGER</div>
+                                <div class="instructor-role">Formateur Principal</div>
+                            </div>
+                            <div class="instructor-icon">👤</div>
+                        </div>
+        
+                        <div class="instructor-card">
+                            <div>
+                                <div class="instructor-name">Capitaine John FOX</div>
+                                <div class="instructor-role">Instructeur</div>
+                            </div>
+                            <div class="instructor-icon">👤</div>
+                        </div>
+        
+                        <div class="instructor-card">
+                            <div>
+                                <div class="instructor-name">Sergent-Chef Simon RENARD</div>
+                                <div class="instructor-role">Aspirant Instructeur</div>
+                            </div>
+                            <div class="instructor-icon">👤</div>
+                        </div>
+        
+                        <div class="instructor-card">
+                            <div>
+                                <div class="instructor-name">Sous-Lieutenant Jake HARPER</div>
+                                <div class="instructor-role">Aspirant Instructeur</div>
+                            </div>
+                            <div class="instructor-icon">👤</div>
+                        </div>
+        
+                        <div class="instructor-card">
+                            <div>
+                                <div class="instructor-name">Capitaine Noli VELMONT</div>
+                                <div class="instructor-role">Chef des Instructeurs</div>
+                            </div>
+                            <div class="instructor-icon">👤</div>
+                        </div>
+        
                     </div>
                 </div>
+        
             </div>
-
-            <!-- SUIVI DES FORMATIONS & ÉVALUATIONS -->
-            <div class="card space-y-4">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                    <h3 style="font-size: 14px; font-weight: bold;">📊 Suivi des Formations & Évaluations</h3>
-                    <input type="text" id="searchFormation" oninput="afficherFormations()" placeholder="🔍 Rechercher nom, grade..." style="width: 220px;">
+        
+            <!-- BAS : SUIVI DES FORMATIONS & ÉVALUATIONS -->
+            <div class="f-card" style="display: flex; flex-direction: column; gap: 18px;">
+                
+                <!-- En-tête avec Recherche & Export Excel/PDF -->
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-size: 15px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                        <span style="color: #60a5fa;">📑</span> Suivi des Formations & Évaluations
+                    </h3>
+        
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div style="position: relative;">
+                            <input type="text" id="searchFormation" oninput="filtrerFormationsTable()" class="f-input" placeholder="🔍 Rechercher nom, grade..." style="padding-left: 10px; width: 220px; height: 32px;">
+                        </div>
+                        <button onclick="alert('Export Excel généré')" style="background-color: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            📊 Excel
+                        </button>
+                        <button onclick="alert('Export PDF généré')" style="background-color: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            📄 PDF
+                        </button>
+                    </div>
                 </div>
-
-                <form id="formInscrireFormation" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2 text-xs bg-main p-3 rounded-lg border border-border-color">
-                    <input type="text" id="fNom" placeholder="Nom Prénom" required>
-                    <input type="text" id="fGrade" placeholder="Grade" required>
-                    <input type="text" id="fMatricule" placeholder="Matricule" required style="font-family: monospace;">
-                    <select id="fUnite">
-                        <option value="N/A">N/A (Sans affectation)</option>
+        
+                <!-- Formulaire d'inscription rapide -->
+                <form id="formInscrireFormation" style="display: grid; grid-template-columns: 1.5fr 1.2fr 1.2fr 1.5fr 2fr 1.2fr 1fr; gap: 8px; align-items: center;">
+                    <input type="text" id="fNom" class="f-input" placeholder="Nom Prénom" required>
+                    <input type="text" id="fGrade" class="f-input" placeholder="Grade" required>
+                    <input type="text" id="fMatricule" class="f-input" placeholder="Matricule" required style="font-family: monospace;">
+                    
+                    <select id="fUnite" class="f-select">
+                        <option value="N/A (Sans affectation)">N/A (Sans affectation)</option>
                         <option value="CPA 10">CPA 10</option>
                         <option value="4e RHFS">4e RHFS</option>
                         <option value="13e RDP">13e RDP</option>
                         <option value="Commandos Jaubert">Commandos Jaubert</option>
                         <option value="GCP">GCP</option>
                     </select>
-                    <select id="fIntitule" required>
+        
+                    <select id="fIntitule" class="f-select" required>
                         <option value="">-- Formation / Brevet / Permis --</option>
                         <option value="[FGI] Formation Général Initiale">[FGI] Formation Général Initiale</option>
-                        <option value="[CAT1] Brevet Caporal">[CAT1] Brevet Caporal</option>
-                        <option value="[CME] Brevet Caporal-Chef">[CME] Brevet Caporal-Chef</option>
-                        <option value="[FG1 / BS1] Brevet de Sergent">[FG1 / BS1] Brevet de Sergent</option>
                         <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste</option>
                         <option value="[CDU] Cursus de Chef d'Unité">[CDU] Cursus de Chef d'Unité</option>
                         <option value="🪂 Brevet Parachutiste">🪂 Brevet Parachutiste</option>
@@ -194,28 +265,93 @@
                         <option value="🔧 Qualification Mécanicien">🔧 Qualification Mécanicien</option>
                         <option value="🚚 Conducteur SPL">🚚 Conducteur SPL</option>
                     </select>
-                    <button type="submit" class="btn-submit" style="padding: 6px;">Inscrire</button>
+        
+                    <input type="text" id="fDate" class="f-input" value="21/10/2026 16:59" readonly style="color: #94a3b8; text-align: center;">
+        
+                    <button type="submit" class="btn-blue-primary" style="padding: 8px 12px; font-size: 12px;">+ Inscrire</button>
                 </form>
-
-                <div class="table-container">
-                    <table>
+        
+                <!-- Tableau d'Évaluations -->
+                <div class="f-table-container">
+                    <table class="f-table">
                         <thead>
                             <tr>
-                                <th>Militaire</th>
-                                <th>Grade</th>
-                                <th>Matricule</th>
-                                <th>Unité</th>
-                                <th>Formation</th>
-                                <th>Statut / Note</th>
-                                <th style="text-align: right;">Action</th>
+                                <th>MILITAIRE</th>
+                                <th>GRADE</th>
+                                <th>MATRICULE</th>
+                                <th>UNITÉ</th>
+                                <th>FORMATION</th>
+                                <th>STATUT / NOTE</th>
+                                <th style="text-align: right;">ACTION</th>
                             </tr>
                         </thead>
                         <tbody id="tableFormationsBody">
-                            <!-- Rempli en JS -->
+                            <tr>
+                                <td style="font-weight: 800; color: #ffffff;">
+                                    Noli VELMONT <span class="online-dot-pulse"></span>
+                                </td>
+                                <td>Capitaine</td>
+                                <td style="color: #60a5fa; font-family: monospace; font-weight: 700;">FS-027-FR</td>
+                                <td><span class="badge-unite-dark">CPA 10</span></td>
+                                <td>[FGI] Formation Général Initiale</td>
+                                <td><span class="badge-status-admis">Admis (20/20)</span></td>
+                                <td style="text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+                                    <button class="btn-evaluer">Évaluer</button>
+                                    <button class="btn-diplome">Diplôme</button>
+                                    <button class="btn-delete-icon">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 800; color: #ffffff;">
+                                    Noli VELMONT <span class="online-dot-pulse"></span>
+                                </td>
+                                <td>Capitaine</td>
+                                <td style="color: #60a5fa; font-family: monospace; font-weight: 700;">FS-027-FR</td>
+                                <td><span class="badge-unite-dark">CPA 10</span></td>
+                                <td>[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste</td>
+                                <td><span class="badge-status-admis">Admis (20/20)</span></td>
+                                <td style="text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+                                    <button class="btn-evaluer">Évaluer</button>
+                                    <button class="btn-diplome">Diplôme</button>
+                                    <button class="btn-delete-icon">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 800; color: #ffffff;">
+                                    Noli VELMONT <span class="online-dot-pulse"></span>
+                                </td>
+                                <td>Capitaine</td>
+                                <td style="color: #60a5fa; font-family: monospace; font-weight: 700;">FS-027-FR</td>
+                                <td><span class="badge-unite-dark">CPA 10</span></td>
+                                <td>[CDU] Cursus de Chef d'Unité</td>
+                                <td><span class="badge-status-admis">Admis (20/20)</span></td>
+                                <td style="text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+                                    <button class="btn-evaluer">Évaluer</button>
+                                    <button class="btn-diplome">Diplôme</button>
+                                    <button class="btn-delete-icon">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 800; color: #ffffff;">
+                                    Noli VELMONT <span class="online-dot-pulse"></span>
+                                </td>
+                                <td>Capitaine</td>
+                                <td style="color: #60a5fa; font-family: monospace; font-weight: 700;">FS-027-FR</td>
+                                <td><span class="badge-unite-dark">CPA 10</span></td>
+                                <td>🪂 Brevet Parachutiste</td>
+                                <td><span class="badge-status-admis">Admis (20/20)</span></td>
+                                <td style="text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+                                    <button class="btn-evaluer">Évaluer</button>
+                                    <button class="btn-diplome">Diplôme</button>
+                                    <button class="btn-delete-icon">🗑️</button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+        
             </div>
+        
         </div>
 
         <!-- 2. ONGLET DOSSIER -->
