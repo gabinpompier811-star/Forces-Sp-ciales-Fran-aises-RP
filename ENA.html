@@ -1,78 +1,334 @@
-<!DOCTYPE html>
-<html lang="fr" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENA & Formations - FSF</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <style>
-        :root { --site-brightness: 100%; --bg-main: #090d16; --bg-card: #0f172a; --border-card: #1e293b; }
-        body { background-color: var(--bg-main); }
-        .custom-card { background-color: var(--bg-card); border-color: var(--border-card); }
-        .rtdb-tree { font-family: monospace; }
-        .rtdb-node-title { color: #e2e8f0; font-weight: 600; cursor: pointer; }
-    </style>
-</head>
-<body class="text-slate-100 min-h-screen flex flex-col p-6 max-w-7xl mx-auto space-y-6">
+<!-- ONGLET CRÉER UN DOSSIER DIRECTEMENT (ENRICHI - RÉFÉRENTIEL ENA) -->
+<section id="tab-creerdossier" class="tab-content h-full p-4 md:p-6 overflow-y-auto custom-scroll space-y-6 bg-slate-950 text-slate-100">
 
-    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-        <a href="index.html" class="px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Retour Accueil</a>
-        <h1 class="text-lg font-black text-blue-400"><i class="fa-solid fa-graduation-cap mr-2"></i> Module ENA & Formations</h1>
-    </div>
-
-    <!-- En-tête URL style Capture DB -->
-    <div class="bg-slate-950 p-3.5 border border-slate-800 rounded-2xl flex items-center gap-3">
-        <i class="fa-solid fa-link text-blue-400 text-sm"></i>
-        <span class="text-xs font-mono text-slate-200 truncate">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app</span>
-    </div>
-
-    <!-- VUE ARBORESCENCE RTDB (FIDÈLE À LA CAPTURE) -->
-    <div class="bg-slate-950 p-5 border border-slate-800 rounded-2xl rtdb-tree space-y-3">
-        <div class="text-slate-400 font-mono text-xs border-b border-slate-800/80 pb-3">
-            <span class="text-blue-400 font-bold">https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app/</span>
-        </div>
-        <div class="pl-2 space-y-2 text-xs">
-            <div>
-                <div onclick="document.getElementById('rtdb-logs').classList.toggle('hidden')" class="rtdb-node-title"><i class="fa-solid fa-caret-right text-slate-500 mr-1"></i> logs</div>
-                <div id="rtdb-logs" class="hidden pl-6 pt-1 text-[11px] text-slate-400"></div>
+    <!-- EN-TÊTE ET STATISTIQUES EN TEMPS RÉEL -->
+    <div class="bg-card border border-emerald-500/40 p-5 rounded-2xl bg-emerald-950/10 shadow-xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-3 bg-emerald-500/20 border border-emerald-500/50 rounded-xl text-emerald-400">
+                    <i class="fa-solid fa-user-shield text-2xl"></i>
+                </div>
+                <div>
+                    <h2 id="formTitle" class="text-lg font-black text-emerald-400 flex items-center gap-2 tracking-wide uppercase">
+                        Créer / Mettre à Jour un Dossier Militaire Rétroactif
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                        Module de régularisation et de synchronisation rétroactive des compétences et qualifications militaires (Référentiel ENA).
+                    </p>
+                </div>
             </div>
-            <div>
-                <div onclick="document.getElementById('rtdb-notifs').classList.toggle('hidden')" class="rtdb-node-title"><i class="fa-solid fa-caret-right text-slate-500 mr-1"></i> notifications</div>
-                <div id="rtdb-notifs" class="hidden pl-6 pt-1 text-[11px] text-slate-400"></div>
-            </div>
-            <div>
-                <div onclick="document.getElementById('rtdb-units').classList.toggle('hidden')" class="rtdb-node-title"><i class="fa-solid fa-caret-right text-slate-500 mr-1"></i> units</div>
-                <div id="rtdb-units" class="hidden pl-6 pt-1 text-[11px] text-slate-400"></div>
+            
+            <div id="cancelEditContainer" class="hidden">
+                <button type="button" onclick="resetFormulaire()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-xmark text-sm"></i> Annuler la modification
+                </button>
             </div>
         </div>
+
+        <!-- KPI / INDICATEURS CLÉS EN TEMPS RÉEL -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-emerald-500/20 text-xs">
+            <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                <i class="fa-solid fa-users text-blue-400 text-lg"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase font-semibold">Total Dossiers</div>
+                    <div id="statTotalMilitaires" class="text-sm font-black text-white">0</div>
+                </div>
+            </div>
+            <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                <i class="fa-solid fa-certificate text-amber-400 text-lg"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase font-semibold">Qualifications</div>
+                    <div id="statTotalQualifs" class="text-sm font-black text-amber-300">0</div>
+                </div>
+            </div>
+            <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                <i class="fa-solid fa-heart-pulse text-emerald-400 text-lg"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase font-semibold">Aptes Service FS</div>
+                    <div id="statAptesFS" class="text-sm font-black text-emerald-400">0%</div>
+                </div>
+            </div>
+            <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                <i class="fa-solid fa-plane-departure text-purple-400 text-lg"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase font-semibold">Aptes OPEX</div>
+                    <div id="statAptesOpex" class="text-sm font-black text-purple-300">0</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
-        if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('ENA'))) {
-            alert("Accès non autorisé à l'ENA !");
-            window.location.href = "index.html";
-        }
+    <!-- FORMULAIRE PRINCIPAL -->
+    <form id="formFullDossier" class="bg-card p-5 md:p-6 rounded-2xl border border-slate-800 shadow-2xl space-y-6 text-xs">
+        <input type="hidden" id="editIndex" value="-1">
 
-        const db = firebase.database();
-        db.ref('logs').on('value', snap => {
-            const el = document.getElementById('rtdb-logs');
-            const d = snap.val();
-            el.innerHTML = d ? Object.keys(d).map(k => `<div>${k}: ${JSON.stringify(d[k])}</div>`).join('') : 'null';
-        });
-        db.ref('notifications').on('value', snap => {
-            const el = document.getElementById('rtdb-notifs');
-            const d = snap.val();
-            el.innerHTML = d ? Object.keys(d).map(k => `<div>${k}: ${JSON.stringify(d[k])}</div>`).join('') : 'null';
-        });
-        db.ref('units').on('value', snap => {
-            const el = document.getElementById('rtdb-units');
-            const d = snap.val();
-            el.innerHTML = d ? Object.keys(d).map(k => `<div>${k}: ${JSON.stringify(d[k])}</div>`).join('') : 'null';
-        });
-    </script>
-</body>
-</html>
+        <!-- 1. ÉTAT CIVIL, HABILITATIONS & AFFECTATION -->
+        <div class="space-y-3">
+            <h3 class="text-sm font-bold text-white border-b border-slate-700/60 pb-2 flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-blue-400"></i> 1. État Civil, Habilitation & Affectation
+                </span>
+                <span class="text-[10px] font-normal text-slate-400">* Champs obligatoires</span>
+            </h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div class="col-span-1 sm:col-span-2">
+                    <label class="block text-slate-400 mb-1 font-semibold">Nom & Prénom *</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3 top-2.5 text-slate-500"></i>
+                        <input type="text" id="fullNom" placeholder="ex: CPT Jean Dupont" required class="w-full bg-input border border-slate-700/80 rounded-lg pl-9 pr-3 py-2 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Grade *</label>
+                    <input type="text" id="fullGrade" placeholder="ex: Capitaine" required class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-white focus:border-emerald-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Matricule *</label>
+                    <input type="text" id="fullMat" placeholder="ex: MAT-8890" required class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-white font-mono focus:border-emerald-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Unité / Affectation</label>
+                    <select id="fullUnite" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold text-blue-300 focus:border-emerald-500 outline-none transition">
+                        <option value="N/A">N/A (Sans affectation)</option>
+                        <option value="CPA 10">CPA 10</option>
+                        <option value="4e RHFS">4e RHFS</option>
+                        <option value="13e RDP">13e RDP</option>
+                        <option value="Commandos Jaubert (marine)">Commandos Jaubert (marine)</option>
+                        <option value="Groupe de Commandos Parachutistes (GCP)">Groupe de Commandos Parachutistes (GCP)</option>
+                        <option value="État-Major ENA">État-Major ENA</option>
+                        <option value="Centre d'Instruction Specialisé">Centre d'Instruction Spécialisé</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Habilitation Défense</label>
+                    <select id="fullHabilitation" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold text-amber-300 focus:border-emerald-500 outline-none transition">
+                        <option value="Restreint">🔒 Diffusion Restreinte</option>
+                        <option value="Confidentiel">🔐 Confidentiel Défense</option>
+                        <option value="Secret">🛡️ Secret Défense</option>
+                        <option value="Très Secret">⚡ Très Secret</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. QUALIFICATIONS & BREVETS DÉTAILLÉS (RÉFÉRENTIEL COMPLET ENA) -->
+        <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700/60 pb-2">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-amber-400"></i> 2. Formations, Brevets & Qualifications Validés
+                </h3>
+                
+                <!-- BARRE DE RECHERCHE RAPIDE DANS LES QUALIFICATIONS -->
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <div class="relative flex-1 sm:w-56">
+                        <i class="fa-solid fa-filter absolute left-2.5 top-2 text-slate-500"></i>
+                        <input type="text" id="filterQualifInput" oninput="filtrerCheckboxesQualifs()" placeholder="Filtrer qualifications..." class="w-full bg-input border border-slate-700/80 rounded-lg pl-8 pr-2 py-1 text-[11px] text-white focus:border-emerald-500 outline-none">
+                    </div>
+                    <button type="button" onclick="cocherToutesQualifs(true)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 text-[10px] font-semibold transition">Tout cocher</button>
+                    <button type="button" onclick="cocherToutesQualifs(false)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 text-[10px] font-semibold transition">Tout décocher</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="qualifsContainer">
+                
+                <!-- DIPLÔMES ENA -->
+                <div class="bg-input p-3.5 rounded-xl border border-slate-700/60 space-y-2.5 qualif-group">
+                    <h4 class="font-bold text-amber-300 border-b border-slate-700/40 pb-1.5 flex items-center justify-between">
+                        <span>🎓 Diplômes ENA Officiels</span>
+                        <i class="fa-solid fa-award text-amber-400/60"></i>
+                    </h4>
+                    <div class="space-y-1.5 max-h-60 overflow-y-auto custom-scroll pr-1">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" classfull-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[FGI] Formation Général Initiale"> <span>[FGI] Formation Général Initiale</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[CAT1] Brevet Caporal"> <span>[CAT1] Brevet Caporal</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[CME] Brevet Caporal-Chef"> <span>[CME] Brevet Caporal-Chef</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[CC1] Caporal-Chef 1ère classe"> <span>[CC1] Caporal-Chef 1ère classe</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[FG1 / BS1] Brevet de Sergent"> <span>[FG1 / BS1] Brevet de Sergent</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[FG2 / BSTAT] Brevet d'Adjoint"> <span>[FG2 / BSTAT] Brevet d'Adjoint</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[BM2] Brevet Militaire Niveau 2"> <span>[BM2] Brevet Militaire N2</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[FG3] Brevet de Major"> <span>[FG3] Brevet de Major</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[FAE] Formation d'Application"> <span>[FAE] Formation d'Application</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[CDU] Cursus de Chef d'Unité"> <span>[CDU] Cursus Chef d'Unité</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="[DEM] Diplôme d'État-Major"> <span>[DEM] Diplôme d'État-Major</span></label>
+                    </div>
+                </div>
+
+                <!-- BREVETS AÉRO / MARITIME / PERMIS -->
+                <div class="bg-input p-3.5 rounded-xl border border-slate-700/60 space-y-2.5 qualif-group">
+                    <h4 class="font-bold text-blue-300 border-b border-slate-700/40 pb-1.5 flex items-center justify-between">
+                        <span>🪂 Permis, Aéro & Maritime</span>
+                        <i class="fa-solid fa-plane-up text-blue-400/60"></i>
+                    </h4>
+                    <div class="space-y-1.5 max-h-60 overflow-y-auto custom-scroll pr-1">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🪂 Brevet Parachutiste Milit."> <span>🪂 Brevet Parachutiste</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🪂 Chuteur Opérationnel (SOTGH)"> <span>🪂 Chuteur Opérationnel</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🚁 Qualification Hélitreuillage / Fast-Rope"> <span>🚁 Aerocordage / Fast-Rope</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="⚓ Nageur de Combat / Subaquatique"> <span>⚓ Nageur de Combat</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🚘 Pilote Blindés (VBCI/VAB/VBMR)"> <span>🚘 Pilote Blindés (VBCI/VAB)</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🎯 Opérateur Tourelle Téléopérée"> <span>🎯 Opérateur Tourelle</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🔧 Qualification Mécanicien"> <span>🔧 Qualification Mécanicien</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🪪 Permis B"> <span>🪪 Permis B</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🚛 Permis C (Poids Lourds)"> <span>🚛 Permis C</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🚚 Permis SPL (Super Lourds)"> <span>🚚 Permis SPL</span></label>
+                    </div>
+                </div>
+
+                <!-- COMBAT & TACTIQUE -->
+                <div class="bg-input p-3.5 rounded-xl border border-slate-700/60 space-y-2.5 qualif-group">
+                    <h4 class="font-bold text-red-400 border-b border-slate-700/40 pb-1.5 flex items-center justify-between">
+                        <span>🎯 Combat & Tactique</span>
+                        <i class="fa-solid fa-crosshairs text-red-400/60"></i>
+                    </h4>
+                    <div class="space-y-1.5 max-h-60 overflow-y-auto custom-scroll pr-1">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🎯 Qualification Tireur d'Élite (TE)"> <span>🎯 Tireur d'Élite (TE)</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🔫 Qualification Tireur de Précision (TP)"> <span>🔫 Tireur de Précision (TP)</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🔭 Qualification Spotteur / Observateur"> <span>🔭 Spotteur</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🥊 Qualification CQB / Combat Rapproche"> <span>🥊 Qualification CQB</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="💥 Qualification Demining / EOD / Explosifs"> <span>💥 Spécialiste Démineur/EOD</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🥷 Stage Commando Niveau 1/2/3"> <span>🥷 Brevet Commando N1/2/3</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🎯 Moniteur de Tir (ISTC)"> <span>🎯 Moniteur ISTC</span></label>
+                    </div>
+                </div>
+
+                <!-- SPÉCIALITÉS & RENSEIGNEMENT -->
+                <div class="bg-input p-3.5 rounded-xl border border-slate-700/60 space-y-2.5 qualif-group">
+                    <h4 class="font-bold text-purple-400 border-b border-slate-700/40 pb-1.5 flex items-center justify-between">
+                        <span>📡 Spécialités & Tech</span>
+                        <i class="fa-solid fa-satellite-dish text-purple-400/60"></i>
+                    </h4>
+                    <div class="space-y-1.5 max-h-60 overflow-y-auto custom-scroll pr-1">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🩺 Qualification Médecin / Sanitaire FS"> <span>🩺 Médecin / Sanitaire FS</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="📻 Qualification Transmetteur Radio / SIC"> <span>📻 Transmetteur Radio / SIC</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🛸 Qualification Opérateur Drone Tactique"> <span>🛸 Opérateur Drone</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="📡 Guerre Électronique (GE)"> <span>📡 Guerre Électronique</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="🕵️ Analyste Renseignement (ROEM/ROINT)"> <span>🕵️ Analyste Renseignement</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-white transition qualif-item"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500 focus:ring-0" value="💻 Opérateur Cyberdéfense"> <span>💻 Opérateur Cyberdéfense</span></label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 3. INFORMATIONS MÉDICALES, OPEX & NOTES -->
+        <div class="space-y-3">
+            <h3 class="text-sm font-bold text-white border-b border-slate-700/60 pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-notes-medical text-red-400"></i> 3. Profil Médical, OPEX & Appréciations
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Groupe Sanguin</label>
+                    <select id="fullSang" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-red-400 font-bold focus:border-emerald-500 outline-none transition">
+                        <option value="Non renseigné">Non renseigné</option>
+                        <option value="O +">O +</option><option value="O -">O - (Universel)</option>
+                        <option value="A +">A +</option><option value="A -">A -</option>
+                        <option value="B +">B +</option><option value="B -">B -</option>
+                        <option value="AB +">AB +</option><option value="AB -">AB -</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Visite Médicale (VMA)</label>
+                    <input type="date" id="fullDateVMA" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold text-white focus:border-emerald-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Aptitude Déclarée</label>
+                    <select id="fullAptitude" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold focus:border-emerald-500 outline-none transition">
+                        <option value="Apte Service FS">🟢 Apte Service FS</option>
+                        <option value="Apte avec Restrictions">🟡 Apte avec Restrictions</option>
+                        <option value="Inapte Temporaire (GITA)">🔴 Inapte Temporaire</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Aptitude OPEX</label>
+                    <select id="fullAptitudeOpex" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold text-purple-300 focus:border-emerald-500 outline-none transition">
+                        <option value="Déployable Immédiat">✈️ Déployable Immédiat</option>
+                        <option value="En Réserve">⏳ En Réserve Opérationnelle</option>
+                        <option value="Non Déployable">⛔ Non Déployable</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Notes du Commandement</label>
+                    <input type="text" id="fullNotes" placeholder="Remarques, états de service..." class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-white focus:border-emerald-500 outline-none transition">
+                </div>
+            </div>
+        </div>
+
+        <!-- BOUTONS D'ACTION FORMULAIRE -->
+        <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <span class="text-[11px] text-slate-500 italic">Toutes les modifications sont synchronisées avec le registre local.</span>
+            <div class="flex items-center gap-3">
+                <button type="reset" onclick="resetFormulaire()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> Réinitialiser
+                </button>
+                <button type="submit" id="btnSubmitDossier" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl shadow-lg shadow-emerald-950/50 text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-floppy-disk"></i> Enregistrer Dossier Rétroactif
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- SECTION REGISTRE ET RECHERCHE EN BAS -->
+    <div class="bg-card border border-slate-800 rounded-2xl p-5 md:p-6 shadow-2xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-blue-400"></i> Registre & Base de Données des Dossiers Military
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">Consultez, recherchez, modifiez ou exportez les dossiers enregistrés.</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                <!-- RECHERCHE PAR LOUPE -->
+                <div class="relative flex-1 lg:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                    <input type="text" id="searchDossier" oninput="filtrerDossiers()" placeholder="Rechercher nom, matricule, grade, brevet..." class="w-full bg-input border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:border-emerald-500 outline-none shadow-inner">
+                </div>
+
+                <!-- FILTRE PAR UNITÉ -->
+                <select id="filterUnite" onchange="filtrerDossiers()" class="bg-input border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 font-medium focus:border-emerald-500 outline-none">
+                    <option value="">Toutes les Unités</option>
+                    <option value="CPA 10">CPA 10</option>
+                    <option value="4e RHFS">4e RHFS</option>
+                    <option value="13e RDP">13e RDP</option>
+                    <option value="Commandos Jaubert (marine)">Commandos Jaubert</option>
+                    <option value="Groupe de Commandos Parachutistes (GCP)">GCP</option>
+                    <option value="N/A">Sans affectation (N/A)</option>
+                </select>
+
+                <!-- FILTRE PAR APTITUDE -->
+                <select id="filterAptitude" onchange="filtrerDossiers()" class="bg-input border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 font-medium focus:border-emerald-500 outline-none">
+                    <option value="">Toutes les Aptitudes</option>
+                    <option value="Apte Service FS">🟢 Apte FS</option>
+                    <option value="Apte avec Restrictions">🟡 With Restrictions</option>
+                    <option value="Inapte Temporaire">🔴 Inapte</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TABLEAU DES DOSSIERS MILITAIRES -->
+        <div class="overflow-x-auto custom-scroll rounded-xl border border-slate-800 bg-slate-900/40">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead class="bg-slate-900/90 text-slate-400 uppercase font-bold border-b border-slate-800 text-[10px] tracking-wider">
+                    <tr>
+                        <th class="p-3">Militaire / Matricule</th>
+                        <th class="p-3">Grade & Unité</th>
+                        <th class="p-3">Habilitation</th>
+                        <th class="p-3 text-center">Qualifications</th>
+                        <th class="p-3">Aptitude & Sang</th>
+                        <th class="p-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableDossiersBody" class="divide-y divide-slate-800/60">
+                    <!-- Généré dynamiquement en JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MESSAGE EN CAS DE TABLEAU VIDE -->
+        <div id="noDossierMessage" class="hidden text-center py-10 text-slate-500 text-xs">
+            <i class="fa-solid fa-folder-open text-4xl mb-2 text-slate-600"></i>
+            <p class="font-bold text-slate-400">Aucun dossier militaire trouvé.</p>
+            <p class="text-[11px] text-slate-500">Créez un nouveau dossier ci-dessus ou modifiez vos critères de recherche.</p>
+        </div>
+    </div>
+
+</section>
