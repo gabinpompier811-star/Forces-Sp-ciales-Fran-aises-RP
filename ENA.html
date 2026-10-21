@@ -352,21 +352,72 @@
         </div>
     </div>
 
-    <!-- MODAL D'ÉVALUATION ÉLÈVE -->
+    <!-- MODAL FICHE D'ÉVALUATION COMPLÈTE -->
     <div id="modalEvaluer" class="modal-overlay hidden">
-        <div class="card space-y-4" style="width: 100%; max-width: 400px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                <h3 style="font-size: 13px; font-weight: bold;">📝 Évaluer un Militaire</h3>
-                <button onclick="toggleModal('modalEvaluer')" style="background: none; border: none; color: #f87171; font-size: 14px; cursor: pointer;">✕</button>
+        <div class="card space-y-4" style="width: 100%; max-width: 520px; background-color: #1a1a1e; border: 1px solid #2a2a30; border-radius: 12px; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a30; padding-bottom: 10px;">
+                <h3 style="font-size: 14px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #3b82f6;">📋</span> Fiche d'Évaluation
+                </h3>
+                <button onclick="toggleModal('modalEvaluer')" style="background: none; border: none; color: #94a3b8; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
             </div>
+    
             <input type="hidden" id="evalIndex">
-            <div>
-                <label style="font-size: 11px; color: var(--text-muted);">Statut / Note Obtenue</label>
-                <input type="text" id="evalStatut" class="input-field" placeholder="ex: Admis (20/20) ou En cours (12/20)">
+    
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Candidat</label>
+                    <input type="text" id="evalCandidat" class="input-field" readonly style="background-color: #26262b; color: #e2e8f0;">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Formation Évaluée</label>
+                    <input type="text" id="evalFormation" class="input-field" readonly style="background-color: #26262b; color: #e2e8f0;">
+                </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button onclick="toggleModal('modalEvaluer')" class="btn-retour">Annuler</button>
-                <button onclick="sauvegarderEvaluation()" class="btn-blue">Enregistrer</button>
+    
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Résultat Exam</label>
+                    <select id="evalResultat" class="select-field" style="background-color: #26262b;">
+                        <option value="Admis">Admis</option>
+                        <option value="Ajourné">Ajourné</option>
+                        <option value="En cours">En cours</option>
+                        <option value="Inapte">Inapte</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Note / 20</label>
+                    <input type="number" id="evalNote" class="input-field" placeholder="20" min="0" max="20" style="background-color: #26262b;">
+                </div>
+            </div>
+    
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Mention</label>
+                    <select id="evalMention" class="select-field" style="background-color: #26262b;">
+                        <option value="Sans mention">Sans mention</option>
+                        <option value="Assez Bien">Assez Bien</option>
+                        <option value="Bien">Bien</option>
+                        <option value="Très Bien">Très Bien</option>
+                        <option value="Félicitations du Jury">Félicitations du Jury</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Responsable Formateur</label>
+                    <select id="evalFormateur" class="select-field" style="background-color: #26262b;">
+                        <!-- Rempli dynamiquement avec les instructeurs -->
+                    </select>
+                </div>
+            </div>
+    
+            <div>
+                <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Commentaires & Remarques</label>
+                <textarea id="evalRemarques" class="input-field" rows="3" placeholder="Avis de l'instructeur..." style="background-color: #26262b; resize: none;"></textarea>
+            </div>
+    
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #2a2a30; padding-top: 12px;">
+                <button onclick="toggleModal('modalEvaluer')" class="btn-retour" style="background-color: #333338;">Annuler</button>
+                <button onclick="sauvegarderEvaluation()" style="background-color: #10b981; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 800; cursor: pointer;">Valider & Enregistrer</button>
             </div>
         </div>
     </div>
@@ -466,27 +517,33 @@
             afficherInstructeurs();
         }
 
-        /* FORMATIONS & ÉVALUATIONS */
+        /* AFFICHAGE DES FORMATIONS (SANS LIGNES VIDES) */
         function afficherFormations() {
             const tbody = document.getElementById('tableFormationsBody');
             const query = document.getElementById('searchFormation').value.toLowerCase();
             tbody.innerHTML = '';
         
-            const filtered = formations.filter(f => f.nom.toLowerCase().includes(query) || f.mat.toLowerCase().includes(query));
+            // Filtrer pour éliminer les entrées vides ou invalides
+            const formationsValides = formations.filter(f => f && f.nom && f.nom.trim() !== '');
+        
+            const filtered = formationsValides.filter(f => 
+                f.nom.toLowerCase().includes(query) || 
+                (f.mat && f.mat.toLowerCase().includes(query))
+            );
         
             filtered.forEach((f, idx) => {
-                const isDiplome = f.statut.includes('Diplômé');
+                const isDiplome = f.statut && f.statut.includes('Diplômé');
                 const badgeClass = isDiplome ? 'badge-diplome' : 'badge-admis';
                 
                 tbody.innerHTML += `
                     <tr>
                         <td style="font-weight: 800; color: var(--text-main);">${f.nom} <span class="dot-online" style="display:inline-block; margin-left:4px;"></span></td>
-                        <td>${f.grade}</td>
-                        <td style="color: var(--accent-color); font-family: monospace; font-weight: 700;">${f.mat}</td>
-                        <td><span class="badge-unit">${f.unite}</span></td>
-                        <td>${f.intitule}</td>
+                        <td>${f.grade || '-'}</td>
+                        <td style="color: var(--accent-color); font-family: monospace; font-weight: 700;">${f.mat || '-'}</td>
+                        <td><span class="badge-unit">${f.unite || 'N/A'}</span></td>
+                        <td>${f.intitule || '-'}</td>
                         <td style="font-size: 11px; color: var(--text-muted);">${f.date || '21/10/2026 17:00'}</td>
-                        <td><span class="${badgeClass}">${f.statut}</span></td>
+                        <td><span class="${badgeClass}">${f.statut || 'En cours'}</span></td>
                         <td style="text-align: right; display: flex; gap: 4px; justify-content: flex-end;">
                             <button onclick="ouvrirModalEvaluation(${idx})" class="btn-act btn-eval">Évaluer</button>
                             <button onclick="delivrerDiplome(${idx})" class="btn-act btn-dip">Diplôme</button>
@@ -494,24 +551,57 @@
                         </td>
                     </tr>`;
             });
+        
+            // Mettre à jour le localStorage avec les données propres
+            formations = formationsValides;
             localStorage.setItem('ena_formations', JSON.stringify(formations));
         }
-
-        function filtrerFormations() { afficherFormations(); }
-
-        document.getElementById('formInscrireFormation').addEventListener('submit', function(e) {
-            e.preventDefault();
-            formations.unshift({
-                nom: document.getElementById('fNom').value,
-                grade: document.getElementById('fGrade').value,
-                mat: document.getElementById('fMatricule').value,
-                unite: document.getElementById('fUnite').value,
-                intitule: document.getElementById('fIntitule').value,
-                statut: "Admis (20/20)"
+        
+        /* GESTION DE LA FICHE D'ÉVALUATION */
+        function ouvrirModalEvaluation(idx) {
+            const item = formations[idx];
+            if (!item) return;
+        
+            document.getElementById('evalIndex').value = idx;
+            document.getElementById('evalCandidat').value = `${item.grade || ''} ${item.nom}`.trim();
+            document.getElementById('evalFormation').value = item.intitule || '';
+            
+            // Charger la liste des formateurs dans le select
+            const selectFormateur = document.getElementById('evalFormateur');
+            selectFormateur.innerHTML = '';
+            instructeurs.forEach(inst => {
+                selectFormateur.innerHTML += `<option value="${inst.nom}">${inst.nom} (${inst.role})</option>`;
             });
-            afficherFormations();
-            this.reset();
-        });
+        
+            // Valeurs par défaut ou existantes
+            document.getElementById('evalNote').value = item.note || "20";
+            document.getElementById('evalResultat').value = item.resultat || "Admis";
+            document.getElementById('evalMention').value = item.mention || "Sans mention";
+            document.getElementById('evalRemarques').value = item.remarques || "";
+        
+            toggleModal('modalEvaluer');
+        }
+        
+        function sauvegarderEvaluation() {
+            const idx = document.getElementById('evalIndex').value;
+            const res = document.getElementById('evalResultat').value;
+            const note = document.getElementById('evalNote').value;
+        
+            if (formations[idx]) {
+                formations[idx].resultat = res;
+                formations[idx].note = note;
+                formations[idx].mention = document.getElementById('evalMention').value;
+                formations[idx].formateur = document.getElementById('evalFormateur').value;
+                formations[idx].remarques = document.getElementById('evalRemarques').value;
+                
+                // Mise à jour du libellé de statut affiché dans le tableau
+                formations[idx].statut = note ? `${res} (${note}/20)` : res;
+        
+                afficherFormations();
+            }
+        
+            toggleModal('modalEvaluer');
+        }
 
         function supprimerFormation(idx) {
             formations.splice(idx, 1);
