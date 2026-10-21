@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portail de Commandement - ENA</title>
+    <!-- Styles CSS Intégrés Autonomes -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         :root { --accent-color: #10b981; --bg-main: #0b1319; --bg-card: #111c24; --border-color: #1e293b; }
@@ -100,12 +101,13 @@
                 <span style="font-weight: bold;">Fondateur Suprême</span>
                 <span style="color: var(--accent-color); font-family: monospace; font-size: 10px;">FS-001-OWNER</span>
             </div>
-            <button onclick="location.reload()" class="btn-retour" title="Actualiser">⚙️</button>
+            <!-- Bouton Ouverture Modale Paramètres -->
+            <button onclick="toggleModalParametres()" class="btn-retour" title="Paramètres d'affichage">⚙️</button>
             <button onclick="alert('Déconnexion du système ENA')" class="btn-retour" style="color: #f87171;" title="Déconnexion">⏻</button>
         </div>
     </header>
 
-    <!-- BARRE DES ONGLETS -->
+    <!-- BARRE DES ONGLETS (Paramètres retirés de la barre) -->
     <nav>
         <ul class="nav-list">
             <li><button onclick="changerOnglet('formation', this)" class="tab-btn">🎓 Formation</button></li>
@@ -114,14 +116,109 @@
             <li><button onclick="changerOnglet('referentiel', this)" class="tab-btn">📖 Référentiel</button></li>
             <li><button onclick="changerOnglet('planning', this)" class="tab-btn">📅 Planning</button></li>
             <li><button onclick="changerOnglet('notes', this)" class="tab-btn">📝 Notes</button></li>
-            <li><button onclick="changerOnglet('parametres', this)" class="tab-btn">⚙️ Paramètres</button></li>
         </ul>
     </nav>
 
     <!-- CONTENU PRINCIPAL -->
     <main>
 
-        <!-- 1. ONGLET DOSSIER -->
+        <!-- 1. ONGLET FORMATION -->
+        <div id="content-formation" class="tab-pane hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Formulaire Ajouter un Instructeur -->
+                <div class="card space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
+                        ➕ Ajouter un Instructeur
+                    </h3>
+                    <form id="formAddInstructeur" class="space-y-3 text-xs">
+                        <div>
+                            <label>Nom complet</label>
+                            <input type="text" id="instNom" placeholder="ex: LCL Alex GIROND" required>
+                        </div>
+                        <div>
+                            <label>Rôle Instructeur</label>
+                            <select id="instRole" required>
+                                <option value="">-- Rôle Instructeur --</option>
+                                <option value="Directeur de l'ENA">Directeur de l'ENA</option>
+                                <option value="Directeur adjoint">Directeur adjoint</option>
+                                <option value="Chef des Instructeurs">Chef des Instructeurs</option>
+                                <option value="Formateur Principal">Formateur Principal</option>
+                                <option value="Instructeur">Instructeur</option>
+                                <option value="Aspirant Instructeur">Aspirant Instructeur</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-submit" style="width: 100%;">Ajouter Instructeur</button>
+                    </form>
+                </div>
+
+                <!-- Corps des Formateurs / Instructeurs -->
+                <div class="card lg:col-span-2 space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
+                        🎖️ Corps des Formateurs / Instructeurs
+                    </h3>
+                    <div id="instructeursContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-56 overflow-y-auto custom-scroll pr-1">
+                        <!-- Rempli en JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUIVI DES FORMATIONS & ÉVALUATIONS -->
+            <div class="card space-y-4">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                    <h3 style="font-size: 14px; font-weight: bold;">📊 Suivi des Formations & Évaluations</h3>
+                    <input type="text" id="searchFormation" oninput="afficherFormations()" placeholder="🔍 Rechercher nom, grade..." style="width: 220px;">
+                </div>
+
+                <form id="formInscrireFormation" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2 text-xs bg-main p-3 rounded-lg border border-border-color">
+                    <input type="text" id="fNom" placeholder="Nom Prénom" required>
+                    <input type="text" id="fGrade" placeholder="Grade" required>
+                    <input type="text" id="fMatricule" placeholder="Matricule" required style="font-family: monospace;">
+                    <select id="fUnite">
+                        <option value="N/A">N/A (Sans affectation)</option>
+                        <option value="CPA 10">CPA 10</option>
+                        <option value="4e RHFS">4e RHFS</option>
+                        <option value="13e RDP">13e RDP</option>
+                        <option value="Commandos Jaubert">Commandos Jaubert</option>
+                        <option value="GCP">GCP</option>
+                    </select>
+                    <select id="fIntitule" required>
+                        <option value="">-- Formation / Brevet / Permis --</option>
+                        <option value="[FGI] Formation Général Initiale">[FGI] Formation Général Initiale</option>
+                        <option value="[CAT1] Brevet Caporal">[CAT1] Brevet Caporal</option>
+                        <option value="[CME] Brevet Caporal-Chef">[CME] Brevet Caporal-Chef</option>
+                        <option value="[FG1 / BS1] Brevet de Sergent">[FG1 / BS1] Brevet de Sergent</option>
+                        <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste</option>
+                        <option value="[CDU] Cursus de Chef d'Unité">[CDU] Cursus de Chef d'Unité</option>
+                        <option value="🪂 Brevet Parachutiste">🪂 Brevet Parachutiste</option>
+                        <option value="🎯 Opérateur Tourelle">🎯 Opérateur Tourelle</option>
+                        <option value="🔧 Qualification Mécanicien">🔧 Qualification Mécanicien</option>
+                        <option value="🚚 Conducteur SPL">🚚 Conducteur SPL</option>
+                    </select>
+                    <button type="submit" class="btn-submit" style="padding: 6px;">Inscrire</button>
+                </form>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Militaire</th>
+                                <th>Grade</th>
+                                <th>Matricule</th>
+                                <th>Unité</th>
+                                <th>Formation</th>
+                                <th>Statut / Note</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableFormationsBody">
+                            <!-- Rempli en JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. ONGLET DOSSIER -->
         <div id="content-dossier" class="tab-pane">
             <div class="card">
                 <div class="card-header-banner">
@@ -311,90 +408,6 @@
             </div>
         </div>
 
-        <!-- 2. ONGLET FORMATION -->
-        <div id="content-formation" class="tab-pane hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="card space-y-4">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
-                        ➕ Ajouter un Instructeur
-                    </h3>
-                    <form id="formAddInstructeur" class="space-y-3 text-xs">
-                        <div>
-                            <label>Nom complet</label>
-                            <input type="text" id="instNom" placeholder="ex: LCL Alex GIROND" required>
-                        </div>
-                        <div>
-                            <label>Rôle Instructeur</label>
-                            <select id="instRole" required>
-                                <option value="">-- Rôle Instructeur --</option>
-                                <option value="Directeur de l'ENA">Directeur de l'ENA</option>
-                                <option value="Directeur adjoint">Directeur adjoint</option>
-                                <option value="Chef des Instructeurs">Chef des Instructeurs</option>
-                                <option value="Formateur Principal">Formateur Principal</option>
-                                <option value="Instructeur">Instructeur</option>
-                                <option value="Aspirant Instructeur">Aspirant Instructeur</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-submit" style="width: 100%;">Ajouter Instructeur</button>
-                    </form>
-                </div>
-
-                <div class="card lg:col-span-2 space-y-4">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
-                        🎖️ Corps des Formateurs / Instructeurs
-                    </h3>
-                    <div id="instructeursContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-56 overflow-y-auto custom-scroll pr-1"></div>
-                </div>
-            </div>
-
-            <div class="card space-y-4">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                    <h3 style="font-size: 14px; font-weight: bold;">📊 Suivi des Formations & Évaluations</h3>
-                    <input type="text" id="searchFormation" oninput="afficherFormations()" placeholder="🔍 Rechercher nom..." style="width: 220px;">
-                </div>
-
-                <form id="formInscrireFormation" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2 text-xs bg-main p-3 rounded-lg border border-border-color">
-                    <input type="text" id="fNom" placeholder="Nom Prénom" required>
-                    <input type="text" id="fGrade" placeholder="Grade" required>
-                    <input type="text" id="fMatricule" placeholder="Matricule" required style="font-family: monospace;">
-                    <select id="fUnite">
-                        <option value="N/A">N/A</option>
-                        <option value="CPA 10">CPA 10</option>
-                        <option value="4e RHFS">4e RHFS</option>
-                        <option value="13e RDP">13e RDP</option>
-                        <option value="Commandos Jaubert">Commandos Jaubert</option>
-                        <option value="GCP">GCP</option>
-                    </select>
-                    <select id="fIntitule" required>
-                        <option value="">-- Formation / Permis --</option>
-                        <option value="[FGI] Formation Général Initiale">[FGI] Formation Initiale</option>
-                        <option value="[CDU] Cursus Chef d'Unité">[CDU] Cursus Chef d'Unité</option>
-                        <option value="🪂 Brevet Parachutiste">🪂 Brevet Parachutiste</option>
-                        <option value="🎯 Opérateur Tourelle">🎯 Opérateur Tourelle</option>
-                        <option value="⚓ Permis Bateau Commando">⚓ Permis Bateau Commando</option>
-                    </select>
-                    <button type="submit" class="btn-submit" style="padding: 6px;">Inscrire</button>
-                </form>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Militaire</th>
-                                <th>Grade</th>
-                                <th>Matricule</th>
-                                <th>Unité</th>
-                                <th>Formation</th>
-                                <th>Statut / Note</th>
-                                <th style="text-align: right;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableFormationsBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <!-- 3. ONGLET DOCUMENTS -->
         <div id="content-document" class="tab-pane hidden">
             <div class="card space-y-4">
@@ -415,7 +428,7 @@
                 <ul style="padding-left: 20px; color: #cbd5e1; display: flex; flex-direction: column; gap: 8px;">
                     <li><strong>[FGI]</strong> : Prérequis obligatoire pour tout opérateur.</li>
                     <li><strong>[CDU]</strong> : Habilitation de commandement tactique niveau 1.</li>
-                    <li><strong>Spécialnalisations Instructeurs</strong> : Soumises à validation par le Conseil de l'ENA.</li>
+                    <li><strong>Spécialisations Instructeurs</strong> : Soumises à validation par le Conseil de l'ENA.</li>
                 </ul>
             </div>
         </div>
@@ -449,38 +462,44 @@
             </div>
         </div>
 
-        <!-- 7. ONGLET PARAMÈTRES -->
-        <div id="content-parametres" class="tab-pane hidden">
-            <div class="card space-y-6" style="max-width: 800px; margin: 0 auto; width: 100%;">
-                <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                    <h2>⚙️ Paramètres d'Affichage & Personnalisation</h2>
-                    <p style="color: #94a3b8; margin-top: 2px;">Ajustez la luminosité, les thèmes de fond et la couleur d'accentuation.</p>
-                </div>
-
-                <div class="space-y-2">
-                    <label style="display: flex; justify-content: space-between; font-weight: bold;">
-                        <span>☀️ Luminosité de l'Écran</span>
-                        <span id="brightnessVal" style="color: var(--accent-color); font-family: monospace;">100%</span>
-                    </label>
-                    <input type="range" id="brightnessSlider" min="30" max="120" value="100" oninput="ajusterLuminosite(this.value)" style="width: 100%; cursor: pointer;">
-                </div>
-
-                <div style="border-top: 1px solid var(--border-color); padding-top: 15px;">
-                    <label style="font-weight: bold; margin-bottom: 8px; display: block;">🎨 Couleur d'Accentuation</label>
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="changerAccentColor('#10b981')" style="width: 32px; height: 32px; border-radius: 50%; background: #10b981; border: none; cursor: pointer;"></button>
-                        <button onclick="changerAccentColor('#3b82f6')" style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; border: none; cursor: pointer;"></button>
-                        <button onclick="changerAccentColor('#f59e0b')" style="width: 32px; height: 32px; border-radius: 50%; background: #f59e0b; border: none; cursor: pointer;"></button>
-                        <button onclick="changerAccentColor('#a855f7')" style="width: 32px; height: 32px; border-radius: 50%; background: #a855f7; border: none; cursor: pointer;"></button>
-                        <button onclick="changerAccentColor('#ef4444')" style="width: 32px; height: 32px; border-radius: 50%; background: #ef4444; border: none; cursor: pointer;"></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </main>
 
-    <!-- SCRIPT DE GESTION -->
+    <!-- MODAL DE PARAMÈTRES AUTONOME -->
+    <div id="modalParametres" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 15px;">
+        <div class="card space-y-6" style="width: 100%; max-width: 500px; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <h2 style="font-size: 15px; font-weight: bold; color: #fff;">⚙️ Paramètres du Portail</h2>
+                <button onclick="toggleModalParametres()" style="background: none; border: none; color: #f87171; font-size: 18px; cursor: pointer; font-weight: bold;">✕</button>
+            </div>
+
+            <!-- Réglage Luminosité -->
+            <div class="space-y-2">
+                <label style="display: flex; justify-content: space-between; font-weight: bold; color: #cbd5e1; font-size: 12px;">
+                    <span>☀️ Luminosité de l'Écran</span>
+                    <span id="brightnessVal" style="color: var(--accent-color); font-family: monospace;">100%</span>
+                </label>
+                <input type="range" id="brightnessSlider" min="30" max="120" value="100" oninput="ajusterLuminosite(this.value)" style="width: 100%; cursor: pointer;">
+            </div>
+
+            <!-- Couleurs d'accentuation -->
+            <div style="border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <label style="font-weight: bold; margin-bottom: 8px; display: block; color: #cbd5e1; font-size: 12px;">🎨 Couleur d'Accentuation</label>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="changerAccentColor('#10b981')" style="width: 32px; height: 32px; border-radius: 50%; background: #10b981; border: 2px solid #fff; cursor: pointer;" title="Émeraude"></button>
+                    <button onclick="changerAccentColor('#3b82f6')" style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; border: 2px solid #fff; cursor: pointer;" title="Bleu"></button>
+                    <button onclick="changerAccentColor('#f59e0b')" style="width: 32px; height: 32px; border-radius: 50%; background: #f59e0b; border: 2px solid #fff; cursor: pointer;" title="Ambre"></button>
+                    <button onclick="changerAccentColor('#a855f7')" style="width: 32px; height: 32px; border-radius: 50%; background: #a855f7; border: 2px solid #fff; cursor: pointer;" title="Violet"></button>
+                    <button onclick="changerAccentColor('#ef4444')" style="width: 32px; height: 32px; border-radius: 50%; background: #ef4444; border: 2px solid #fff; cursor: pointer;" title="Rouge"></button>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                <button onclick="toggleModalParametres()" class="btn-submit" style="padding: 6px 16px;">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE GESTION COMPLETE -->
     <script>
         let dossiers = [];
         let instructeurs = [
@@ -640,7 +659,11 @@
             this.reset();
         });
 
-        // Paramètres
+        // Modale & Paramètres
+        function toggleModalParametres() {
+            document.getElementById('modalParametres').classList.toggle('hidden');
+        }
+
         function ajusterLuminosite(val) {
             document.body.style.filter = `brightness(${val}%)`;
             document.getElementById('brightnessVal').textContent = `${val}%`;
@@ -648,7 +671,6 @@
 
         function changerAccentColor(hex) {
             document.documentElement.style.setProperty('--accent-color', hex);
-            alert('Couleur d\'accentuation mise à jour !');
         }
     </script>
 </body>
