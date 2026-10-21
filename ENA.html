@@ -4,72 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portail de Commandement - ENA</title>
-    <!-- Styles CSS Intégrés Autonomes (Aucun blocage CDN) -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0b1319; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; font-size: 13px; }
+        :root { --accent-color: #10b981; --bg-main: #0b1319; --bg-card: #111c24; --border-color: #1e293b; }
+        
+        body { background-color: var(--bg-main); color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; font-size: 13px; transition: filter 0.3s ease; }
         
         /* En-tête */
-        header { background-color: #111c24; border-bottom: 1px solid #1e293b; padding: 12px 24px; display: flex; justify-content: space-between; items-center: center; flex-wrap: wrap; gap: 10px; }
+        header { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
-        .badge-logo { background-color: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); padding: 8px 12px; border-radius: 8px; color: #10b981; font-weight: bold; font-size: 16px; }
+        .badge-logo { background-color: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); padding: 8px 12px; border-radius: 8px; color: var(--accent-color); font-weight: bold; font-size: 16px; }
         .title-main { font-size: 16px; font-weight: 900; text-transform: uppercase; color: #fff; }
-        .subtitle { font-size: 10px; color: #10b981; font-family: monospace; }
+        .subtitle { font-size: 10px; color: var(--accent-color); font-family: monospace; }
         
         .btn-retour { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 6px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 12px; }
         .btn-retour:hover { background-color: #334155; }
 
         .user-info { display: flex; align-items: center; gap: 10px; }
-        .user-card { background-color: #0b1319; padding: 6px 12px; border-radius: 8px; border: 1px solid #1e293b; display: flex; align-items: center; gap: 8px; }
-        .dot-online { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; }
+        .user-card { background-color: var(--bg-main); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; }
+        .dot-online { width: 8px; height: 8px; background-color: var(--accent-color); border-radius: 50%; }
 
         /* Navigation Onglets */
-        nav { background-color: #111c24; border-bottom: 1px solid #1e293b; padding: 0 24px; overflow-x: auto; }
+        nav { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 0 24px; overflow-x: auto; }
         .nav-list { display: flex; list-style: none; gap: 4px; min-width: max-content; }
         .tab-btn { background: none; border: none; color: #94a3b8; padding: 12px 18px; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; font-size: 12px; transition: all 0.2s; }
         .tab-btn:hover { color: #fff; background-color: rgba(255,255,255,0.03); }
-        .tab-btn.active { color: #10b981; border-bottom-color: #10b981; background-color: rgba(16, 185, 129, 0.1); }
+        .tab-btn.active { color: var(--accent-color); border-bottom-color: var(--accent-color); background-color: rgba(16, 185, 129, 0.1); }
 
         /* Contenu */
-        main { flex: 1; padding: 20px; max-width: 1300px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 20px; }
+        main { flex: 1; padding: 20px; max-width: 1400px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 20px; }
         .tab-pane { display: flex; flex-direction: column; gap: 20px; }
         .hidden { display: none !important; }
 
         /* Cartes & Formulaires */
-        .card { background-color: #111c24; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
-        .card-header-banner { background-color: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+        .card-header-banner { background-color: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 10px; }
-        .kpi-card { background-color: #0b1319; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; }
+        .kpi-card { background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
         .kpi-title { font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
         .kpi-value { font-size: 16px; font-weight: 900; color: #fff; }
 
-        /* Formulaire */
-        .form-section-title { font-size: 13px; font-weight: bold; color: #fff; border-bottom: 1px solid #1e293b; padding-bottom: 6px; margin-bottom: 12px; }
+        .form-section-title { font-size: 13px; font-weight: bold; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin-bottom: 12px; }
         .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
 
         label { display: block; color: #94a3b8; font-weight: 600; margin-bottom: 4px; font-size: 11px; }
-        input[type="text"], input[type="date"], select, textarea { width: 100%; background-color: #0b1319; border: 1px solid #334155; border-radius: 6px; padding: 8px 10px; color: #fff; font-size: 12px; outline: none; }
-        input[type="text"]:focus, select:focus, textarea:focus { border-color: #10b981; }
+        input[type="text"], input[type="date"], select, textarea { width: 100%; background-color: var(--bg-main); border: 1px solid #334155; border-radius: 6px; padding: 8px 10px; color: #fff; font-size: 12px; outline: none; }
+        input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--accent-color); }
 
-        .qualif-box { background-color: #0b1319; border: 1px solid #1e293b; border-radius: 8px; padding: 12px; }
-        .qualif-title { font-weight: bold; border-bottom: 1px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px; font-size: 12px; }
+        .qualif-box { background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; }
+        .qualif-title { font-weight: bold; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin-bottom: 8px; font-size: 12px; }
         .qualif-list { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
         .check-item { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #cbd5e1; font-size: 11px; }
         .check-item:hover { color: #fff; }
-
         .section-header { font-weight: bold; padding-top: 4px; padding-bottom: 2px; font-size: 11px; }
 
-        .btn-submit { background-color: #059669; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 13px; }
-        .btn-submit:hover { background-color: #10b981; }
+        .btn-submit { background-color: var(--accent-color); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 13px; }
+        .btn-submit:hover { opacity: 0.9; }
         .btn-reset { background-color: #1e293b; color: #cbd5e1; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* Tableau Registre */
-        .table-container { overflow-x: auto; border: 1px solid #1e293b; border-radius: 8px; }
+        /* Tableau */
+        .table-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background-color: #0b1319; color: #94a3b8; text-transform: uppercase; font-size: 10px; padding: 10px; border-bottom: 1px solid #1e293b; }
-        td { padding: 10px; border-bottom: 1px solid #1e293b; font-size: 12px; }
+        th { background-color: var(--bg-main); color: #94a3b8; text-transform: uppercase; font-size: 10px; padding: 10px; border-bottom: 1px solid var(--border-color); }
+        td { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 12px; }
         tr:hover { background-color: rgba(255,255,255,0.02); }
 
         .badge-unit { background-color: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
@@ -78,7 +77,8 @@
         .btn-action { background-color: #1e293b; border: 1px solid #334155; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
         .btn-action.edit { color: #f59e0b; }
         .btn-action.delete { color: #f87171; }
-        .btn-action:hover { background-color: #334155; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
     </style>
 </head>
 <body>
@@ -98,14 +98,14 @@
             <div class="user-card">
                 <div class="dot-online"></div>
                 <span style="font-weight: bold;">Fondateur Suprême</span>
-                <span style="color: #10b981; font-family: monospace; font-size: 10px;">FS-001-OWNER</span>
+                <span style="color: var(--accent-color); font-family: monospace; font-size: 10px;">FS-001-OWNER</span>
             </div>
             <button onclick="location.reload()" class="btn-retour" title="Actualiser">⚙️</button>
             <button onclick="alert('Déconnexion du système ENA')" class="btn-retour" style="color: #f87171;" title="Déconnexion">⏻</button>
         </div>
-</header>
+    </header>
 
-    <!-- BARRE DES ONGLETS DE NAVIGATION -->
+    <!-- BARRE DES ONGLETS -->
     <nav>
         <ul class="nav-list">
             <li><button onclick="changerOnglet('formation', this)" class="tab-btn">🎓 Formation</button></li>
@@ -123,12 +123,10 @@
 
         <!-- 1. ONGLET DOSSIER -->
         <div id="content-dossier" class="tab-pane">
-
-            <!-- BANNIÈRE & KPI -->
             <div class="card">
                 <div class="card-header-banner">
                     <div>
-                        <h2 id="formTitle" style="color: #10b981; font-size: 15px; text-transform: uppercase; font-weight: 900;">
+                        <h2 id="formTitle" style="color: var(--accent-color); font-size: 15px; text-transform: uppercase; font-weight: 900;">
                             Créer / Mettre à Jour un Dossier Militaire Rétroactif
                         </h2>
                         <p style="color: #94a3b8; font-size: 11px; margin-top: 2px;">
@@ -136,50 +134,27 @@
                         </p>
                     </div>
                     <div id="cancelEditContainer" class="hidden">
-                        <button type="button" onclick="resetFormulaire()" class="btn-retour" style="color: #f87171;">✕ Annuler la modification</button>
+                        <button type="button" onclick="resetFormulaire()" class="btn-retour" style="color: #f87171;">✕ Annuler</button>
                     </div>
                 </div>
 
                 <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-title">Total Dossiers</div>
-                        <div id="statTotalMilitaires" class="kpi-value">0</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">Qualifications</div>
-                        <div id="statTotalQualifs" class="kpi-value" style="color: #f59e0b;">0</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">Aptes Service FS</div>
-                        <div id="statAptesFS" class="kpi-value" style="color: #10b981;">0%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">Instructeurs</div>
-                        <div id="statTotalInstructeurs" class="kpi-value" style="color: #c084fc;">0</div>
-                    </div>
+                    <div class="kpi-card"><div class="kpi-title">Total Dossiers</div><div id="statTotalMilitaires" class="kpi-value">0</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Qualifications</div><div id="statTotalQualifs" class="kpi-value" style="color: #f59e0b;">0</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Aptes Service FS</div><div id="statAptesFS" class="kpi-value" style="color: var(--accent-color);">0%</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Instructeurs</div><div id="statTotalInstructeurs" class="kpi-value" style="color: #c084fc;">0</div></div>
                 </div>
             </div>
 
-            <!-- FORMULAIRE -->
             <form id="formFullDossier" class="card" style="display: flex; flex-direction: column; gap: 20px;">
                 <input type="hidden" id="editIndex" value="-1">
 
-                <!-- ÉTAT CIVIL -->
                 <div>
                     <div class="form-section-title">1. État Civil & Affectation</div>
                     <div class="grid-4">
-                        <div>
-                            <label>Nom & Prénom *</label>
-                            <input type="text" id="fullNom" placeholder="ex: CPT Jean Dupont" required>
-                        </div>
-                        <div>
-                            <label>Grade *</label>
-                            <input type="text" id="fullGrade" placeholder="ex: Capitaine" required>
-                        </div>
-                        <div>
-                            <label>Matricule *</label>
-                            <input type="text" id="fullMat" placeholder="ex: MAT-8890" required>
-                        </div>
+                        <div><label>Nom & Prénom *</label><input type="text" id="fullNom" placeholder="ex: CPT Jean Dupont" required></div>
+                        <div><label>Grade *</label><input type="text" id="fullGrade" placeholder="ex: Capitaine" required></div>
+                        <div><label>Matricule *</label><input type="text" id="fullMat" placeholder="ex: MAT-8890" required></div>
                         <div>
                             <label>Unité / Affectation</label>
                             <select id="fullUnite" style="color: #60a5fa; font-weight: bold;">
@@ -188,18 +163,15 @@
                                 <option value="4e RHFS">4e RHFS</option>
                                 <option value="13e RDP">13e RDP</option>
                                 <option value="Commandos Jaubert (marine)">Commandos Jaubert (marine)</option>
-                                <option value="Groupe de Commandos Parachutistes (GCP)">Groupe de Commandos Parachutistes (GCP)</option>
+                                <option value="Groupe de Commandos Parachutistes (GCP)">GCP</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- FORMATIONS, PERMIS & SPÉCIALITÉS -->
                 <div>
                     <div class="form-section-title">2. Formations, Permis & Qualifications Validés</div>
                     <div class="grid-3">
-
-                        <!-- DIPLÔMES ENA -->
                         <div class="qualif-box">
                             <div class="qualif-title" style="color: #f59e0b;">🎓 Diplômes ENA Officiels</div>
                             <div class="qualif-list">
@@ -217,68 +189,55 @@
                             </div>
                         </div>
 
-                        <!-- FORMATIONS & PERMIS -->
                         <div class="qualif-box">
                             <div class="qualif-title" style="color: #60a5fa;">🚘 Formations & Permis</div>
                             <div class="qualif-list">
-                                <div class="section-header" style="color: #94a3b8;">FORMATIONS</div>
+                                <div class="section-header">FORMATIONS</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🪂 Brevet Parachutiste"> 🪂 Brevet Parachutiste</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🎯 Opérateur Tourelle"> 🎯 Opérateur Tourelle</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🔧 Qualification Mécanicien"> 🔧 Qualification Mécanicien</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🚚 Conducteur SPL"> 🚚 Conducteur SPL</label>
-
-                                <div class="section-header" style="color: #94a3b8; border-top: 1px solid #1e293b; margin-top: 6px; padding-top: 6px;">PERMIS</div>
+                                <div class="section-header" style="border-top: 1px solid var(--border-color); margin-top: 6px; padding-top: 6px;">PERMIS</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🚘 Pilote Blindés (VBCI/VAB/VBMR/GBC)"> 🚘 Pilote Blindés (VBCI/VAB)</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🪪 Permis B"> 🪪 Permis B</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🚛 Permis C"> 🚛 Permis C</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="🚌 Permis D"> 🚌 Permis D</label>
-                                <label class="check-item"><input type="checkbox" class="full-form-check" value="⚓ Permis Bateau (Commandos Marine)"> ⚓ Permis Bateau (Commando Marine)</label>
+                                <label class="check-item"><input type="checkbox" class="full-form-check" value="⚓ Permis Bateau (Commandos Marine)"> ⚓ Permis Bateau (Commandos Marine)</label>
                             </div>
                         </div>
 
-                        <!-- SPÉCIALITÉS (HIÉRARCHIE ENA) -->
                         <div class="qualif-box">
                             <div class="qualif-title" style="color: #f87171;">🎯 Spécialités (Instructeurs)</div>
                             <div class="qualif-list">
-                                
                                 <div class="section-header" style="color: #f87171;">🩺 Médecins</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Médecins"> Chef Formateurs Médecins</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Formateur Médecin"> Formateur Médecin</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Médecin"> Apprenti Formateur Médecin</label>
-                                <label class="check-item"><input type="checkbox" class="full-form-check" value="Médecin"> Médecin</label>
-
                                 <div class="section-header" style="color: #34d399;">🎯 Tireurs d'Élite</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Tireurs d'Élites"> Chef Formateurs TE</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Formateur Tireur d'Élite"> Formateur TE</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Tireur d'Élite"> Apprenti Formateur TE</label>
-
                                 <div class="section-header" style="color: #fbbf24;">🔫 Tireurs de Précision</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Tireur de Précision"> Chef Formateurs TP</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Formateur Tireur de Précision"> Formateur TP</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Tireur de Précision"> Apprenti Formateur TP</label>
-
                                 <div class="section-header" style="color: #6ee7b7;">🛸 Opérateurs Drones</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Opérateurs Drones"> Chef Formateurs Drones</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Formateur Opérateur Drone"> Formateur Drone</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Opérateur Drone"> Apprenti Formateur Drone</label>
-
                                 <div class="section-header" style="color: #2dd4bf;">📻 Transmetteurs</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Transmetteurs"> Chef Formateurs Transmetteurs</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Formateur Transmetteur"> Formateur Transmetteur</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Transmetteur"> Apprenti Formateur Transmetteur</label>
-
                                 <div class="section-header" style="color: #fb923c;">💥 Démineurs</div>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Chef des formateurs Démineurs"> Chef Formateurs Démineurs</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Formateur Démineur"> Formateur Démineur</label>
                                 <label class="check-item"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Démineur"> Apprenti Formateur Démineur</label>
-
                             </div>
                         </div>
-
                     </div>
                 </div>
 
-                <!-- MÉDICAL & REMARQUES -->
                 <div>
                     <div class="form-section-title">3. Profil Médical & Remarques</div>
                     <div class="grid-4">
@@ -292,10 +251,7 @@
                                 <option value="AB +">AB +</option><option value="AB -">AB -</option>
                             </select>
                         </div>
-                        <div>
-                            <label>Visite Médicale (VMA)</label>
-                            <input type="date" id="fullDateVMA">
-                        </div>
+                        <div><label>Visite Médicale (VMA)</label><input type="date" id="fullDateVMA"></div>
                         <div>
                             <label>Aptitude Déclarée</label>
                             <select id="fullAptitude" style="font-weight: bold;">
@@ -304,27 +260,22 @@
                                 <option value="Inapte Temporaire">🔴 Inapte Temporaire</option>
                             </select>
                         </div>
-                        <div>
-                            <label>Notes du Commandement</label>
-                            <input type="text" id="fullNotes" placeholder="Remarques...">
-                        </div>
+                        <div><label>Notes du Commandement</label><input type="text" id="fullNotes" placeholder="Remarques..."></div>
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #1e293b; padding-top: 15px;">
+                <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                     <button type="reset" onclick="resetFormulaire()" class="btn-reset">Réinitialiser</button>
                     <button type="submit" id="btnSubmitDossier" class="btn-submit">💾 Enregistrer Dossier Rétroactif</button>
                 </div>
             </form>
 
-            <!-- REGISTRE -->
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                     <div>
                         <h3 style="font-size: 14px; font-weight: bold;">📋 Registre des Dossiers Enregistrés</h3>
                         <p style="color: #94a3b8; font-size: 11px;">Recherchez par nom/matricule ou modifiez directement un dossier.</p>
                     </div>
-
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <input type="text" id="searchDossier" oninput="filtrerDossiers()" placeholder="🔍 Rechercher par nom, matricule..." style="width: 220px;">
                         <select id="filterUnite" onchange="filtrerDossiers()" style="width: 160px;">
@@ -350,39 +301,204 @@
                                 <th style="text-align: right;">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="tableDossiersBody">
-                            <!-- Rempli en JS -->
-                        </tbody>
+                        <tbody id="tableDossiersBody"></tbody>
                     </table>
                 </div>
-
                 <div id="noDossierMessage" class="hidden" style="text-align: center; padding: 30px; color: #64748b;">
                     <div style="font-size: 24px;">📂</div>
                     <p style="font-weight: bold;">Aucun dossier militaire enregistré pour le moment.</p>
                 </div>
             </div>
-
         </div>
 
-        <!-- AUTRES ONGLETS -->
-        <div id="content-formation" class="tab-pane hidden"><div class="card"><h2>🎓 Module Formation</h2><p style="color: #94a3b8; margin-top: 5px;">Gestion des sessions d'entraînement et cursus des opérateurs.</p></div></div>
-        <div id="content-document" class="tab-pane hidden"><div class="card"><h2>📄 Documents & Fichiers</h2><p style="color: #94a3b8; margin-top: 5px;">Archives, rapports d'intervention et manuels tactiques.</p></div></div>
-        <div id="content-referentiel" class="tab-pane hidden"><div class="card"><h2>📖 Référentiel ENA</h2><p style="color: #94a3b8; margin-top: 5px;">Grille officielle des brevets, qualifications et grilles de notation.</p></div></div>
-        <div id="content-planning" class="tab-pane hidden"><div class="card"><h2>📅 Planning Opérationnel</h2><p style="color: #94a3b8; margin-top: 5px;">Calendrier des déploiements et exercices planifiés.</p></div></div>
-        <div id="content-notes" class="tab-pane hidden"><div class="card"><h2>📝 Notes de Commandement</h2><p style="color: #94a3b8; margin-top: 5px;">Consignes permanentes et carnets de liaison.</p></div></div>
+        <!-- 2. ONGLET FORMATION -->
+        <div id="content-formation" class="tab-pane hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
+                        ➕ Ajouter un Instructeur
+                    </h3>
+                    <form id="formAddInstructeur" class="space-y-3 text-xs">
+                        <div>
+                            <label>Nom complet</label>
+                            <input type="text" id="instNom" placeholder="ex: LCL Alex GIROND" required>
+                        </div>
+                        <div>
+                            <label>Rôle Instructeur</label>
+                            <select id="instRole" required>
+                                <option value="">-- Rôle Instructeur --</option>
+                                <option value="Directeur de l'ENA">Directeur de l'ENA</option>
+                                <option value="Directeur adjoint">Directeur adjoint</option>
+                                <option value="Chef des Instructeurs">Chef des Instructeurs</option>
+                                <option value="Formateur Principal">Formateur Principal</option>
+                                <option value="Instructeur">Instructeur</option>
+                                <option value="Aspirant Instructeur">Aspirant Instructeur</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-submit" style="width: 100%;">Ajouter Instructeur</button>
+                    </form>
+                </div>
+
+                <div class="card lg:col-span-2 space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2 border-b border-border-color pb-2">
+                        🎖️ Corps des Formateurs / Instructeurs
+                    </h3>
+                    <div id="instructeursContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-56 overflow-y-auto custom-scroll pr-1"></div>
+                </div>
+            </div>
+
+            <div class="card space-y-4">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                    <h3 style="font-size: 14px; font-weight: bold;">📊 Suivi des Formations & Évaluations</h3>
+                    <input type="text" id="searchFormation" oninput="afficherFormations()" placeholder="🔍 Rechercher nom..." style="width: 220px;">
+                </div>
+
+                <form id="formInscrireFormation" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2 text-xs bg-main p-3 rounded-lg border border-border-color">
+                    <input type="text" id="fNom" placeholder="Nom Prénom" required>
+                    <input type="text" id="fGrade" placeholder="Grade" required>
+                    <input type="text" id="fMatricule" placeholder="Matricule" required style="font-family: monospace;">
+                    <select id="fUnite">
+                        <option value="N/A">N/A</option>
+                        <option value="CPA 10">CPA 10</option>
+                        <option value="4e RHFS">4e RHFS</option>
+                        <option value="13e RDP">13e RDP</option>
+                        <option value="Commandos Jaubert">Commandos Jaubert</option>
+                        <option value="GCP">GCP</option>
+                    </select>
+                    <select id="fIntitule" required>
+                        <option value="">-- Formation / Permis --</option>
+                        <option value="[FGI] Formation Général Initiale">[FGI] Formation Initiale</option>
+                        <option value="[CDU] Cursus Chef d'Unité">[CDU] Cursus Chef d'Unité</option>
+                        <option value="🪂 Brevet Parachutiste">🪂 Brevet Parachutiste</option>
+                        <option value="🎯 Opérateur Tourelle">🎯 Opérateur Tourelle</option>
+                        <option value="⚓ Permis Bateau Commando">⚓ Permis Bateau Commando</option>
+                    </select>
+                    <button type="submit" class="btn-submit" style="padding: 6px;">Inscrire</button>
+                </form>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Militaire</th>
+                                <th>Grade</th>
+                                <th>Matricule</th>
+                                <th>Unité</th>
+                                <th>Formation</th>
+                                <th>Statut / Note</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableFormationsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ONGLET DOCUMENTS -->
+        <div id="content-document" class="tab-pane hidden">
+            <div class="card space-y-4">
+                <h2>📄 Centre de Documents & Archives Tactiques</h2>
+                <p style="color: #94a3b8;">Consultez les manuels, directives de commandement et rapports d'intervention de l'ENA.</p>
+                <div style="background-color: var(--bg-main); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div style="font-weight: bold; color: #60a5fa; margin-bottom: 5px;">📁 Dossier_Directives_ENA_2026.pdf</div>
+                    <p style="font-size: 11px; color: #94a3b8;">Mis à jour par le Fondateur Suprême - Statut : Actif & Confidentiel</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ONGLET RÉFÉRENTIEL -->
+        <div id="content-referentiel" class="tab-pane hidden">
+            <div class="card space-y-4">
+                <h2>📖 Référentiel Général des Compétences ENA</h2>
+                <p style="color: #94a3b8;">Grille officielle des conditions d'obtention des brevets et barèmes d'évaluation.</p>
+                <ul style="padding-left: 20px; color: #cbd5e1; display: flex; flex-direction: column; gap: 8px;">
+                    <li><strong>[FGI]</strong> : Prérequis obligatoire pour tout opérateur.</li>
+                    <li><strong>[CDU]</strong> : Habilitation de commandement tactique niveau 1.</li>
+                    <li><strong>Spécialnalisations Instructeurs</strong> : Soumises à validation par le Conseil de l'ENA.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 5. ONGLET PLANNING -->
+        <div id="content-planning" class="tab-pane hidden">
+            <div class="card space-y-4">
+                <h2>📅 Planning Opérationnel & Entraînements</h2>
+                <p style="color: #94a3b8;">Calendrier des sessions de tir, sauts en parachute et exercices conjoints.</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Date</th><th>Exercice / Session</th><th>Unité Concernée</th><th>Lieu</th></tr></thead>
+                        <tbody>
+                            <tr><td>25/10/2026</td><td>Session Tir Longue Distance (TE/TP)</td><td><span class="badge-unit">13e RDP</span></td><td>Champ de Tir Alpha</td></tr>
+                            <tr><td>28/10/2026</td><td>Infiltration Maritime & SOTGH</td><td><span class="badge-unit">Commandos Jaubert</span></td><td>Zone côtière Bravo</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. ONGLET NOTES -->
+        <div id="content-notes" class="tab-pane hidden">
+            <div class="card space-y-4">
+                <h2>📝 Notes de Commandement</h2>
+                <p style="color: #94a3b8;">Carnet de liaison permanent du commandement.</p>
+                <textarea id="notesCommandement" placeholder="Saisissez vos consignes permanentes..." style="height: 150px;"></textarea>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button onclick="alert('Notes enregistrées avec succès !')" class="btn-submit">Sauvegarder les notes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. ONGLET PARAMÈTRES -->
+        <div id="content-parametres" class="tab-pane hidden">
+            <div class="card space-y-6" style="max-width: 800px; margin: 0 auto; width: 100%;">
+                <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                    <h2>⚙️ Paramètres d'Affichage & Personnalisation</h2>
+                    <p style="color: #94a3b8; margin-top: 2px;">Ajustez la luminosité, les thèmes de fond et la couleur d'accentuation.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label style="display: flex; justify-content: space-between; font-weight: bold;">
+                        <span>☀️ Luminosité de l'Écran</span>
+                        <span id="brightnessVal" style="color: var(--accent-color); font-family: monospace;">100%</span>
+                    </label>
+                    <input type="range" id="brightnessSlider" min="30" max="120" value="100" oninput="ajusterLuminosite(this.value)" style="width: 100%; cursor: pointer;">
+                </div>
+
+                <div style="border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <label style="font-weight: bold; margin-bottom: 8px; display: block;">🎨 Couleur d'Accentuation</label>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="changerAccentColor('#10b981')" style="width: 32px; height: 32px; border-radius: 50%; background: #10b981; border: none; cursor: pointer;"></button>
+                        <button onclick="changerAccentColor('#3b82f6')" style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; border: none; cursor: pointer;"></button>
+                        <button onclick="changerAccentColor('#f59e0b')" style="width: 32px; height: 32px; border-radius: 50%; background: #f59e0b; border: none; cursor: pointer;"></button>
+                        <button onclick="changerAccentColor('#a855f7')" style="width: 32px; height: 32px; border-radius: 50%; background: #a855f7; border: none; cursor: pointer;"></button>
+                        <button onclick="changerAccentColor('#ef4444')" style="width: 32px; height: 32px; border-radius: 50%; background: #ef4444; border: none; cursor: pointer;"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </main>
 
-    <!-- JS DE FONCTIONNEMENT -->
+    <!-- SCRIPT DE GESTION -->
     <script>
         let dossiers = [];
+        let instructeurs = [
+            { id: 1, nom: "Colonel Alex GIROND", role: "Directeur de l'ENA" },
+            { id: 2, nom: "Commandant Mathis ROSIER", role: "Directeur adjoint" },
+            { id: 3, nom: "Lieutenant Maël LIOGER", role: "Formateur Principal" },
+            { id: 4, nom: "Capitaine Noli VELMONT", role: "Chef des Instructeurs" }
+        ];
+        let formations = [
+            { id: 1, nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FGI] Formation Initiale", statut: "Admis (20/20)" }
+        ];
 
         document.addEventListener('DOMContentLoaded', () => {
             const saved = localStorage.getItem('ena_dossiers_militaires');
-            if (saved) {
-                try { dossiers = JSON.parse(saved); } catch (e) { dossiers = []; }
-            }
+            if (saved) { try { dossiers = JSON.parse(saved); } catch(e) { dossiers = []; } }
             afficherDossiers();
+            afficherInstructeurs();
+            afficherFormations();
         });
 
         function sauvegarderStockage() {
@@ -399,9 +515,9 @@
             boutonElement.classList.add('active');
         }
 
+        // Formulaire Dossiers
         document.getElementById('formFullDossier').addEventListener('submit', function(e) {
             e.preventDefault();
-
             const editIndex = parseInt(document.getElementById('editIndex').value);
             const nom = document.getElementById('fullNom').value.trim();
             const grade = document.getElementById('fullGrade').value.trim();
@@ -412,16 +528,11 @@
             const aptitude = document.getElementById('fullAptitude').value;
             const notes = document.getElementById('fullNotes').value.trim();
 
-            const checkboxes = document.querySelectorAll('.full-form-check:checked');
-            const qualifications = Array.from(checkboxes).map(cb => cb.value);
-
+            const qualifications = Array.from(document.querySelectorAll('.full-form-check:checked')).map(cb => cb.value);
             const dossierData = { nom, grade, mat, unite, qualifications, sang, dateVMA, aptitude, notes };
 
-            if (editIndex >= 0 && editIndex < dossiers.length) {
-                dossiers[editIndex] = dossierData;
-            } else {
-                dossiers.unshift(dossierData);
-            }
+            if (editIndex >= 0 && editIndex < dossiers.length) dossiers[editIndex] = dossierData;
+            else dossiers.unshift(dossierData);
 
             resetFormulaire();
             sauvegarderStockage();
@@ -434,59 +545,30 @@
             const filterUniteVal = document.getElementById('filterUnite').value;
 
             document.getElementById('statTotalMilitaires').textContent = dossiers.length;
-            const totalQualifs = dossiers.reduce((acc, d) => acc + (d.qualifications ? d.qualifications.length : 0), 0);
-            document.getElementById('statTotalQualifs').textContent = totalQualifs;
-            const aptesFS = dossiers.filter(d => d.aptitude && d.aptitude.includes('Apte Service FS')).length;
+            document.getElementById('statTotalQualifs').textContent = dossiers.reduce((acc, d) => acc + (d.qualifications?.length || 0), 0);
+            const aptesFS = dossiers.filter(d => d.aptitude?.includes('Apte Service FS')).length;
             document.getElementById('statAptesFS').textContent = dossiers.length ? Math.round((aptesFS / dossiers.length) * 100) + '%' : '0%';
-            
-            const totalInstructeurs = dossiers.filter(d => d.qualifications && d.qualifications.some(q => q.includes('Formateur') || q.includes('Chef'))).length;
-            document.getElementById('statTotalInstructeurs').textContent = totalInstructeurs;
+            document.getElementById('statTotalInstructeurs').textContent = dossiers.filter(d => d.qualifications?.some(q => q.includes('Formateur') || q.includes('Chef'))).length;
 
             tbody.innerHTML = '';
+            const filtered = dossiers.filter(d => (d.nom.toLowerCase().includes(searchText) || d.mat.toLowerCase().includes(searchText)) && (!filterUniteVal || d.unite === filterUniteVal));
 
-            const filtered = dossiers.filter((d) => {
-                const matchSearch = d.nom.toLowerCase().includes(searchText) || d.mat.toLowerCase().includes(searchText) || d.grade.toLowerCase().includes(searchText);
-                const matchUnite = !filterUniteVal || d.unite === filterUniteVal;
-                return matchSearch && matchUnite;
-            });
-
-            if (filtered.length === 0) {
-                noMsg.classList.remove('hidden');
-                return;
-            } else {
-                noMsg.classList.add('hidden');
-            }
+            if (filtered.length === 0) { noMsg.classList.remove('hidden'); return; }
+            noMsg.classList.add('hidden');
 
             filtered.forEach((d) => {
                 const realIndex = dossiers.indexOf(d);
-
-                let aptitudeColor = '#10b981';
-                if (d.aptitude.includes('Restrictions')) aptitudeColor = '#f59e0b';
-                if (d.aptitude.includes('Inapte')) aptitudeColor = '#f87171';
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: bold;">
-                        <div>${d.nom}</div>
-                        <div style="font-size: 10px; color: #94a3b8; font-family: monospace;">${d.mat}</div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 600;">${d.grade}</div>
-                        <span class="badge-unit">${d.unite}</span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span class="badge-count">${d.qualifications ? d.qualifications.length : 0} qualification(s)</span>
-                    </td>
-                    <td>
-                        <div style="color: ${aptitudeColor}; font-weight: bold; font-size: 11px;">${d.aptitude}</div>
-                        <div style="font-size: 10px; color: #94a3b8;">Sang: <span style="color: #f87171; font-weight: bold;">${d.sang}</span></div>
-                    </td>
-                    <td style="text-align: right;">
-                        <button onclick="chargerPourModification(${realIndex})" class="btn-action edit" title="Modifier">✏️</button>
-                        <button onclick="supprimerDossier(${realIndex})" class="btn-action delete" title="Supprimer">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: bold;"><div>${d.nom}</div><div style="font-size: 10px; color: #94a3b8; font-family: monospace;">${d.mat}</div></td>
+                        <td><div style="font-weight: 600;">${d.grade}</div><span class="badge-unit">${d.unite}</span></td>
+                        <td style="text-align: center;"><span class="badge-count">${d.qualifications?.length || 0} qualif(s)</span></td>
+                        <td><div style="font-weight: bold; font-size: 11px;">${d.aptitude}</div><div style="font-size: 10px; color: #94a3b8;">Sang: <span style="color: #f87171; font-weight: bold;">${d.sang}</span></div></td>
+                        <td style="text-align: right;">
+                            <button onclick="chargerPourModification(${realIndex})" class="btn-action edit">✏️</button>
+                            <button onclick="supprimerDossier(${realIndex})" class="btn-action delete">🗑️</button>
+                        </td>
+                    </tr>`;
             });
         }
 
@@ -495,7 +577,6 @@
         function chargerPourModification(index) {
             const d = dossiers[index];
             if (!d) return;
-
             document.getElementById('editIndex').value = index;
             document.getElementById('fullNom').value = d.nom;
             document.getElementById('fullGrade').value = d.grade;
@@ -506,15 +587,10 @@
             document.getElementById('fullAptitude').value = d.aptitude;
             document.getElementById('fullNotes').value = d.notes || '';
 
-            const checkboxes = document.querySelectorAll('.full-form-check');
-            checkboxes.forEach(cb => {
-                cb.checked = d.qualifications && d.qualifications.includes(cb.value);
-            });
-
+            document.querySelectorAll('.full-form-check').forEach(cb => cb.checked = d.qualifications?.includes(cb.value));
             document.getElementById('formTitle').innerHTML = `Modifier le Dossier : <span style="color: #fff;">${d.nom}</span>`;
             document.getElementById('btnSubmitDossier').innerHTML = `💾 Mettre à jour le dossier`;
             document.getElementById('cancelEditContainer').classList.remove('hidden');
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -527,10 +603,52 @@
         }
 
         function supprimerDossier(index) {
-            if (confirm(`Voulez-vous vraiment supprimer le dossier de ${dossiers[index].nom} ?`)) {
-                dossiers.splice(index, 1);
-                sauvegarderStockage();
-            }
+            if (confirm(`Supprimer le dossier de ${dossiers[index].nom} ?`)) { dossiers.splice(index, 1); sauvegarderStockage(); }
+        }
+
+        // Formateurs
+        function afficherInstructeurs() {
+            const container = document.getElementById('instructeursContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            instructeurs.forEach(i => {
+                container.innerHTML += `<div style="background-color: var(--bg-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between;"><div><div style="font-weight: bold; color: #fff;">${i.nom}</div><div style="font-size: 10px; color: #60a5fa;">${i.role}</div></div></div>`;
+            });
+        }
+
+        document.getElementById('formAddInstructeur')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            instructeurs.push({ id: Date.now(), nom: document.getElementById('instNom').value, role: document.getElementById('instRole').value });
+            afficherInstructeurs();
+            this.reset();
+        });
+
+        // Formations Suivi
+        function afficherFormations() {
+            const tbody = document.getElementById('tableFormationsBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            formations.forEach((f, idx) => {
+                tbody.innerHTML += `<tr><td>${f.nom}</td><td>${f.grade}</td><td style="font-family: monospace;">${f.mat}</td><td><span class="badge-unit">${f.unite}</span></td><td>${f.intitule}</td><td><span style="color: #10b981; font-weight: bold;">${f.statut}</span></td><td style="text-align: right;"><button onclick="formations.splice(${idx},1); afficherFormations();" class="btn-action delete">🗑️</button></td></tr>`;
+            });
+        }
+
+        document.getElementById('formInscrireFormation')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            formations.unshift({ id: Date.now(), nom: document.getElementById('fNom').value, grade: document.getElementById('fGrade').value, mat: document.getElementById('fMatricule').value, unite: document.getElementById('fUnite').value, intitule: document.getElementById('fIntitule').value, statut: "En cours" });
+            afficherFormations();
+            this.reset();
+        });
+
+        // Paramètres
+        function ajusterLuminosite(val) {
+            document.body.style.filter = `brightness(${val}%)`;
+            document.getElementById('brightnessVal').textContent = `${val}%`;
+        }
+
+        function changerAccentColor(hex) {
+            document.documentElement.style.setProperty('--accent-color', hex);
+            alert('Couleur d\'accentuation mise à jour !');
         }
     </script>
 </body>
