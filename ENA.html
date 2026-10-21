@@ -6,64 +6,120 @@
     <title>Portail de Commandement - ENA</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        :root { --accent-color: #10b981; --bg-main: #060b13; --bg-card: #0c1424; --border-color: #1a263e; }
         
-        body { background-color: var(--bg-main); color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; font-size: 13px; transition: filter 0.3s ease; }
-        
-        /* En-tête */
+        /* THÈMES GLOBAUX */
+        :root {
+            --accent-color: #3b82f6;
+            --bg-main: #060b13;
+            --bg-card: #0c1424;
+            --bg-input: #121d33;
+            --border-color: #1a263e;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --table-header: #0b1720;
+            --table-row-hover: rgba(255, 255, 255, 0.03);
+        }
+
+        body.theme-tactical {
+            --accent-color: #10b981;
+            --bg-main: #0a0a0c;
+            --bg-card: #121215;
+            --bg-input: #18181c;
+            --border-color: #27272a;
+            --table-header: #141418;
+        }
+
+        body.theme-cyber {
+            --accent-color: #a855f7;
+            --bg-main: #0d0614;
+            --bg-card: #150a21;
+            --bg-input: #1f0e30;
+            --border-color: #32164d;
+            --table-header: #1a0b28;
+        }
+
+        body.theme-light {
+            --accent-color: #2563eb;
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --border-color: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --table-header: #e2e8f0;
+            --table-row-hover: rgba(0, 0, 0, 0.03);
+        }
+
+        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; font-size: 13px; transition: background-color 0.2s, color 0.2s, filter 0.2s; }
+
+        /* EN-TÊTE */
         header { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
-        .badge-logo { background-color: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); padding: 8px 12px; border-radius: 8px; color: var(--accent-color); font-weight: bold; font-size: 16px; }
-        .title-main { font-size: 16px; font-weight: 900; text-transform: uppercase; color: #fff; }
+        .badge-logo { background-color: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-color); padding: 8px 12px; border-radius: 8px; color: var(--accent-color); font-weight: bold; font-size: 16px; }
+        .title-main { font-size: 16px; font-weight: 900; text-transform: uppercase; color: var(--text-main); }
         .subtitle { font-size: 10px; color: var(--accent-color); font-family: monospace; }
-        
-        .btn-retour { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 6px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 12px; }
-        .btn-retour:hover { background-color: #334155; }
+
+        .btn-retour { background-color: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 12px; }
+        .btn-retour:hover { opacity: 0.9; }
 
         .user-info { display: flex; align-items: center; gap: 10px; }
         .user-card { background-color: var(--bg-main); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; }
-        .dot-online { width: 8px; height: 8px; background-color: var(--accent-color); border-radius: 50%; box-shadow: 0 0 8px var(--accent-color); }
+        .dot-online { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
 
-        /* Navigation Onglets */
+        /* NAVIGATION ONGLETS */
         nav { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 0 24px; overflow-x: auto; }
         .nav-list { display: flex; list-style: none; gap: 4px; min-width: max-content; }
-        .tab-btn { background: none; border: none; color: #94a3b8; padding: 12px 18px; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; font-size: 12px; transition: all 0.2s; }
-        .tab-btn:hover { color: #fff; background-color: rgba(255,255,255,0.03); }
-        .tab-btn.active { color: var(--accent-color); border-bottom-color: var(--accent-color); background-color: rgba(16, 185, 129, 0.1); }
+        .tab-btn { background: none; border: none; color: var(--text-muted); padding: 12px 18px; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; font-size: 12px; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--text-main); background-color: rgba(255,255,255,0.03); }
+        .tab-btn.active { color: var(--accent-color); border-bottom-color: var(--accent-color); background-color: rgba(59, 130, 246, 0.1); }
 
-        /* Contenu */
+        /* CONTENU */
         main { flex: 1; padding: 20px; max-width: 1400px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 20px; }
         .tab-pane { display: flex; flex-direction: column; gap: 20px; }
         .hidden { display: none !important; }
 
-        /* Cartes & Composants */
+        /* CARTES & INPUTS */
         .card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
-        .input-field, .select-field { width: 100%; background-color: #121d33; border: 1px solid #1e2f50; border-radius: 6px; padding: 9px 12px; color: #fff; font-size: 12px; outline: none; }
-        .input-field:focus, .select-field:focus { border-color: #3b82f6; }
+        .input-field, .select-field { width: 100%; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; padding: 9px 12px; color: var(--text-main); font-size: 12px; outline: none; }
+        .input-field:focus, .select-field:focus { border-color: var(--accent-color); }
 
-        .btn-blue { background-color: #2563eb; color: #fff; border: none; padding: 9px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; transition: background 0.2s; }
-        .btn-blue:hover { background-color: #1d4ed8; }
+        .btn-blue { background-color: var(--accent-color); color: #fff; border: none; padding: 9px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s; }
+        .btn-blue:hover { opacity: 0.9; }
 
-        /* Grilles UI */
+        /* GRILLES DE CONFIGURATION */
         .grid-2-split { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
         @media(max-width: 900px) { .grid-2-split { grid-template-columns: 1fr; } }
 
-        .instructors-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 240px; overflow-y: auto; }
-        .instructor-card { background-color: #111b2e; border: 1px solid #1a2844; border-radius: 8px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+        .instructors-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 250px; overflow-y: auto; padding-right: 4px; }
+        @media(max-width: 600px) { .instructors-grid { grid-template-columns: 1fr; } }
 
-        /* Formulaire Horizontal Formation */
+        .instructor-card { background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* FORMULAIRE HORIZONTAL FORMATION */
         .form-inline-training { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr 1.8fr 1.2fr auto; gap: 8px; align-items: center; }
-        @media(max-width: 1000px) { .form-inline-training { grid-template-columns: 1fr; } }
+        @media(max-width: 1100px) { .form-inline-training { grid-template-columns: 1fr 1fr; } }
+        @media(max-width: 600px) { .form-inline-training { grid-template-columns: 1fr; } }
 
-        /* Tableau */
-        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid #142230; }
+        /* TABLEAU D'ÉVALUATION */
+        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
-        th { background-color: #0b1720; color: #94a3b8; text-transform: uppercase; font-size: 10px; padding: 10px 14px; border-bottom: 1px solid #132330; font-weight: 800; }
-        td { padding: 12px 14px; border-bottom: 1px solid #132330; color: #cbd5e1; vertical-align: middle; }
-        tr:hover { background-color: rgba(255,255,255,0.02); }
+        th { background-color: var(--table-header); color: var(--text-muted); text-transform: uppercase; font-size: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border-color); font-weight: 800; }
+        td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+        tr:hover { background-color: var(--table-row-hover); }
 
         .badge-admis { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 11px; }
-        .badge-unit { background-color: #1e293b; color: #f1f5f9; border: 1px solid #334155; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+        .badge-diplome { background-color: rgba(217, 119, 6, 0.15); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.4); padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 11px; }
+        .badge-unit { background-color: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+
+        /* BOUTONS ACTIONS */
+        .btn-act { border: none; padding: 5px 9px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; transition: opacity 0.2s; }
+        .btn-act:hover { opacity: 0.85; }
+        .btn-eval { background-color: #2563eb; color: #fff; }
+        .btn-dip { background-color: #d97706; color: #fff; }
+        .btn-del { background-color: #7f1d1d; color: #f87171; border: 1px solid #991b1b; }
+
+        /* MODALE STYLES */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
     </style>
 </head>
 <body>
@@ -85,7 +141,7 @@
                 <span style="font-weight: bold;">Fondateur Suprême</span>
                 <span style="color: var(--accent-color); font-family: monospace; font-size: 10px;">FS-001-OWNER</span>
             </div>
-            <button onclick="toggleModalParametres()" class="btn-retour" title="Paramètres d'affichage">⚙️</button>
+            <button onclick="toggleModal('modalParametres')" class="btn-retour" title="Paramètres d'affichage">⚙️</button>
             <button onclick="alert('Déconnexion du système ENA')" class="btn-retour" style="color: #f87171;" title="Déconnexion">⏻</button>
         </div>
     </header>
@@ -105,22 +161,22 @@
     <!-- CONTENU PRINCIPAL -->
     <main>
 
-        <!-- 1. ONGLET FORMATION (Actif par défaut) -->
+        <!-- 1. ONGLET FORMATION -->
         <div id="content-formation" class="tab-pane space-y-6">
 
             <!-- Grille du Haut : Ajout & Corps des formateurs -->
             <div class="grid-2-split">
                 
-                <!-- Ajouter un Instructeur -->
+                <!-- Formulaire Ajouter Instructeur -->
                 <div class="card">
-                    <h3 style="font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 14px;">➕ Ajouter un Instructeur</h3>
+                    <h3 style="font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 14px;">➕ Ajouter un Instructeur</h3>
                     <form id="formAddInstructeur" style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
-                            <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Nom complet</label>
+                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Nom complet</label>
                             <input type="text" id="instNom" class="input-field" placeholder="ex: LCL Alex GIROND" required>
                         </div>
                         <div>
-                            <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Rôle Instructeur</label>
+                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Rôle Instructeur</label>
                             <select id="instRole" class="select-field" required>
                                 <option value="">-- Rôle Instructeur --</option>
                                 <option value="Directeur de l'ENA">Directeur de l'ENA</option>
@@ -137,7 +193,7 @@
 
                 <!-- Corps des Formateurs -->
                 <div class="card">
-                    <h3 style="font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 14px;">🎖️ Corps des Formateurs / Instructeurs</h3>
+                    <h3 style="font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 14px;">🎖️ Corps des Formateurs / Instructeurs</h3>
                     <div id="instructeursContainer" class="instructors-grid">
                         <!-- Généré dynamiquement -->
                     </div>
@@ -149,23 +205,23 @@
             <div class="card" style="display: flex; flex-direction: column; gap: 16px;">
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <h3 style="font-size: 14px; font-weight: 800; color: #fff;">📑 Suivi des Formations & Évaluations</h3>
+                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main);">📑 Suivi des Formations & Évaluations</h3>
                     
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <input type="text" id="searchFormation" oninput="filtrerFormations()" class="input-field" placeholder="🔍 Rechercher nom, grade..." style="width: 200px; padding: 6px 10px;">
-                        <button onclick="alert('Exportation Excel réussie')" style="background-color: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📊 Excel</button>
-                        <button onclick="alert('Exportation PDF réussie')" style="background-color: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📄 PDF</button>
+                        <button onclick="exporterTableau('Excel')" style="background-color: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📊 Excel</button>
+                        <button onclick="exporterTableau('PDF')" style="background-color: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📄 PDF</button>
                     </div>
                 </div>
 
-                <!-- Formulaire d'inscription aligné -->
+                <!-- Formulaire d'inscription rapide -->
                 <form id="formInscrireFormation" class="form-inline-training">
                     <input type="text" id="fNom" class="input-field" placeholder="Nom Prénom" required>
                     <input type="text" id="fGrade" class="input-field" placeholder="Grade" required>
                     <input type="text" id="fMatricule" class="input-field" placeholder="Matricule" required style="font-family: monospace;">
                     
                     <select id="fUnite" class="select-field">
-                        <option value="N/A">N/A (Sans affectation)</option>
+                        <option value="N/A (Sans affectation)">N/A (Sans affectation)</option>
                         <option value="CPA 10">CPA 10</option>
                         <option value="4e RHFS">4e RHFS</option>
                         <option value="13e RDP">13e RDP</option>
@@ -174,15 +230,21 @@
                     </select>
 
                     <select id="fIntitule" class="select-field" required>
-                        <option value="">-- Formation / Brevet --</option>
-                        <option value="[FGI] Formation Général Initiale">[FGI] Formation Initiale</option>
-                        <option value="[FG2] Brevet d'Adjoint">[FG2] Brevet d'Adjoint</option>
-                        <option value="[CDU] Cursus Chef d'Unité">[CDU] Cursus Chef d'Unité</option>
+                        <option value="">-- Formation / Brevet / Permis --</option>
+                        <option value="[FGI] Formation Général Initiale">[FGI] Formation Général Initiale</option>
+                        <option value="[CAT1] Brevet Caporal">[CAT1] Brevet Caporal</option>
+                        <option value="[CME] Brevet Caporal-Chef">[CME] Brevet Caporal-Chef</option>
+                        <option value="[FG1 / BS1] Brevet de Sergent">[FG1 / BS1] Brevet de Sergent</option>
+                        <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste</option>
+                        <option value="[CDU] Cursus de Chef d'Unité">[CDU] Cursus de Chef d'Unité</option>
                         <option value="🪂 Brevet Parachutiste">🪂 Brevet Parachutiste</option>
+                        <option value="🎯 Opérateur Tourelle">🎯 Opérateur Tourelle</option>
+                        <option value="🔧 Qualification Mécanicien">🔧 Qualification Mécanicien</option>
+                        <option value="🚚 Conducteur SPL">🚚 Conducteur SPL</option>
                         <option value="⚓ Permis Bateau Commando">⚓ Permis Bateau Commando</option>
                     </select>
 
-                    <input type="text" class="input-field" value="21/10/2026 17:25" readonly style="color: #94a3b8; text-align: center;">
+                    <input type="text" id="fDateAujourdhui" class="input-field" readonly style="color: var(--text-muted); text-align: center;">
                     <button type="submit" class="btn-blue" style="padding: 8px 16px;">+ Inscrire</button>
                 </form>
 
@@ -210,58 +272,79 @@
 
         </div>
 
-        <!-- 2. ONGLET DOSSIER (Masqué par défaut) -->
+        <!-- 2. ONGLET DOSSIER MILITAIRE -->
         <div id="content-dossier" class="tab-pane hidden">
             <div class="card">
-                <h2 style="color: var(--accent-color); font-size: 15px; text-transform: uppercase; font-weight: 900; margin-bottom: 8px;">Dossier Militaire & Registre</h2>
-                <p style="color: #94a3b8; font-size: 11px;">Consultez ou enregistrez les dossiers rétroactifs des opérateurs de l'ENA.</p>
+                <h2 style="color: var(--accent-color); font-size: 15px; text-transform: uppercase; font-weight: 900; margin-bottom: 8px;">📂 Registre des Dossiers Militaires</h2>
+                <p style="color: var(--text-muted); font-size: 11px;">Consultez ou enregistrez les dossiers rétroactifs des opérateurs de l'ENA.</p>
             </div>
         </div>
 
-        <!-- 3. AUTRES ONGLETS (Documents, Référentiel, Planning, Notes) -->
-        <div id="content-document" class="tab-pane hidden"><div class="card"><h2>📄 Centre de Documents</h2><p style="color: #94a3b8;">Archives tactiques et manuels officiels de l'ENA.</p></div></div>
-        <div id="content-referentiel" class="tab-pane hidden"><div class="card"><h2>📖 Référentiel ENA</h2><p style="color: #94a3b8;">Grilles officielles des brevets et qualifications.</p></div></div>
-        <div id="content-planning" class="tab-pane hidden"><div class="card"><h2>📅 Planning Opérationnel</h2><p style="color: #94a3b8;">Calendrier des déploiements et exercices planifiés.</p></div></div>
-        <div id="content-notes" class="tab-pane hidden"><div class="card"><h2>📝 Notes de Commandement</h2><p style="color: #94a3b8;">Consignes permanentes et carnets de liaison.</p></div></div>
+        <!-- 3. AUTRES ONGLETS -->
+        <div id="content-document" class="tab-pane hidden"><div class="card"><h2>📄 Centre de Documents</h2><p style="color: var(--text-muted);">Archives tactiques et manuels officiels de l'ENA.</p></div></div>
+        <div id="content-referentiel" class="tab-pane hidden"><div class="card"><h2>📖 Référentiel ENA</h2><p style="color: var(--text-muted);">Grilles officielles des brevets et qualifications.</p></div></div>
+        <div id="content-planning" class="tab-pane hidden"><div class="card"><h2>📅 Planning Opérationnel</h2><p style="color: var(--text-muted);">Calendrier des déploiements et exercices planifiés.</p></div></div>
+        <div id="content-notes" class="tab-pane hidden"><div class="card"><h2>📝 Notes de Commandement</h2><p style="color: var(--text-muted);">Consignes permanentes et carnets de liaison.</p></div></div>
 
     </main>
 
-    <!-- MODAL PARAMÈTRES FLUIDE -->
-    <div id="modalParametres" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 15px;">
-        <div class="card space-y-6" style="width: 100%; max-width: 450px; background-color: var(--bg-card);">
+    <!-- MODAL PARAMÈTRES & THÈMES -->
+    <div id="modalParametres" class="modal-overlay hidden">
+        <div class="card space-y-6" style="width: 100%; max-width: 450px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                <h2 style="font-size: 14px; font-weight: bold; color: #fff;">⚙️ Paramètres d'Affichage</h2>
-                <button onclick="toggleModalParametres()" style="background: none; border: none; color: #f87171; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
+                <h2 style="font-size: 14px; font-weight: bold; color: var(--text-main);">⚙️ Paramètres & Thèmes</h2>
+                <button onclick="toggleModal('modalParametres')" style="background: none; border: none; color: #f87171; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
             </div>
 
+            <!-- Choix des thèmes -->
             <div style="display: flex; flex-direction: column; gap: 8px;">
-                <label style="display: flex; justify-content: space-between; font-weight: bold; color: #cbd5e1; font-size: 11px;">
+                <label style="font-weight: bold; color: var(--text-muted); font-size: 11px;">🎨 Thème d'Affichage</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button onclick="appliquerTheme('navy')" class="btn-retour" style="text-align: left;">🔵 Navy ENA (Défaut)</button>
+                    <button onclick="appliquerTheme('tactical')" class="btn-retour" style="text-align: left;">🟢 Tactical Dark</button>
+                    <button onclick="appliquerTheme('cyber')" class="btn-retour" style="text-align: left;">🟣 Cyberpunk</button>
+                    <button onclick="appliquerTheme('light')" class="btn-retour" style="text-align: left;">⚪ Light Military</button>
+                </div>
+            </div>
+
+            <!-- Luminosité -->
+            <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                <label style="display: flex; justify-content: space-between; font-weight: bold; color: var(--text-muted); font-size: 11px;">
                     <span>☀️ Luminosité de l'Écran</span>
                     <span id="brightnessVal" style="color: var(--accent-color); font-family: monospace;">100%</span>
                 </label>
                 <input type="range" id="brightnessSlider" min="30" max="120" value="100" oninput="ajusterLuminosite(this.value)" style="width: 100%; cursor: pointer;">
             </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 12px;">
-                <label style="font-weight: bold; margin-bottom: 8px; display: block; color: #cbd5e1; font-size: 11px;">🎨 Couleur d'Accentuation</label>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="changerAccentColor('#10b981')" style="width: 28px; height: 28px; border-radius: 50%; background: #10b981; border: 2px solid #fff; cursor: pointer;" title="Émeraude"></button>
-                    <button onclick="changerAccentColor('#3b82f6')" style="width: 28px; height: 28px; border-radius: 50%; background: #3b82f6; border: 2px solid #fff; cursor: pointer;" title="Bleu"></button>
-                    <button onclick="changerAccentColor('#f59e0b')" style="width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; border: 2px solid #fff; cursor: pointer;" title="Ambre"></button>
-                    <button onclick="changerAccentColor('#a855f7')" style="width: 28px; height: 28px; border-radius: 50%; background: #a855f7; border: 2px solid #fff; cursor: pointer;" title="Violet"></button>
-                    <button onclick="changerAccentColor('#ef4444')" style="width: 28px; height: 28px; border-radius: 50%; background: #ef4444; border: 2px solid #fff; cursor: pointer;" title="Rouge"></button>
-                </div>
-            </div>
-
             <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 10px;">
-                <button onclick="toggleModalParametres()" class="btn-blue" style="padding: 6px 14px;">Fermer</button>
+                <button onclick="toggleModal('modalParametres')" class="btn-blue" style="padding: 6px 14px;">Fermer</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE GESTION -->
+    <!-- MODAL D'ÉVALUATION ÉLÈVE -->
+    <div id="modalEvaluer" class="modal-overlay hidden">
+        <div class="card space-y-4" style="width: 100%; max-width: 400px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                <h3 style="font-size: 13px; font-weight: bold;">📝 Évaluer un Militaire</h3>
+                <button onclick="toggleModal('modalEvaluer')" style="background: none; border: none; color: #f87171; font-size: 14px; cursor: pointer;">✕</button>
+            </div>
+            <input type="hidden" id="evalIndex">
+            <div>
+                <label style="font-size: 11px; color: var(--text-muted);">Statut / Note Obtenue</label>
+                <input type="text" id="evalStatut" class="input-field" placeholder="ex: Admis (20/20) ou En cours (12/20)">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <button onclick="toggleModal('modalEvaluer')" class="btn-retour">Annuler</button>
+                <button onclick="sauvegarderEvaluation()" class="btn-blue">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT JS COMPLET -->
     <script>
-        let instructeurs = [
+        // Données Initiales
+        let instructeurs = JSON.parse(localStorage.getItem('ena_instructeurs')) || [
             { nom: "Colonel Alex GIROND", role: "Directeur de l'ENA" },
             { nom: "Commandant Mathis ROSIER", role: "Directeur adjoint" },
             { nom: "Lieutenant Maël LIOGER", role: "Formateur Principal" },
@@ -271,13 +354,23 @@
             { nom: "Capitaine Noli VELMONT", role: "Chef des Instructeurs" }
         ];
 
-        let formations = [
+        let formations = JSON.parse(localStorage.getItem('ena_formations')) || [
             { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FGI] Formation Général Initiale", statut: "Admis (20/20)" },
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FG2] Brevet d'Adjoint", statut: "Admis (20/20)" },
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[CDU] Cursus de Chef d'Unité", statut: "Admis (20/20)" }
+            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", statut: "Admis (20/20)" },
+            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[CDU] Cursus de Chef d'Unité", statut: "Admis (20/20)" },
+            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "🪂 Brevet Parachutiste", statut: "Admis (20/20)" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.getElementById('fDateAujourdhui');
+            if (dateInput) {
+                const now = new Date();
+                dateInput.value = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            }
+
+            const themeSauve = localStorage.getItem('ena_theme') || 'navy';
+            appliquerTheme(themeSauve);
+
             afficherInstructeurs();
             afficherFormations();
         });
@@ -289,19 +382,21 @@
             boutonElement.classList.add('active');
         }
 
+        /* INSTRUCTEURS */
         function afficherInstructeurs() {
             const container = document.getElementById('instructeursContainer');
             container.innerHTML = '';
-            instructeurs.forEach(i => {
+            instructeurs.forEach((i, idx) => {
                 container.innerHTML += `
                     <div class="instructor-card">
                         <div>
-                            <div style="font-weight: 800; font-size: 12px; color: #fff;">${i.nom}</div>
-                            <div style="font-size: 10.5px; color: #60a5fa; margin-top: 2px;">${i.role}</div>
+                            <div style="font-weight: 800; font-size: 12px; color: var(--text-main);">${i.nom}</div>
+                            <div style="font-size: 10.5px; color: var(--accent-color); margin-top: 2px;">${i.role}</div>
                         </div>
-                        <span style="color: #f87171; font-size: 12px;">👤</span>
+                        <button onclick="supprimerInstructeur(${idx})" style="background:none; border:none; color:#f87171; cursor:pointer; font-size:12px;" title="Supprimer">🗑️</button>
                     </div>`;
             });
+            localStorage.setItem('ena_instructeurs', JSON.stringify(instructeurs));
         }
 
         document.getElementById('formAddInstructeur').addEventListener('submit', function(e) {
@@ -311,6 +406,12 @@
             this.reset();
         });
 
+        function supprimerInstructeur(idx) {
+            instructeurs.splice(idx, 1);
+            afficherInstructeurs();
+        }
+
+        /* FORMATIONS & ÉVALUATIONS */
         function afficherFormations() {
             const tbody = document.getElementById('tableFormationsBody');
             const query = document.getElementById('searchFormation').value.toLowerCase();
@@ -319,21 +420,25 @@
             const filtered = formations.filter(f => f.nom.toLowerCase().includes(query) || f.mat.toLowerCase().includes(query));
 
             filtered.forEach((f, idx) => {
+                const isDiplome = f.statut.includes('Diplômé');
+                const badgeClass = isDiplome ? 'badge-diplome' : 'badge-admis';
+                
                 tbody.innerHTML += `
                     <tr>
-                        <td style="font-weight: 800; color: #fff;">${f.nom} <span class="dot-online" style="display:inline-block; margin-left:4px;"></span></td>
+                        <td style="font-weight: 800; color: var(--text-main);">${f.nom} <span class="dot-online" style="display:inline-block; margin-left:4px;"></span></td>
                         <td>${f.grade}</td>
-                        <td style="color: #60a5fa; font-family: monospace; font-weight: 700;">${f.mat}</td>
+                        <td style="color: var(--accent-color); font-family: monospace; font-weight: 700;">${f.mat}</td>
                         <td><span class="badge-unit">${f.unite}</span></td>
                         <td>${f.intitule}</td>
-                        <td><span class="badge-admis">${f.statut}</span></td>
+                        <td><span class="${badgeClass}">${f.statut}</span></td>
                         <td style="text-align: right; display: flex; gap: 4px; justify-content: flex-end;">
-                            <button class="btn-blue" style="padding: 4px 8px; font-size: 10px;">Évaluer</button>
-                            <button style="background: #d97706; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-weight:700; font-size:10px; cursor:pointer;">Diplôme</button>
-                            <button onclick="formations.splice(${idx},1); afficherFormations();" style="background: #7f1d1d; color:#f87171; border:1px solid #991b1b; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer;">🗑️</button>
+                            <button onclick="ouvrirModalEvaluation(${idx})" class="btn-act btn-eval">Évaluer</button>
+                            <button onclick="delivrerDiplome(${idx})" class="btn-act btn-dip">Diplôme</button>
+                            <button onclick="supprimerFormation(${idx})" class="btn-act btn-del">🗑️</button>
                         </td>
                     </tr>`;
             });
+            localStorage.setItem('ena_formations', JSON.stringify(formations));
         }
 
         function filtrerFormations() { afficherFormations(); }
@@ -352,8 +457,36 @@
             this.reset();
         });
 
-        function toggleModalParametres() {
-            document.getElementById('modalParametres').classList.toggle('hidden');
+        function supprimerFormation(idx) {
+            formations.splice(idx, 1);
+            afficherFormations();
+        }
+
+        function delivrerDiplome(idx) {
+            formations[idx].statut = "Diplômé ENA 🎓";
+            afficherFormations();
+        }
+
+        function ouvrirModalEvaluation(idx) {
+            document.getElementById('evalIndex').value = idx;
+            document.getElementById('evalStatut').value = formations[idx].statut;
+            toggleModal('modalEvaluer');
+        }
+
+        function sauvegarderEvaluation() {
+            const idx = document.getElementById('evalIndex').value;
+            formations[idx].statut = document.getElementById('evalStatut').value;
+            afficherFormations();
+            toggleModal('modalEvaluer');
+        }
+
+        function exporterTableau(type) {
+            alert(`Exportation du registre au format ${type} générée avec succès.`);
+        }
+
+        /* MODALES ET PARAMÈTRES */
+        function toggleModal(id) {
+            document.getElementById(id).classList.toggle('hidden');
         }
 
         function ajusterLuminosite(val) {
@@ -361,9 +494,11 @@
             document.getElementById('brightnessVal').textContent = `${val}%`;
         }
 
-        function changerAccentColor(hex) {
-            document.documentElement.style.setProperty('--accent-color', hex);
+        function appliquerTheme(theme) {
+            document.body.className = '';
+            if (theme !== 'navy') document.body.classList.add(`theme-${theme}`);
+            localStorage.setItem('ena_theme', theme);
         }
     </script>
 </body>
-</html>s
+</html>
