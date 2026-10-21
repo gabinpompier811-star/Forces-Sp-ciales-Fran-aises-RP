@@ -142,7 +142,7 @@
                 <span style="color: var(--accent-color); font-family: monospace; font-size: 10px;">FS-001-OWNER</span>
             </div>
             <button onclick="toggleModal('modalParametres')" class="btn-retour" title="Paramètres d'affichage">⚙️</button>
-            <button onclick="alert('Déconnexion du système ENA')" class="btn-retour" style="color: #f87171;" title="Déconnexion">⏻</button>
+            <button onclick="reinitialiserSysteme()" class="btn-retour" style="color: #f87171;" title="Réinitialiser les données">🔄</button>
         </div>
     </header>
 
@@ -162,7 +162,7 @@
     <main>
 
         <!-- 1. ONGLET FORMATION -->
-        <div id="content-formation" class="tab-pane space-y-6">
+        <div id="content-formation" class="tab-pane">
 
             <div class="grid-2-split">
                 
@@ -208,12 +208,12 @@
                     
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <input type="text" id="searchFormation" oninput="filtrerFormations()" class="input-field" placeholder="🔍 Rechercher nom, grade..." style="width: 200px; padding: 6px 10px;">
-                        <button onclick="alert('Exportation Excel réussie')" style="background-color: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📊 Excel</button>
-                        <button onclick="alert('Exportation PDF réussie')" style="background-color: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📄 PDF</button>
+                        <button onclick="alert('Exportation Excel terminée')" style="background-color: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📊 Excel</button>
+                        <button onclick="alert('Exportation PDF terminée')" style="background-color: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;">📄 PDF</button>
                     </div>
                 </div>
 
-                <!-- Formulaire d'inscription rapide -->
+                <!-- Formulaire d'inscription -->
                 <form id="formInscrireFormation" class="form-inline-training">
                     <input type="text" id="fNom" class="input-field" placeholder="Nom Prénom" required>
                     <input type="text" id="fGrade" class="input-field" placeholder="Grade" required>
@@ -297,13 +297,13 @@
 
         </div>
 
-        <!-- 2. ONGLET DOSSIER & MÉDIATHÈQUE MILITAIRE AVANCÉE -->
-        <div id="content-dossier" class="tab-pane hidden space-y-6">
+        <!-- 2. ONGLET DOSSIER & MÉDIATHÈQUE -->
+        <div id="content-dossier" class="tab-pane hidden">
 
             <div class="grid-2-split">
                 <!-- Formulaire d'Importation -->
-                <div class="card space-y-4">
-                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                <div class="card">
+                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
                         <span style="color: var(--accent-color);">📤</span> Importer des Fichiers & Médias
                     </h3>
                     
@@ -320,7 +320,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Tags (virgules)</label>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Tags (séparés par virgul.)</label>
                                 <input type="text" id="fileTagsInput" class="input-field" placeholder="ex: CPA 10, Confidentiel">
                             </div>
                         </div>
@@ -338,7 +338,7 @@
                 </div>
 
                 <!-- Statistiques et Filtres -->
-                <div class="card space-y-4" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
                     <div>
                         <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 12px;">📊 Statistiques du Stockage Tactique</h3>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -363,8 +363,8 @@
             </div>
 
             <!-- Grille des Fichiers -->
-            <div class="card space-y-4">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
                     <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main);">🗂️ Registre des Documents</h3>
                     
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -386,16 +386,16 @@
         </div>
 
         <!-- 3. AUTRES ONGLETS -->
-        <div id="content-document" class="tab-pane hidden"><div class="card"><h2>📄 Centre de Documents</h2><p style="color: var(--text-muted);">Archives tactiques et manuels officiels de l'ENA.</p></div></div>
-        <div id="content-referentiel" class="tab-pane hidden"><div class="card"><h2>📖 Référentiel ENA</h2><p style="color: var(--text-muted);">Grilles officielles des brevets et qualifications.</p></div></div>
-        <div id="content-planning" class="tab-pane hidden"><div class="card"><h2>📅 Planning Opérationnel</h2><p style="color: var(--text-muted);">Calendrier des déploiements et exercices planifiés.</p></div></div>
-        <div id="content-notes" class="tab-pane hidden"><div class="card"><h2>📝 Notes de Commandement</h2><p style="color: var(--text-muted);">Consignes permanentes et carnets de liaison.</p></div></div>
+        <div id="content-document" class="tab-pane hidden"><div class="card"><h2>📄 Centre de Documents</h2><p style="color: var(--text-muted); margin-top:6px;">Archives tactiques et manuels officiels de l'ENA.</p></div></div>
+        <div id="content-referentiel" class="tab-pane hidden"><div class="card"><h2>📖 Référentiel ENA</h2><p style="color: var(--text-muted); margin-top:6px;">Grilles officielles des brevets et qualifications.</p></div></div>
+        <div id="content-planning" class="tab-pane hidden"><div class="card"><h2>📅 Planning Opérationnel</h2><p style="color: var(--text-muted); margin-top:6px;">Calendrier des déploiements et exercices planifiés.</p></div></div>
+        <div id="content-notes" class="tab-pane hidden"><div class="card"><h2>📝 Notes de Commandement</h2><p style="color: var(--text-muted); margin-top:6px;">Consignes permanentes et carnets de liaison.</p></div></div>
 
     </main>
 
     <!-- MODAL PARAMÈTRES & THÈMES -->
     <div id="modalParametres" class="modal-overlay hidden">
-        <div class="card space-y-6" style="width: 100%; max-width: 450px;">
+        <div class="card" style="width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 16px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                 <h2 style="font-size: 14px; font-weight: bold; color: var(--text-main);">⚙️ Paramètres & Thèmes</h2>
                 <button onclick="toggleModal('modalParametres')" style="background: none; border: none; color: #f87171; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
@@ -427,7 +427,7 @@
 
     <!-- MODAL FICHE D'ÉVALUATION -->
     <div id="modalEvaluer" class="modal-overlay hidden">
-        <div class="card space-y-4" style="width: 100%; max-width: 520px; background-color: #1a1a1e; border: 1px solid #2a2a30;">
+        <div class="card" style="width: 100%; max-width: 520px; background-color: #1a1a1e; border: 1px solid #2a2a30; display: flex; flex-direction: column; gap: 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a30; padding-bottom: 10px;">
                 <h3 style="font-size: 14px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
                     <span style="color: #3b82f6;">📋</span> Fiche d'Évaluation
@@ -495,9 +495,9 @@
         </div>
     </div>
 
-    <!-- MODALE VISUALISATION MEDIA -->
+    <!-- MODAL VISUALISATION MEDIA -->
     <div id="modalVisualiserFichier" class="modal-overlay hidden">
-        <div class="card space-y-4" style="width: 100%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="card" style="width: 100%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; gap: 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                 <h3 id="modalFileTitle" style="font-size: 14px; font-weight: 800; color: var(--text-main);">Aperçu du Fichier</h3>
                 <button onclick="toggleModal('modalVisualiserFichier')" style="background: none; border: none; color: #f87171; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
@@ -512,33 +512,20 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT GLOBAL -->
+    <!-- SCRIPT JAVASCRIPT CORRIGÉ ET UNIFIÉ -->
     <script>
-        /* --- DONNÉES LOCALES & INITIALISATION --- */
-        let instructeurs = JSON.parse(localStorage.getItem('ena_instructeurs')) || [
-            { nom: "Colonel Alex GIROND", role: "Directeur de l'ENA" },
-            { nom: "Commandant Mathis ROSIER", role: "Directeur adjoint" },
-            { nom: "Lieutenant Maël LIOGER", role: "Formateur Principal" },
-            { nom: "Capitaine John FOX", role: "Instructeur" },
-            { nom: "Sergent-Chef Simon RENARD", role: "Aspirant Instructeur" },
-            { nom: "Sous-Lieutenant Jake HARPER", role: "Aspirant Instructeur" },
-            { nom: "Capitaine Noli VELMONT", role: "Chef des Instructeurs" }
-        ];
-
-        let formations = JSON.parse(localStorage.getItem('ena_formations')) || [
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FGI] Formation Général Initiale (Soldat 1cl)", date: "21/10/2026 17:00", statut: "Admis (20/20)" },
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", date: "21/10/2026 17:15", statut: "Admis (20/20)" }
-        ];
-
-        let militaryFiles = JSON.parse(localStorage.getItem('military_files')) || [
-            { id: "F-101", name: "Ordre_Mission_Alpha.pdf", category: "Opérations", size: "1.2 MB", type: "pdf", date: "2026-03-12", author: "LCL Alex", tags: ["CPA 10", "Confidentiel"], data: null },
-            { id: "F-102", name: "Photo_Reconnaissance_Z01.jpg", category: "Renseignement", size: "3.4 MB", type: "image", date: "2026-03-15", author: "CPE Valette", tags: ["Zone Sud", "13e RDP"], data: null }
-        ];
+        // --- DONNÉES ET ÉTAT GLOBAL ---
+        let instructeurs = [];
+        let formations = [];
+        let militaryFiles = [];
 
         let currentCategoryFilter = "ALL";
         let currentSortOrder = "date-desc";
 
+        // Initialisation sécurisée au chargement
         document.addEventListener('DOMContentLoaded', () => {
+            chargerDonnees();
+            
             const dateInput = document.getElementById('fDateHeure');
             if (dateInput) {
                 const now = new Date();
@@ -556,16 +543,47 @@
             updateFileStats();
         });
 
-        function changerOnglet(nomOnglet, boutonElement) {
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
-            document.getElementById(`content-${nomOnglet}`).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            boutonElement.classList.add('active');
+        function chargerDonnees() {
+            try {
+                instructeurs = JSON.parse(localStorage.getItem('ena_instructeurs')) || [
+                    { nom: "Colonel Alex GIROND", role: "Directeur de l'ENA" },
+                    { nom: "Commandant Mathis ROSIER", role: "Directeur adjoint" },
+                    { nom: "Lieutenant Maël LIOGER", role: "Formateur Principal" },
+                    { nom: "Capitaine John FOX", role: "Instructeur" },
+                    { nom: "Sergent-Chef Simon RENARD", role: "Aspirant Instructeur" },
+                    { nom: "Sous-Lieutenant Jake HARPER", role: "Aspirant Instructeur" },
+                    { nom: "Capitaine Noli VELMONT", role: "Chef des Instructeurs" }
+                ];
+
+                formations = JSON.parse(localStorage.getItem('ena_formations')) || [
+                    { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FGI] Formation Général Initiale (Soldat 1cl)", date: "21/10/2026 17:00", statut: "Admis (20/20)" },
+                    { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", date: "21/10/2026 17:15", statut: "Admis (20/20)" }
+                ];
+
+                militaryFiles = JSON.parse(localStorage.getItem('military_files')) || [
+                    { id: "F-101", name: "Ordre_Mission_Alpha.pdf", category: "Opérations", size: "1.2 MB", type: "pdf", date: "2026-03-12", author: "LCL Alex", tags: ["CPA 10", "Confidentiel"], data: null },
+                    { id: "F-102", name: "Photo_Reconnaissance_Z01.jpg", category: "Renseignement", size: "3.4 MB", type: "image", date: "2026-03-15", author: "CPE Valette", tags: ["Zone Sud", "13e RDP"], data: null }
+                ];
+            } catch(e) {
+                console.error("Erreur de chargement, réinitialisation des données local storage.", e);
+                localStorage.clear();
+            }
         }
 
-        /* --- GESTION INSTRUCTEURS --- */
+        /* --- NAVEGATION --- */
+        function changerOnglet(nomOnglet, boutonElement) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            const target = document.getElementById(`content-${nomOnglet}`);
+            if (target) target.classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (boutonElement) boutonElement.classList.add('active');
+        }
+
+        /* --- INSTRUCTEURS --- */
         function afficherInstructeurs() {
             const container = document.getElementById('instructeursContainer');
+            if (!container) return;
             container.innerHTML = '';
             instructeurs.forEach((i, idx) => {
                 container.innerHTML += `
@@ -580,7 +598,7 @@
             localStorage.setItem('ena_instructeurs', JSON.stringify(instructeurs));
         }
 
-        document.getElementById('formAddInstructeur').addEventListener('submit', function(e) {
+        document.getElementById('formAddInstructeur')?.addEventListener('submit', function(e) {
             e.preventDefault();
             instructeurs.push({ nom: document.getElementById('instNom').value, role: document.getElementById('instRole').value });
             afficherInstructeurs();
@@ -592,10 +610,13 @@
             afficherInstructeurs();
         }
 
-        /* --- GESTION FORMATIONS --- */
+        /* --- FORMATIONS --- */
         function afficherFormations() {
             const tbody = document.getElementById('tableFormationsBody');
-            const query = document.getElementById('searchFormation').value.toLowerCase();
+            if (!tbody) return;
+            
+            const searchInput = document.getElementById('searchFormation');
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
             tbody.innerHTML = '';
 
             const formationsValides = formations.filter(f => f && f.nom && f.nom.trim() !== '');
@@ -631,7 +652,7 @@
 
         function filtrerFormations() { afficherFormations(); }
 
-        document.getElementById('formInscrireFormation').addEventListener('submit', function(e) {
+        document.getElementById('formInscrireFormation')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const rawDate = new Date(document.getElementById('fDateHeure').value);
             const dateFormatee = `${rawDate.getDate().toString().padStart(2,'0')}/${(rawDate.getMonth()+1).toString().padStart(2,'0')}/${rawDate.getFullYear()} ${rawDate.getHours().toString().padStart(2,'0')}:${rawDate.getMinutes().toString().padStart(2,'0')}`;
@@ -673,10 +694,12 @@
             document.getElementById('evalFormation').value = item.intitule || '';
             
             const selectFormateur = document.getElementById('evalFormateur');
-            selectFormateur.innerHTML = '';
-            instructeurs.forEach(inst => {
-                selectFormateur.innerHTML += `<option value="${inst.nom}">${inst.nom} (${inst.role})</option>`;
-            });
+            if (selectFormateur) {
+                selectFormateur.innerHTML = '';
+                instructeurs.forEach(inst => {
+                    selectFormateur.innerHTML += `<option value="${inst.nom}">${inst.nom} (${inst.role})</option>`;
+                });
+            }
 
             document.getElementById('evalNote').value = item.note || "20";
             document.getElementById('evalResultat').value = item.resultat || "Admis";
@@ -704,7 +727,7 @@
             toggleModal('modalEvaluer');
         }
 
-        /* --- GESTION MEDIATHEQUE & FICHIERS MILITAIRES --- */
+        /* --- DOSSIERS & MÉDIATHÈQUE --- */
         function handleAddFile(event) {
             event.preventDefault();
             const input = document.getElementById('fileInput');
@@ -773,10 +796,10 @@
 
         function renderFileList() {
             const container = document.getElementById('fileList');
+            if (!container) return;
+
             const searchInput = document.getElementById('searchFileName');
             const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
-
-            if (!container) return;
 
             let filtered = militaryFiles.filter(file => {
                 const matchesCategory = currentCategoryFilter === "ALL" || file.category === currentCategoryFilter;
@@ -798,7 +821,7 @@
             if (filtered.length === 0) {
                 container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-muted); background: var(--bg-main); border-radius: 8px;">
                     <div style="font-size: 30px; margin-bottom: 6px;">📂</div>
-                    <p style="font-size: 12px; font-weight: 700;">Aucun fichier trouvé</p>
+                    <p style="font-size: 12px; font-weight: 700;">Aucun fichier trouvé dans ce dossier.</p>
                 </div>`;
                 return;
             }
@@ -817,7 +840,7 @@
                                 <span style="font-size: 10px; color: var(--text-muted); font-family: monospace;">${file.size}</span>
                             </div>
 
-                            <div style="display: flex; items-center; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
                                 <div style="font-size: 24px;">${apercuVignette}</div>
                                 <div style="overflow: hidden;">
                                     <div style="font-weight: 800; color: var(--text-main); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;" onclick="previewFile('${file.id}')" title="${file.name}">
@@ -902,7 +925,7 @@
                 downloadBtn.style.display = "none";
                 viewer.innerHTML = `<div style="text-align: center; padding: 20px; color: #fff;">
                     <div style="font-size: 40px; margin-bottom: 10px;">📄</div>
-                    <div style="font-weight: 800;">Fichier d'Exemple / Démo</div>
+                    <div style="font-weight: 800;">Document de Démo ENA</div>
                     <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Catégorie : ${file.category} • Auteur : ${file.author}</div>
                 </div>`;
             }
@@ -936,20 +959,27 @@
             }
         }
 
-        /* --- PARAMÈTRES & MODALES --- */
+        /* --- PARAMÈTRES & UTILITAIRES --- */
         function toggleModal(id) {
-            document.getElementById(id).classList.toggle('hidden');
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden');
         }
 
         function ajusterLuminosite(val) {
             document.body.style.filter = `brightness(${val}%)`;
-            document.getElementById('brightnessVal').textContent = `${val}%`;
+            const label = document.getElementById('brightnessVal');
+            if (label) label.textContent = `${val}%`;
         }
 
         function appliquerTheme(theme) {
             document.body.className = '';
             if (theme !== 'navy') document.body.classList.add(`theme-${theme}`);
             localStorage.setItem('ena_theme', theme);
+        }
+
+        function reinitialiserSysteme() {
+            localStorage.clear();
+            location.reload();
         }
     </script>
 </body>
