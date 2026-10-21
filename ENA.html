@@ -273,7 +273,7 @@
                         </optgroup>
                     </select>
 
-                    <input type="text" id="fDateAujourdhui" class="input-field" readonly style="color: var(--text-muted); text-align: center;">
+                    <input type="datetime-local" id="fDateHeure" class="input-field" style="color: var(--text-main); text-align: center;" required>
                     <button type="submit" class="btn-blue" style="padding: 8px 16px;">+ Inscrire</button>
                 </form>
 
@@ -287,6 +287,7 @@
                                 <th>Matricule</th>
                                 <th>Unité</th>
                                 <th>Formation</th>
+                                <th>Date / Heure</th>
                                 <th>Statut / Note</th>
                                 <th style="text-align: right;">Action</th>
                             </tr>
@@ -391,19 +392,44 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const dateInput = document.getElementById('fDateAujourdhui');
-            if (dateInput) {
-                const now = new Date();
-                dateInput.value = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-            }
-
+            // Initialise automatiquement la date et l'heure actuelles dans le champ
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('fDateHeure').value = now.toISOString().slice(0, 16);
+        
             const themeSauve = localStorage.getItem('ena_theme') || 'navy';
             appliquerTheme(themeSauve);
-
+        
             afficherInstructeurs();
             afficherFormations();
         });
-
+        
+        // Soumission du formulaire avec la date/heure choisie
+        document.getElementById('formInscrireFormation').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Formatage de la date saisie pour l'affichage dans le tableau (ex: 21/10/2026 17:38)
+            const rawDate = new Date(document.getElementById('fDateHeure').value);
+            const dateFormatee = `${rawDate.getDate().toString().padStart(2,'0')}/${(rawDate.getMonth()+1).toString().padStart(2,'0')}/${rawDate.getFullYear()} ${rawDate.getHours().toString().padStart(2,'0')}:${rawDate.getMinutes().toString().padStart(2,'0')}`;
+        
+            formations.unshift({
+                nom: document.getElementById('fNom').value,
+                grade: document.getElementById('fGrade').value,
+                mat: document.getElementById('fMatricule').value,
+                unite: document.getElementById('fUnite').value,
+                intitule: document.getElementById('fIntitule').value,
+                date: dateFormatee,
+                statut: "Admis"
+            });
+        
+            afficherFormations();
+            this.reset();
+        
+            // Réinitialise avec l'heure exacte actuelle
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('fDateHeure').value = now.toISOString().slice(0, 16);
+        });
         function changerOnglet(nomOnglet, boutonElement) {
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
             document.getElementById(`content-${nomOnglet}`).classList.remove('hidden');
@@ -445,9 +471,9 @@
             const tbody = document.getElementById('tableFormationsBody');
             const query = document.getElementById('searchFormation').value.toLowerCase();
             tbody.innerHTML = '';
-
+        
             const filtered = formations.filter(f => f.nom.toLowerCase().includes(query) || f.mat.toLowerCase().includes(query));
-
+        
             filtered.forEach((f, idx) => {
                 const isDiplome = f.statut.includes('Diplômé');
                 const badgeClass = isDiplome ? 'badge-diplome' : 'badge-admis';
@@ -459,6 +485,7 @@
                         <td style="color: var(--accent-color); font-family: monospace; font-weight: 700;">${f.mat}</td>
                         <td><span class="badge-unit">${f.unite}</span></td>
                         <td>${f.intitule}</td>
+                        <td style="font-size: 11px; color: var(--text-muted);">${f.date || '21/10/2026 17:00'}</td>
                         <td><span class="${badgeClass}">${f.statut}</span></td>
                         <td style="text-align: right; display: flex; gap: 4px; justify-content: flex-end;">
                             <button onclick="ouvrirModalEvaluation(${idx})" class="btn-act btn-eval">Évaluer</button>
