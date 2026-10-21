@@ -1,138 +1,639 @@
-<!-- EN-TÊTE & BARRE DE NAVIGATION DU PORTAIL DE COMMANDEMENT -->
-<header class="bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
-    
-    <!-- Logo & Titre -->
-    <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
-        <div class="flex items-center gap-3">
-            <div class="bg-emerald-500/20 border border-emerald-500/50 p-2.5 rounded-xl text-emerald-400">
-                <i class="fa-solid fa-shield-halved text-xl"></i>
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail de Commandement - ENA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        card: '#111c24',
+                        input: '#0d151c',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #0b1117; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+
+    <!-- EN-TÊTE PRINCIPAL DU PORTAIL -->
+    <header class="bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+        <!-- Logo & Titre -->
+        <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-500/20 border border-emerald-500/50 p-2.5 rounded-xl text-emerald-400">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm md:text-base font-black tracking-wide text-white uppercase flex items-center gap-2">
+                        Portail de Commandement
+                    </h1>
+                    <p class="text-[10px] text-emerald-400 font-mono">SYNCHRONISÉ REALTIME DB</p>
+                </div>
             </div>
-            <div>
-                <h1 class="text-sm md:text-base font-black tracking-wide text-white uppercase flex items-center gap-2">
-                    Portail de Commandement
-                </h1>
-                <p class="text-[10px] text-emerald-400 font-mono">SYNCHRONISÉ REALTIME DB</p>
+
+            <!-- Bouton Retour -->
+            <button onclick="history.back()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+                <i class="fa-solid fa-arrow-left text-emerald-400"></i> Retour
+            </button>
+        </div>
+
+        <!-- Profil & Actions -->
+        <div class="flex items-center gap-4 text-xs">
+            <div class="hidden sm:flex items-center gap-2 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="text-slate-300 font-semibold">Fondateur Suprême</span>
+                <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-500/30">FS-001-OWNER</span>
+            </div>
+            <button onclick="location.reload()" title="Actualiser" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 transition">
+                <i class="fa-solid fa-gear text-sm text-amber-400"></i>
+            </button>
+            <button onclick="alert('Déconnexion du système ENA')" title="Déconnexion" class="p-2.5 bg-red-950/30 hover:bg-red-900/40 text-red-400 rounded-xl border border-red-900/50 transition">
+                <i class="fa-solid fa-power-off text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- BARRE D'ONGLETS -->
+    <nav class="bg-slate-900/90 border-b border-slate-800 px-4 md:px-6 overflow-x-auto custom-scroll">
+        <ul class="flex items-center gap-1 min-w-max text-xs font-bold text-slate-400">
+            <li>
+                <button onclick="changerOnglet('formation', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-amber-400"></i> Formation
+                </button>
+            </li>
+            <li>
+                <button onclick="changerOnglet('dossier', this)" class="tab-btn active px-4 py-3 text-emerald-400 bg-slate-800/40 border-b-2 border-emerald-500 transition flex items-center gap-2">
+                    <i class="fa-solid fa-folder-open text-emerald-400"></i> Dossier
+                </button>
+            </li>
+            <li>
+                <button onclick="changerOnglet('document', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
+                    <i class="fa-solid fa-file-lines text-blue-400"></i> Document / Fichier
+                </button>
+            </li>
+            <li>
+                <button onclick="changerOnglet('referentiel', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
+                    <i class="fa-solid fa-book text-purple-400"></i> Référentiel
+                </button>
+            </li>
+            <li>
+                <button onclick="changerOnglet('planning', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days text-cyan-400"></i> Planning
+                </button>
+            </li>
+            <li>
+                <button onclick="changerOnglet('notes', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
+                    <i class="fa-solid fa-note-sticky text-rose-400"></i> Notes
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
+
+        <!-- 1. ONGLET DOSSIER (FORMULAIRE & REGISTRE COMPLET) -->
+        <div id="content-dossier" class="tab-pane space-y-6">
+
+            <!-- STATISTIQUES EN TEMPS RÉEL -->
+            <div class="bg-card border border-emerald-500/40 p-5 rounded-2xl bg-emerald-950/10 shadow-xl space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-emerald-500/20 border border-emerald-500/50 rounded-xl text-emerald-400">
+                            <i class="fa-solid fa-user-shield text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 id="formTitle" class="text-lg font-black text-emerald-400 flex items-center gap-2 tracking-wide uppercase">
+                                Créer / Mettre à Jour un Dossier Militaire Rétroactif
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-0.5">
+                                Module de régularisation et de synchronisation rétroactive des compétences militaires (Référentiel ENA).
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="cancelEditContainer" class="hidden">
+                        <button type="button" onclick="resetFormulaire()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                            <i class="fa-solid fa-xmark"></i> Annuler la modification
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CARTE KPI -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-emerald-500/20 text-xs">
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                        <i class="fa-solid fa-users text-blue-400 text-lg"></i>
+                        <div>
+                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Total Dossiers</div>
+                            <div id="statTotalMilitaires" class="text-sm font-black text-white">0</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                        <i class="fa-solid fa-certificate text-amber-400 text-lg"></i>
+                        <div>
+                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Qualifications</div>
+                            <div id="statTotalQualifs" class="text-sm font-black text-amber-300">0</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                        <i class="fa-solid fa-heart-pulse text-emerald-400 text-lg"></i>
+                        <div>
+                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Aptes Service FS</div>
+                            <div id="statAptesFS" class="text-sm font-black text-emerald-400">0%</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                        <i class="fa-solid fa-user-graduate text-purple-400 text-lg"></i>
+                        <div>
+                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Instructeurs</div>
+                            <div id="statTotalInstructeurs" class="text-sm font-black text-purple-300">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULAIRE COMPLET -->
+            <form id="formFullDossier" class="bg-card p-5 md:p-6 rounded-2xl border border-slate-800 shadow-2xl space-y-6 text-xs">
+                <input type="hidden" id="editIndex" value="-1">
+
+                <!-- 1. ÉTAT CIVIL -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-white border-b border-slate-700/60 pb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-blue-400"></i> 1. État Civil & Affectation
+                        </span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Nom & Prénom *</label>
+                            <input type="text" id="fullNom" placeholder="ex: CPT Jean Dupont" required class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-white focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Grade *</label>
+                            <input type="text" id="fullGrade" placeholder="ex: Capitaine" required class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-white focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Matricule *</label>
+                            <input type="text" id="fullMat" placeholder="ex: MAT-8890" required class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-white font-mono focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Unité / Affectation</label>
+                            <select id="fullUnite" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold text-blue-300 focus:border-emerald-500 outline-none">
+                                <option value="N/A">N/A (Sans affectation)</option>
+                                <option value="CPA 10">CPA 10</option>
+                                <option value="4e RHFS">4e RHFS</option>
+                                <option value="13e RDP">13e RDP</option>
+                                <option value="Commandos Jaubert (marine)">Commandos Jaubert (marine)</option>
+                                <option value="Groupe de Commandos Parachutistes (GCP)">Groupe de Commandos Parachutistes (GCP)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. FORMATIONS, PERMIS & SPÉCIALITÉS (RÉFÉRENTIEL ENA) -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-white border-b border-slate-700/60 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-amber-400"></i> 2. Formations, Permis & Qualifications Déjà Validés
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        
+                        <!-- DIPLÔMES ENA -->
+                        <div class="bg-input p-3 rounded-lg border border-slate-700/60 space-y-2">
+                            <h4 class="font-bold text-amber-300 border-b border-slate-700/40 pb-1">🎓 Diplômes ENA Officiels</h4>
+                            <div class="space-y-1 max-h-60 overflow-y-auto custom-scroll">
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[FGI] Formation Général Initiale"> <span>[FGI] Formation Général Initiale</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[CAT1] Brevet Caporal"> <span>[CAT1] Brevet Caporal</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[CME] Brevet Caporal-Chef"> <span>[CME] Brevet Caporal-Chef</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[CC1] Caporal-Chef de 1ère classe"> <span>[CC1] Caporal-Chef de 1ère classe</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[FG1 / BS1] Brevet de Sergent"> <span>[FG1 / BS1] Brevet de Sergent</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[FG2 / BSTAT] Brevet d'Adjoint"> <span>[FG2 / BSTAT] Brevet d'Adjoint</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[BM2] Brevet Militaire de niveau 2"> <span>[BM2] Brevet Militaire N2</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[FG3] Brevet de Major"> <span>[FG3] Brevet de Major</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[FAE] Formation d'Application"> <span>[FAE] Formation d'Application</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[CDU] Cursus de Chef d'Unité"> <span>[CDU] Cursus de Chef d'Unité</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="[DEM] Diplôme d'État-Major"> <span>[DEM] Diplôme d'État-Major</span></label>
+                            </div>
+                        </div>
+
+                        <!-- FORMATIONS & PERMIS -->
+                        <div class="bg-input p-3 rounded-lg border border-slate-700/60 space-y-2">
+                            <h4 class="font-bold text-blue-300 border-b border-slate-700/40 pb-1">🚘 Formations & Permis</h4>
+                            <div class="space-y-1 max-h-60 overflow-y-auto custom-scroll">
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider pt-1">Formations</span>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🪂 Brevet Parachutiste"> <span>🪂 Brevet Parachutiste</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🎯 Opérateur Tourelle"> <span>🎯 Opérateur Tourelle</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🔧 Qualification Mécanicien"> <span>🔧 Qualification Mécanicien</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🚚 Conducteur SPL"> <span>🚚 Conducteur SPL</span></label>
+                                
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider pt-2 border-t border-slate-700/40">Permis</span>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🚘 Pilote Blindés (VBCI/VAB/VBMR/GBC)"> <span>🚘 Pilote Blindés (VBCI/VAB)</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🪪 Permis B"> <span>🪪 Permis B</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🚛 Permis C"> <span>🚛 Permis C</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="🚌 Permis D"> <span>🚌 Permis D</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check rounded border-slate-700 bg-slate-900 text-emerald-500" value="⚓ Permis Bateau (Commandos Marine)"> <span>⚓ Permis Bateau (Commando Marine)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- SPÉCIALITÉS (CORPS DES INSTRUCTEURS ENA) -->
+                        <div class="bg-input p-3 rounded-lg border border-slate-700/60 space-y-2">
+                            <h4 class="font-bold text-red-400 border-b border-slate-700/40 pb-1">🎯 Spécialités (Instructeurs ENA)</h4>
+                            <div class="space-y-1.5 max-h-60 overflow-y-auto custom-scroll pr-1 text-[11px]">
+                                
+                                <!-- Médecins -->
+                                <div class="text-red-400 font-bold border-b border-slate-800 pb-0.5">🩺 Médecins</div>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Médecins"> <span>Chef Formateurs Médecins</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Formateur Médecin"> <span>Formateur Médecin</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Médecin"> <span>Apprenti Formateur Médecin</span></label>
+
+                                <!-- Tireurs d'élites -->
+                                <div class="text-emerald-400 font-bold border-b border-slate-800 pb-0.5 pt-1">🎯 Tireurs d'Élite</div>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Tireurs d'Élites"> <span>Chef Formateurs TE</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Formateur Tireur d'Élite"> <span>Formateur TE</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Tireur d'Élite"> <span>Apprenti Formateur TE</span></label>
+
+                                <!-- Tireurs de précision -->
+                                <div class="text-amber-500 font-bold border-b border-slate-800 pb-0.5 pt-1">🔫 Tireurs de Précision</div>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Tireur de Précision"> <span>Chef Formateurs TP</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Formateur Tireur de Précision"> <span>Formateur TP</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Tireur de Précision"> <span>Apprenti Formateur TP</span></label>
+
+                                <!-- Drones -->
+                                <div class="text-emerald-300 font-bold border-b border-slate-800 pb-0.5 pt-1">🛸 Opérateurs Drones</div>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Opérateurs Drones"> <span>Chef Formateurs Drones</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Formateur Opérateur Drone"> <span>Formateur Drone</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Opérateur Drone"> <span>Apprenti Formateur Drone</span></label>
+
+                                <!-- Transmetteurs -->
+                                <div class="text-teal-400 font-bold border-b border-slate-800 pb-0.5 pt-1">📻 Transmetteurs</div>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Chef des Formateurs Transmetteurs"> <span>Chef Formateurs Transmetteurs</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Formateur Transmetteur"> <span>Formateur Transmetteur</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Transmetteur"> <span>Apprenti Formateur Transmetteur</span></label>
+
+                                <!-- Démineurs -->
+                                <div class="text-orange-400 font-bold border-b border-slate-800 pb-0.5 pt-1">💥 Démineurs</div>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Chef des formateurs Démineurs"> <span>Chef Formateurs Démineurs</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Formateur Démineur"> <span>Formateur Démineur</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white"><input type="checkbox" class="full-form-check" value="Apprenti Formateur Démineur"> <span>Apprenti Formateur Démineur</span></label>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 3. INFORMATIONS MÉDICALES & NOTES -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-white border-b border-slate-700/60 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-notes-medical text-red-400"></i> 3. Profil Médical & Remarques
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Groupe Sanguin</label>
+                            <select id="fullSang" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-red-400 font-bold focus:border-emerald-500 outline-none">
+                                <option value="Non renseigné">Non renseigné</option>
+                                <option value="O +">O +</option><option value="O -">O - (Universel)</option>
+                                <option value="A +">A +</option><option value="A -">A -</option>
+                                <option value="B +">B +</option><option value="B -">B -</option>
+                                <option value="AB +">AB +</option><option value="AB -">AB -</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Visite Médicale (VMA)</label>
+                            <input type="date" id="fullDateVMA" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold text-white focus:border-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Aptitude Déclarée</label>
+                            <select id="fullAptitude" class="w-full bg-input border border-slate-700/80 rounded-lg p-2 font-bold focus:border-emerald-500 outline-none">
+                                <option value="Apte Service FS">🟢 Apte Service FS</option>
+                                <option value="Apte avec Restrictions">🟡 Apte avec Restrictions</option>
+                                <option value="Inapte Temporaire">🔴 Inapte Temporaire</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Notes du Commandement</label>
+                            <input type="text" id="fullNotes" placeholder="Remarques..." class="w-full bg-input border border-slate-700/80 rounded-lg p-2 text-white focus:border-emerald-500 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOUTONS -->
+                <div class="pt-3 border-t border-slate-800 flex items-center justify-end gap-3">
+                    <button type="reset" onclick="resetFormulaire()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition">Réinitialiser</button>
+                    <button type="submit" id="btnSubmitDossier" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl shadow-lg text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-floppy-disk"></i> Enregistrer Dossier Rétroactif
+                    </button>
+                </div>
+            </form>
+
+            <!-- SECTION REGISTRE EN BAS -->
+            <div class="bg-card border border-slate-800 rounded-2xl p-5 md:p-6 shadow-2xl space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-blue-400"></i> Registre des Dossiers Enregistrés
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Consultez, recherchez par nom/matricule ou modifiez directement un militaire.</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <!-- RECHERCHE LOUPE -->
+                        <div class="relative flex-1 lg:w-72">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                            <input type="text" id="searchDossier" oninput="filtrerDossiers()" placeholder="Rechercher nom, matricule, grade..." class="w-full bg-input border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:border-emerald-500 outline-none">
+                        </div>
+
+                        <!-- FILTRE UNITÉ -->
+                        <select id="filterUnite" onchange="filtrerDossiers()" class="bg-input border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 font-medium focus:border-emerald-500 outline-none">
+                            <option value="">Toutes les Unités</option>
+                            <option value="CPA 10">CPA 10</option>
+                            <option value="4e RHFS">4e RHFS</option>
+                            <option value="13e RDP">13e RDP</option>
+                            <option value="Commandos Jaubert (marine)">Commandos Jaubert</option>
+                            <option value="Groupe de Commandos Parachutistes (GCP)">GCP</option>
+                            <option value="N/A">Sans affectation (N/A)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- TABLEAU -->
+                <div class="overflow-x-auto custom-scroll rounded-xl border border-slate-800 bg-slate-900/40">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="bg-slate-900 text-slate-400 uppercase font-bold border-b border-slate-800 text-[10px] tracking-wider">
+                            <tr>
+                                <th class="p-3">Militaire / Matricule</th>
+                                <th class="p-3">Grade & Unité</th>
+                                <th class="p-3 text-center">Qualifications & Spécialités</th>
+                                <th class="p-3">Aptitude & Sang</th>
+                                <th class="p-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableDossiersBody" class="divide-y divide-slate-800/60">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="noDossierMessage" class="hidden text-center py-10 text-slate-500 text-xs">
+                    <i class="fa-solid fa-folder-open text-4xl mb-2 text-slate-600"></i>
+                    <p class="font-bold text-slate-400">Aucun dossier militaire enregistré pour le moment.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 2. ONGLET FORMATION -->
+        <div id="content-formation" class="tab-pane hidden space-y-6">
+            <div class="bg-card border border-amber-500/30 p-5 rounded-2xl bg-amber-950/10 flex items-center justify-between">
+                <div>
+                    <h2 class="text-base font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-xl"></i> Programme & Sessions de Formations ENA
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Planifiez les stages de qualification et suivez les promotions en cours.</p>
+                </div>
+                <button onclick="alert('Module de création de stage bientôt disponible')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Ouvrir une Session de Formation
+                </button>
             </div>
         </div>
 
-        <!-- Bouton Retour -->
-        <button onclick="history.back()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
-            <i class="fa-solid fa-arrow-left text-emerald-400"></i> Retour
-        </button>
-    </div>
-
-    <!-- Profil & Actions droite -->
-    <div class="flex items-center gap-4 text-xs">
-        <div class="hidden sm:flex items-center gap-2 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
-            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span class="text-slate-300 font-semibold">Fondateur Suprême</span>
-            <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-500/30">FS-001-OWNER</span>
+        <!-- 3. ONGLET DOCUMENT / FICHIER -->
+        <div id="content-document" class="tab-pane hidden space-y-6">
+            <div class="bg-card border border-blue-500/30 p-5 rounded-2xl bg-blue-950/10 flex items-center justify-between">
+                <div>
+                    <h2 class="text-base font-bold text-blue-400 flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf text-xl"></i> Centre de Documents & Archives Tactiques
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Téléchargez ou consultez les procédures, manuels de combat et directives.</p>
+                </div>
+            </div>
         </div>
-        <button onclick="location.reload()" title="Paramètres / Actualiser" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 transition">
-            <i class="fa-solid fa-gear text-sm text-amber-400"></i>
-        </button>
-        <button onclick="alert('Déconnexion du portail')" title="Déconnexion" class="p-2.5 bg-red-950/30 hover:bg-red-900/40 text-red-400 rounded-xl border border-red-900/50 transition">
-            <i class="fa-solid fa-power-off text-sm"></i>
-        </button>
-    </div>
-</header>
 
-<!-- BARRE DES ONGLETS DE NAVIGATION -->
-<nav class="bg-slate-900/90 border-b border-slate-800 px-4 md:px-6 overflow-x-auto custom-scroll">
-    <ul class="flex items-center gap-1 min-w-max text-xs font-bold text-slate-400">
-        <li>
-            <button onclick="changerOnglet('formation', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
-                <i class="fa-solid fa-graduation-cap text-amber-400"></i> Formation
-            </button>
-        </li>
-        <li>
-            <button onclick="changerOnglet('dossier', this)" class="tab-btn active px-4 py-3 text-emerald-400 bg-slate-800/40 border-b-2 border-emerald-500 transition flex items-center gap-2">
-                <i class="fa-solid fa-folder-open text-emerald-400"></i> Dossier
-            </button>
-        </li>
-        <li>
-            <button onclick="changerOnglet('document', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
-                <i class="fa-solid fa-file-lines text-blue-400"></i> Document / Fichier
-            </button>
-        </li>
-        <li>
-            <button onclick="changerOnglet('referentiel', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
-                <i class="fa-solid fa-book text-purple-400"></i> Référentiel
-            </button>
-        </li>
-        <li>
-            <button onclick="changerOnglet('planning', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
-                <i class="fa-solid fa-calendar-days text-cyan-400"></i> Planning
-            </button>
-        </li>
-        <li>
-            <button onclick="changerOnglet('notes', this)" class="tab-btn px-4 py-3 hover:text-white hover:bg-slate-800/60 border-b-2 border-transparent transition flex items-center gap-2">
-                <i class="fa-solid fa-note-sticky text-rose-400"></i> Notes
-            </button>
-        </li>
-    </ul>
-</nav>
+        <!-- 4. ONGLET RÉFÉRENTIEL -->
+        <div id="content-referentiel" class="tab-pane hidden space-y-6">
+            <div class="bg-card border border-purple-500/30 p-5 rounded-2xl bg-purple-950/10">
+                <h2 class="text-base font-bold text-purple-400 flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-xl"></i> Référentiel Général des Compétences ENA
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Guide officiel des conditions d'obtention des diplômes et prérequis des spécialités.</p>
+            </div>
+        </div>
 
-<!-- CONTENEURS DES CONTENUS D'ONGLETS -->
-<main class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
-    
-    <!-- Onglet Dossier (Contient le formulaire et le registre que nous avons fait) -->
-    <div id="content-dossier" class="tab-pane space-y-6">
-        <!-- Votre section formulaire & registre s'intègre ici -->
-    </div>
+        <!-- 5. ONGLET PLANNING -->
+        <div id="content-planning" class="tab-pane hidden space-y-6">
+            <div class="bg-card border border-cyan-500/30 p-5 rounded-2xl bg-cyan-950/10">
+                <h2 class="text-base font-bold text-cyan-400 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days text-xl"></i> Planning Général des Entraînements & Exercices
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Calendrier synchronisé des opérations et stages d'instruction.</p>
+            </div>
+        </div>
 
-    <!-- Autres onglets (contenus temporaires ou à remplir) -->
-    <div id="content-formation" class="tab-pane hidden p-10 text-center text-slate-400">
-        <i class="fa-solid fa-graduation-cap text-4xl mb-3 text-amber-400"></i>
-        <h3 class="text-base font-bold text-white">Module Formation</h3>
-        <p class="text-xs mt-1">Gestion des sessions d'entraînement et cursus des opérateurs.</p>
-    </div>
+        <!-- 6. ONGLET NOTES -->
+        <div id="content-notes" class="tab-pane hidden space-y-6">
+            <div class="bg-card border border-rose-500/30 p-5 rounded-2xl bg-rose-950/10 space-y-4">
+                <h2 class="text-base font-bold text-rose-400 flex items-center gap-2">
+                    <i class="fa-solid fa-note-sticky text-xl"></i> Bloc-Notes Rapide du Commandement
+                </h2>
+                <textarea placeholder="Saisissez vos consignes rapides..." class="w-full bg-input border border-slate-700 rounded-xl p-3 text-xs text-white h-32 focus:border-rose-500 outline-none"></textarea>
+                <div class="flex justify-end">
+                    <button onclick="alert('Note enregistrée !')" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-xs">Sauvegarder la note</button>
+                </div>
+            </div>
+        </div>
 
-    <div id="content-document" class="tab-pane hidden p-10 text-center text-slate-400">
-        <i class="fa-solid fa-file-lines text-4xl mb-3 text-blue-400"></i>
-        <h3 class="text-base font-bold text-white">Documents & Fichiers</h3>
-        <p class="text-xs mt-1">Archives, rapports d'intervention et manuels tactiques.</p>
-    </div>
+    </main>
 
-    <div id="content-referentiel" class="tab-pane hidden p-10 text-center text-slate-400">
-        <i class="fa-solid fa-book text-4xl mb-3 text-purple-400"></i>
-        <h3 class="text-base font-bold text-white">Référentiel ENA</h3>
-        <p class="text-xs mt-1">Grille officielle des brevets, qualifications et grilles de notation.</p>
-    </div>
+    <!-- JS GLOBAL -->
+    <script>
+        let dossiers = [];
 
-    <div id="content-planning" class="tab-pane hidden p-10 text-center text-slate-400">
-        <i class="fa-solid fa-calendar-days text-4xl mb-3 text-cyan-400"></i>
-        <h3 class="text-base font-bold text-white">Planning Opérationnel</h3>
-        <p class="text-xs mt-1">Calendrier des déploiements et exercices planifiés.</p>
-    </div>
-
-    <div id="content-notes" class="tab-pane hidden p-10 text-center text-slate-400">
-        <i class="fa-solid fa-note-sticky text-4xl mb-3 text-rose-400"></i>
-        <h3 class="text-base font-bold text-white">Notes de Commandement</h3>
-        <p class="text-xs mt-1">Consignes permanentes et carnets de liaison.</p>
-    </div>
-
-</main>
-
-<!-- SCRIPT DE NAVIGATION ENTRE LES ONGLETS -->
-<script>
-    function changerOnglet(nomOnglet, boutonElement) {
-        // Masquer tous les contenus
-        document.querySelectorAll('.tab-pane').forEach(pane => {
-            pane.classList.add('hidden');
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('ena_dossiers_militaires');
+            if (saved) {
+                try { dossiers = JSON.parse(saved); } catch (e) { dossiers = []; }
+            }
+            afficherDossiers();
         });
 
-        // Afficher l'onglet sélectionné
-        const cible = document.getElementById(`content-${nomOnglet}`);
-        if (cible) cible.classList.remove('hidden');
+        function sauvegarderStockage() {
+            localStorage.setItem('ena_dossiers_militaires', JSON.stringify(dossiers));
+            afficherDossiers();
+        }
 
-        // Gérer le style actif des boutons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('text-emerald-400', 'bg-slate-800/40', 'border-emerald-500');
-            btn.classList.add('border-transparent');
+        // CHANGER D'ONGLET
+        function changerOnglet(nomOnglet, boutonElement) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            const cible = document.getElementById(`content-${nomOnglet}`);
+            if (cible) cible.classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-emerald-400', 'bg-slate-800/40', 'border-emerald-500');
+                btn.classList.add('border-transparent');
+            });
+
+            boutonElement.classList.remove('border-transparent');
+            boutonElement.classList.add('text-emerald-400', 'bg-slate-800/40', 'border-emerald-500');
+        }
+
+        // ENREGISTRER / MODIFIER UN DOSSIER
+        document.getElementById('formFullDossier').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const editIndex = parseInt(document.getElementById('editIndex').value);
+            const nom = document.getElementById('fullNom').value.trim();
+            const grade = document.getElementById('fullGrade').value.trim();
+            const mat = document.getElementById('fullMat').value.trim();
+            const unite = document.getElementById('fullUnite').value;
+            const sang = document.getElementById('fullSang').value;
+            const dateVMA = document.getElementById('fullDateVMA').value;
+            const aptitude = document.getElementById('fullAptitude').value;
+            const notes = document.getElementById('fullNotes').value.trim();
+
+            const checkboxes = document.querySelectorAll('.full-form-check:checked');
+            const qualifications = Array.from(checkboxes).map(cb => cb.value);
+
+            const dossierData = { nom, grade, mat, unite, qualifications, sang, dateVMA, aptitude, notes };
+
+            if (editIndex >= 0 && editIndex < dossiers.length) {
+                dossiers[editIndex] = dossierData;
+            } else {
+                dossiers.unshift(dossierData);
+            }
+
+            resetFormulaire();
+            sauvegarderStockage();
         });
 
-        boutonElement.classList.remove('border-transparent');
-        boutonElement.classList.add('text-emerald-400', 'bg-slate-800/40', 'border-emerald-500');
-    }
-</script>
+        // AFFICHER REGISTRE ET MISES À JOUR
+        function afficherDossiers() {
+            const tbody = document.getElementById('tableDossiersBody');
+            const noMsg = document.getElementById('noDossierMessage');
+            const searchText = document.getElementById('searchDossier').value.toLowerCase();
+            const filterUniteVal = document.getElementById('filterUnite').value;
+
+            // Stats
+            document.getElementById('statTotalMilitaires').textContent = dossiers.length;
+            const totalQualifs = dossiers.reduce((acc, d) => acc + (d.qualifications ? d.qualifications.length : 0), 0);
+            document.getElementById('statTotalQualifs').textContent = totalQualifs;
+            const aptesFS = dossiers.filter(d => d.aptitude.includes('Apte Service FS')).length;
+            document.getElementById('statAptesFS').textContent = dossiers.length ? Math.round((aptesFS / dossiers.length) * 100) + '%' : '0%';
+            
+            // Calcul du nombre d'instructeurs
+            const totalInstructeurs = dossiers.filter(d => d.qualifications && d.qualifications.some(q => q.includes('Formateur') || q.includes('Chef'))).length;
+            document.getElementById('statTotalInstructeurs').textContent = totalInstructeurs;
+
+            tbody.innerHTML = '';
+
+            const filtered = dossiers.filter((d) => {
+                const matchSearch = d.nom.toLowerCase().includes(searchText) || d.mat.toLowerCase().includes(searchText) || d.grade.toLowerCase().includes(searchText);
+                const matchUnite = !filterUniteVal || d.unite === filterUniteVal;
+                return matchSearch && matchUnite;
+            });
+
+            if (filtered.length === 0) {
+                noMsg.classList.remove('hidden');
+                return;
+            } else {
+                noMsg.classList.add('hidden');
+            }
+
+            filtered.forEach((d) => {
+                const realIndex = dossiers.indexOf(d);
+
+                let aptitudeColor = 'text-emerald-400';
+                if (d.aptitude.includes('Restrictions')) aptitudeColor = 'text-amber-400';
+                if (d.aptitude.includes('Inapte')) aptitudeColor = 'text-red-400';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition border-b border-slate-800/50";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-white">
+                        <div>${d.nom}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">${d.mat}</div>
+                    </td>
+                    <td class="p-3 text-slate-300">
+                        <div class="font-semibold">${d.grade}</div>
+                        <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/30 text-[10px]">${d.unite}</span>
+                    </td>
+                    <td class="p-3 text-center">
+                        <span class="px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 font-bold text-[10px] border border-slate-700">${d.qualifications ? d.qualifications.length : 0} qualification(s)</span>
+                    </td>
+                    <td class="p-3">
+                        <div class="${aptitudeColor} font-bold text-[11px]">${d.aptitude}</div>
+                        <div class="text-[10px] text-slate-400">Sang: <span class="text-red-400 font-bold">${d.sang}</span></div>
+                    </td>
+                    <td class="p-3 text-right space-x-1">
+                        <button onclick="chargerPourModification(${realIndex})" title="Modifier" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg border border-slate-700 transition">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="supprimerDossier(${realIndex})" title="Supprimer" class="px-2.5 py-1.5 bg-slate-800 hover:bg-red-950 text-red-400 rounded-lg border border-slate-700 transition">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filtrerDossiers() { afficherDossiers(); }
+
+        function chargerPourModification(index) {
+            const d = dossiers[index];
+            if (!d) return;
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('fullNom').value = d.nom;
+            document.getElementById('fullGrade').value = d.grade;
+            document.getElementById('fullMat').value = d.mat;
+            document.getElementById('fullUnite').value = d.unite;
+            document.getElementById('fullSang').value = d.sang;
+            document.getElementById('fullDateVMA').value = d.dateVMA || '';
+            document.getElementById('fullAptitude').value = d.aptitude;
+            document.getElementById('fullNotes').value = d.notes || '';
+
+            const checkboxes = document.querySelectorAll('.full-form-check');
+            checkboxes.forEach(cb => {
+                cb.checked = d.qualifications && d.qualifications.includes(cb.value);
+            });
+
+            document.getElementById('formTitle').innerHTML = `Modifier le Dossier : <span class="text-white">${d.nom}</span>`;
+            document.getElementById('btnSubmitDossier').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Mettre à jour le dossier`;
+            document.getElementById('cancelEditContainer').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetFormulaire() {
+            document.getElementById('formFullDossier').reset();
+            document.getElementById('editIndex').value = '-1';
+            document.getElementById('formTitle').innerHTML = `Créer / Mettre à Jour un Dossier Militaire Rétroactif`;
+            document.getElementById('btnSubmitDossier').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Enregistrer Dossier Rétroactif`;
+            document.getElementById('cancelEditContainer').classList.add('hidden');
+        }
+
+        function supprimerDossier(index) {
+            if (confirm(`Voulez-vous vraiment supprimer le dossier de ${dossiers[index].nom} ?`)) {
+                dossiers.splice(index, 1);
+                sauvegarderStockage();
+            }
+        }
+    </script>
+</body>
+</html>
