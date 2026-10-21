@@ -302,11 +302,109 @@
 
         </div>
 
-        <!-- 2. ONGLET DOSSIER MILITAIRE -->
-        <div id="content-dossier" class="tab-pane hidden">
-            <div class="card">
-                <h2 style="color: var(--accent-color); font-size: 15px; text-transform: uppercase; font-weight: 900; margin-bottom: 8px;">📂 Registre des Dossiers Militaires</h2>
-                <p style="color: var(--text-muted); font-size: 11px;">Consultez ou enregistrez les dossiers rétroactifs des opérateurs de l'ENA.</p>
+        <!-- 2. ONGLET DOSSIER & MÉDIATHÈQUE MILITAIRE AVANCÉE -->
+        <div id="content-dossier" class="tab-pane hidden space-y-6">
+        
+            <!-- ZONES DU HAUT : FORMULAIRE D'IMPORT & BANIÈRE KPI -->
+            <div class="grid-2-split">
+                <!-- Formulaire d'Importation Tactique -->
+                <div class="card space-y-4">
+                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <span style="color: var(--accent-color);">📤</span> Importer des Fichiers & Médias
+                    </h3>
+                    
+                    <form id="fileImportForm" onsubmit="handleAddFile(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Catégorie / Dossier</label>
+                                <select id="fileCategorySelect" class="select-field">
+                                    <option value="Opérations">Opérations</option>
+                                    <option value="Renseignement">Renseignement</option>
+                                    <option value="Santé">Santé</option>
+                                    <option value="Logistique">Logistique</option>
+                                    <option value="Général">Général</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Tags (séparés par virgul.)</label>
+                                <input type="text" id="fileTagsInput" class="input-field" placeholder="ex: CPA 10, Confidentiel">
+                            </div>
+                        </div>
+        
+                        <div id="dropZone" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 18px 10px; text-align: center; background: var(--bg-main); cursor: pointer; transition: border-color 0.2s;" onclick="document.getElementById('fileInput').click()">
+                            <div style="font-size: 24px; margin-bottom: 4px;">📂</div>
+                            <div style="font-weight: 700; color: var(--text-main); font-size: 12px;">Glissez des fichiers ou cliquez ici</div>
+                            <div style="font-size: 10px; color: var(--text-muted);">PDF, Images, Vidéos, Documents</div>
+                            <input type="file" id="fileInput" class="hidden" multiple onchange="document.getElementById('fileNamePreview').textContent = this.files.length + ' fichier(s) sélectionné(s)'">
+                        </div>
+                        <div id="fileNamePreview" style="font-size: 11px; color: var(--accent-color); font-weight: 700; text-align: center;"></div>
+        
+                        <button type="submit" class="btn-blue" style="width: 100%;">💾 Enregistrer dans le Registre</button>
+                    </form>
+                </div>
+        
+                <!-- Statistiques et Filtres Rapides -->
+                <div class="card space-y-4" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 12px;">📊 Statistiques du Stockage Tactique</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                                <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Total Fichiers</div>
+                                <div id="totalFilesCount" style="font-size: 20px; font-weight: 900; color: var(--accent-color);">0</div>
+                            </div>
+                            <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                                <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Volume Estimé</div>
+                                <div id="totalStorageUsed" style="font-size: 16px; font-weight: 900; color: #f59e0b; margin-top: 4px;">0 MB / 5 GB</div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div>
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px; font-weight: 700;">Dossiers & Catégories :</label>
+                        <div id="fileCategoryFilters" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                            <!-- Généré dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- RECHERCHE, TRI ET GRILLE DES FICHIERS -->
+            <div class="card space-y-4">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main);">🗂️ Registre des Documents</h3>
+                    
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="searchFileName" oninput="renderFileList()" class="input-field" placeholder="🔍 Nom, tag, auteur..." style="width: 200px; padding: 6px 10px;">
+                        <select id="sortOrderSelect" onchange="changeFileSorting(this.value)" class="select-field" style="width: 150px; padding: 6px 10px;">
+                            <option value="date-desc">Plus récents</option>
+                            <option value="date-asc">Plus anciens</option>
+                            <option value="name-asc">Nom (A-Z)</option>
+                            <option value="name-desc">Nom (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <div id="fileList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
+                    <!-- Généré dynamiquement -->
+                </div>
+            </div>
+        
+        </div>
+        
+        <!-- MODALE DE VISUALISATION MULTIMÉDIA -->
+        <div id="modalVisualiserFichier" class="modal-overlay hidden">
+            <div class="card space-y-4" style="width: 100%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                    <h3 id="modalFileTitle" style="font-size: 14px; font-weight: 800; color: var(--text-main);">Aperçu du Fichier</h3>
+                    <button onclick="toggleModal('modalVisualiserFichier')" style="background: none; border: none; color: #f87171; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
+                </div>
+                <div id="modalFileViewer" style="flex: 1; overflow: auto; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; min-height: 300px; max-height: 65vh;">
+                    <!-- Contenu dynamique -->
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                    <a id="modalFileDownloadBtn" download class="btn-blue" style="text-decoration: none; padding: 6px 14px;">⬇️ Télécharger</a>
+                    <button onclick="toggleModal('modalVisualiserFichier')" class="btn-retour">Fermer</button>
+                </div>
             </div>
         </div>
 
@@ -424,226 +522,278 @@
 
     <!-- SCRIPT JS COMPLET -->
     <script>
-        // Données Initiales
-        let instructeurs = JSON.parse(localStorage.getItem('ena_instructeurs')) || [
-            { nom: "Colonel Alex GIROND", role: "Directeur de l'ENA" },
-            { nom: "Commandant Mathis ROSIER", role: "Directeur adjoint" },
-            { nom: "Lieutenant Maël LIOGER", role: "Formateur Principal" },
-            { nom: "Capitaine John FOX", role: "Instructeur" },
-            { nom: "Sergent-Chef Simon RENARD", role: "Aspirant Instructeur" },
-            { nom: "Sous-Lieutenant Jake HARPER", role: "Aspirant Instructeur" },
-            { nom: "Capitaine Noli VELMONT", role: "Chef des Instructeurs" }
+        // ==========================================
+        // SYSTÈME DE GESTION DE FICHIERS MILITAIRES ENA
+        // ==========================================
+        
+        let militaryFiles = JSON.parse(localStorage.getItem('military_files')) || [
+            { id: "F-101", name: "Ordre_Mission_Alpha.pdf", category: "Opérations", size: "1.2 MB", type: "pdf", date: "2026-03-12", author: "LCL Alex", tags: ["CPA 10", "Confidentiel"], data: null },
+            { id: "F-102", name: "Photo_Reconnaissance_Z01.jpg", category: "Renseignement", size: "3.4 MB", type: "image", date: "2026-03-15", author: "CPE Valette", tags: ["Zone Sud", "13e RDP"], data: null },
+            { id: "F-103", name: "Rapport_Medical_Sanguin.pdf", category: "Santé", size: "850 KB", type: "pdf", date: "2026-03-18", author: "Dr. Martin", tags: ["Médical", "Restreint"], data: null }
         ];
-
-        let formations = JSON.parse(localStorage.getItem('ena_formations')) || [
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FGI] Formation Général Initiale", statut: "Admis (20/20)" },
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste", statut: "Admis (20/20)" },
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "[CDU] Cursus de Chef d'Unité", statut: "Admis (20/20)" },
-            { nom: "Noli VELMONT", grade: "Capitaine", mat: "FS-027-FR", unite: "CPA 10", intitule: "🪂 Brevet Parachutiste", statut: "Admis (20/20)" }
-        ];
-
+        
+        let currentCategoryFilter = "ALL";
+        let currentSortOrder = "date-desc";
+        
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialise automatiquement la date et l'heure actuelles dans le champ
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('fDateHeure').value = now.toISOString().slice(0, 16);
-        
-            const themeSauve = localStorage.getItem('ena_theme') || 'navy';
-            appliquerTheme(themeSauve);
-        
-            afficherInstructeurs();
-            afficherFormations();
+            renderCategoryFilters();
+            renderFileList();
+            updateFileStats();
         });
         
-        // Soumission du formulaire avec la date/heure choisie
-        document.getElementById('formInscrireFormation').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Formatage de la date saisie pour l'affichage dans le tableau (ex: 21/10/2026 17:38)
-            const rawDate = new Date(document.getElementById('fDateHeure').value);
-            const dateFormatee = `${rawDate.getDate().toString().padStart(2,'0')}/${(rawDate.getMonth()+1).toString().padStart(2,'0')}/${rawDate.getFullYear()} ${rawDate.getHours().toString().padStart(2,'0')}:${rawDate.getMinutes().toString().padStart(2,'0')}`;
+        // Traitement et Ajout de fichiers
+        function handleAddFile(event) {
+            event.preventDefault();
+            const input = document.getElementById('fileInput');
+            const category = document.getElementById('fileCategorySelect')?.value || 'Général';
+            const tagsInput = document.getElementById('fileTagsInput')?.value || '';
         
-            formations.unshift({
-                nom: document.getElementById('fNom').value,
-                grade: document.getElementById('fGrade').value,
-                mat: document.getElementById('fMatricule').value,
-                unite: document.getElementById('fUnite').value,
-                intitule: document.getElementById('fIntitule').value,
-                date: dateFormatee,
-                statut: "Admis"
-            });
-        
-            afficherFormations();
-            this.reset();
-        
-            // Réinitialise avec l'heure exacte actuelle
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('fDateHeure').value = now.toISOString().slice(0, 16);
-        });
-        function changerOnglet(nomOnglet, boutonElement) {
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
-            document.getElementById(`content-${nomOnglet}`).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            boutonElement.classList.add('active');
-        }
-
-        /* INSTRUCTEURS */
-        function afficherInstructeurs() {
-            const container = document.getElementById('instructeursContainer');
-            container.innerHTML = '';
-            instructeurs.forEach((i, idx) => {
-                container.innerHTML += `
-                    <div class="instructor-card">
-                        <div>
-                            <div style="font-weight: 800; font-size: 12px; color: var(--text-main);">${i.nom}</div>
-                            <div style="font-size: 10.5px; color: var(--accent-color); margin-top: 2px;">${i.role}</div>
-                        </div>
-                        <button onclick="supprimerInstructeur(${idx})" style="background:none; border:none; color:#f87171; cursor:pointer; font-size:12px;" title="Supprimer">🗑️</button>
-                    </div>`;
-            });
-            localStorage.setItem('ena_instructeurs', JSON.stringify(instructeurs));
-        }
-
-        document.getElementById('formAddInstructeur').addEventListener('submit', function(e) {
-            e.preventDefault();
-            instructeurs.push({ nom: document.getElementById('instNom').value, role: document.getElementById('instRole').value });
-            afficherInstructeurs();
-            this.reset();
-        });
-
-        function supprimerInstructeur(idx) {
-            instructeurs.splice(idx, 1);
-            afficherInstructeurs();
-        }
-
-        /* AFFICHAGE DES FORMATIONS (SANS LIGNES VIDES) */
-        function afficherFormations() {
-            const tbody = document.getElementById('tableFormationsBody');
-            const query = document.getElementById('searchFormation').value.toLowerCase();
-            tbody.innerHTML = '';
-        
-            // Filtrer pour éliminer les entrées vides ou invalides
-            const formationsValides = formations.filter(f => f && f.nom && f.nom.trim() !== '');
-        
-            const filtered = formationsValides.filter(f => 
-                f.nom.toLowerCase().includes(query) || 
-                (f.mat && f.mat.toLowerCase().includes(query))
-            );
-        
-            filtered.forEach((f, idx) => {
-                const isDiplome = f.statut && f.statut.includes('Diplômé');
-                const badgeClass = isDiplome ? 'badge-diplome' : 'badge-admis';
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="font-weight: 800; color: var(--text-main);">${f.nom} <span class="dot-online" style="display:inline-block; margin-left:4px;"></span></td>
-                        <td>${f.grade || '-'}</td>
-                        <td style="color: var(--accent-color); font-family: monospace; font-weight: 700;">${f.mat || '-'}</td>
-                        <td><span class="badge-unit">${f.unite || 'N/A'}</span></td>
-                        <td>${f.intitule || '-'}</td>
-                        <td style="font-size: 11px; color: var(--text-muted);">${f.date || '21/10/2026 17:00'}</td>
-                        <td><span class="${badgeClass}">${f.statut || 'En cours'}</span></td>
-                        <td style="text-align: right; display: flex; gap: 4px; justify-content: flex-end;">
-                            <button onclick="ouvrirModalEvaluation(${idx})" class="btn-act btn-eval">Évaluer</button>
-                            <button onclick="delivrerDiplome(${idx})" class="btn-act btn-dip">Diplôme</button>
-                            <button onclick="supprimerFormation(${idx})" class="btn-act btn-del">🗑️</button>
-                        </td>
-                    </tr>`;
-            });
-        
-            // Mettre à jour le localStorage avec les données propres
-            formations = formationsValides;
-            localStorage.setItem('ena_formations', JSON.stringify(formations));
-        }
-        
-        /* GESTION DE LA FICHE D'ÉVALUATION */
-        function ouvrirModalEvaluation(idx) {
-            const item = formations[idx];
-            if (!item) return;
-        
-            document.getElementById('evalIndex').value = idx;
-            document.getElementById('evalCandidat').value = `${item.grade || ''} ${item.nom}`.trim();
-            document.getElementById('evalFormation').value = item.intitule || '';
-            
-            // Charger la liste des formateurs dans le select
-            const selectFormateur = document.getElementById('evalFormateur');
-            selectFormateur.innerHTML = '';
-            instructeurs.forEach(inst => {
-                selectFormateur.innerHTML += `<option value="${inst.nom}">${inst.nom} (${inst.role})</option>`;
-            });
-        
-            // Valeurs par défaut ou existantes
-            document.getElementById('evalNote').value = item.note || "20";
-            document.getElementById('evalResultat').value = item.resultat || "Admis";
-            document.getElementById('evalMention').value = item.mention || "Sans mention";
-            document.getElementById('evalRemarques').value = item.remarques || "";
-        
-            toggleModal('modalEvaluer');
-        }
-        
-        function sauvegarderEvaluation() {
-            const idx = document.getElementById('evalIndex').value;
-            const res = document.getElementById('evalResultat').value;
-            const note = document.getElementById('evalNote').value;
-        
-            if (formations[idx]) {
-                formations[idx].resultat = res;
-                formations[idx].note = note;
-                formations[idx].mention = document.getElementById('evalMention').value;
-                formations[idx].formateur = document.getElementById('evalFormateur').value;
-                formations[idx].remarques = document.getElementById('evalRemarques').value;
-                
-                // Mise à jour du libellé de statut affiché dans le tableau
-                formations[idx].statut = note ? `${res} (${note}/20)` : res;
-        
-                afficherFormations();
+            if (!input || !input.files || input.files.length === 0) {
+                showFileNotification("Veuillez sélectionner au moins un fichier.", "error");
+                return;
             }
         
-            toggleModal('modalEvaluer');
+            const tagsArr = tagsInput.split(',').map(t => t.trim()).filter(t => t.length > 0);
+        
+            Array.from(input.files).forEach(file => {
+                const fileExt = file.name.split('.').pop().toLowerCase();
+                let fileType = 'doc';
+                if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(fileExt)) fileType = 'image';
+                else if (fileExt === 'pdf') fileType = 'pdf';
+                else if (['mp4', 'webm', 'avi', 'mov'].includes(fileExt)) fileType = 'video';
+        
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newFile = {
+                        id: 'F-' + Date.now().toString().slice(-4) + Math.floor(Math.random() * 100),
+                        name: file.name,
+                        category: category,
+                        size: formatBytes(file.size),
+                        type: fileType,
+                        date: new Date().toISOString().split('T')[0],
+                        author: "Commandement",
+                        tags: tagsArr.length > 0 ? tagsArr : ["Importé"],
+                        data: e.target.result
+                    };
+        
+                    militaryFiles.unshift(newFile);
+                    saveFilesToStorage();
+                    renderCategoryFilters();
+                    renderFileList();
+                    updateFileStats();
+                };
+                reader.readAsDataURL(file);
+            });
+        
+            showFileNotification(`${input.files.length} fichier(s) importé(s) !`, "success");
+            document.getElementById('fileImportForm').reset();
+            document.getElementById('fileNamePreview').textContent = "";
         }
-
-        function supprimerFormation(idx) {
-            formations.splice(idx, 1);
-            afficherFormations();
+        
+        // Filtres par Catégorie
+        function renderCategoryFilters() {
+            const container = document.getElementById('fileCategoryFilters');
+            if (!container) return;
+        
+            const categories = ["ALL", ...new Set(militaryFiles.map(f => f.category))];
+            
+            container.innerHTML = categories.map(cat => {
+                const count = cat === "ALL" ? militaryFiles.length : militaryFiles.filter(f => f.category === cat).length;
+                const isActive = currentCategoryFilter === cat;
+                const activeStyle = isActive ? "background: var(--accent-color); color: #fff;" : "background: var(--bg-main); color: var(--text-muted);";
+                const label = cat === "ALL" ? "Tous les fichiers" : cat;
+                
+                return `
+                    <button onclick="filterFilesByCategory('${cat}')" class="btn-act" style="padding: 4px 8px; font-size: 11px; ${activeStyle}">
+                        <span>${label}</span>
+                        <span style="background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 10px; font-size: 9px; margin-left: 4px;">${count}</span>
+                    </button>
+                `;
+            }).join('');
         }
-
-        function delivrerDiplome(idx) {
-            formations[idx].statut = "Diplômé ENA 🎓";
-            afficherFormations();
+        
+        function filterFilesByCategory(category) {
+            currentCategoryFilter = category;
+            renderCategoryFilters();
+            renderFileList();
         }
-
-        function ouvrirModalEvaluation(idx) {
-            document.getElementById('evalIndex').value = idx;
-            document.getElementById('evalStatut').value = formations[idx].statut;
-            toggleModal('modalEvaluer');
+        
+        // Affichage et Tri de la liste
+        function renderFileList() {
+            const container = document.getElementById('fileList');
+            const searchInput = document.getElementById('searchFileName');
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        
+            if (!container) return;
+        
+            let filtered = militaryFiles.filter(file => {
+                const matchesCategory = currentCategoryFilter === "ALL" || file.category === currentCategoryFilter;
+                const matchesQuery = !query || 
+                    file.name.toLowerCase().includes(query) || 
+                    file.category.toLowerCase().includes(query) || 
+                    file.author.toLowerCase().includes(query) ||
+                    file.tags.some(t => t.toLowerCase().includes(query));
+                return matchesCategory && matchesQuery;
+            });
+        
+            filtered.sort((a, b) => {
+                if (currentSortOrder === 'name-asc') return a.name.localeCompare(b.name);
+                if (currentSortOrder === 'name-desc') return b.name.localeCompare(a.name);
+                if (currentSortOrder === 'date-asc') return new Date(a.date) - new Date(b.date);
+                return new Date(b.date) - new Date(a.date);
+            });
+        
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-muted); background: var(--bg-main); border-radius: 8px;">
+                        <div style="font-size: 30px; margin-bottom: 6px;">📂</div>
+                        <p style="font-size: 12px; font-weight: 700;">Aucun fichier trouvé</p>
+                    </div>
+                `;
+                return;
+            }
+        
+            container.innerHTML = filtered.map(file => {
+                const indexReel = militaryFiles.findIndex(f => f.id === file.id);
+                
+                let apercuVignette = '📁';
+                if (file.type === 'image') apercuVignette = '🖼️';
+                else if (file.type === 'video') apercuVignette = '🎬';
+                else if (file.type === 'pdf') apercuVignette = '📄';
+        
+                return `
+                    <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span class="badge-unit" style="font-size: 9px;">${file.category}</span>
+                                <span style="font-size: 10px; color: var(--text-muted); font-family: monospace;">${file.size}</span>
+                            </div>
+        
+                            <div style="display: flex; items-center; gap: 8px;">
+                                <div style="font-size: 24px;">${apercuVignette}</div>
+                                <div style="overflow: hidden;">
+                                    <div style="font-weight: 800; color: var(--text-main); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;" onclick="previewFile('${file.id}')" title="${file.name}">
+                                        ${file.name}
+                                    </div>
+                                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Par ${file.author} • ${file.date}</div>
+                                </div>
+                            </div>
+        
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;">
+                                ${file.tags.map(t => `<span style="font-size: 9px; background: rgba(255,255,255,0.05); color: var(--text-muted); padding: 1px 4px; border-radius: 4px;">#${t}</span>`).join('')}
+                            </div>
+                        </div>
+        
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;">
+                            <button onclick="previewFile('${file.id}')" class="btn-act btn-eval">👁️ Voir</button>
+                            <div style="display: flex; gap: 4px;">
+                                <button onclick="editFileDetails('${file.id}')" class="btn-act btn-dip" title="Modifier">✏️</button>
+                                ${file.data ? `<a href="${file.data}" download="${file.name}" class="btn-act btn-dip" style="text-decoration:none;">⬇️</a>` : ''}
+                                <button onclick="deleteFile('${file.id}')" class="btn-act btn-del">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
-
-        function sauvegarderEvaluation() {
-            const idx = document.getElementById('evalIndex').value;
-            formations[idx].statut = document.getElementById('evalStatut').value;
-            afficherFormations();
-            toggleModal('modalEvaluer');
+        
+        function changeFileSorting(sortType) {
+            currentSortOrder = sortType;
+            renderFileList();
         }
-
-        function exporterTableau(type) {
-            alert(`Exportation du registre au format ${type} générée avec succès.`);
+        
+        function editFileDetails(fileId) {
+            const file = militaryFiles.find(f => f.id === fileId);
+            if (!file) return;
+        
+            const newName = prompt("Nouveau nom du fichier :", file.name);
+            if (newName === null) return;
+        
+            const newCategory = prompt("Nouvelle catégorie/dossier :", file.category);
+            const newTags = prompt("Tags (séparés par des virgules) :", file.tags.join(', '));
+        
+            if (newName.trim() !== "") file.name = newName.trim();
+            if (newCategory !== null && newCategory.trim() !== "") file.category = newCategory.trim();
+            if (newTags !== null) {
+                file.tags = newTags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+            }
+        
+            saveFilesToStorage();
+            renderCategoryFilters();
+            renderFileList();
         }
-
-        /* MODALES ET PARAMÈTRES */
-        function toggleModal(id) {
-            document.getElementById(id).classList.toggle('hidden');
+        
+        function deleteFile(fileId) {
+            militaryFiles = militaryFiles.filter(f => f.id !== fileId);
+            saveFilesToStorage();
+            renderCategoryFilters();
+            renderFileList();
+            updateFileStats();
         }
-
-        function ajusterLuminosite(val) {
-            document.body.style.filter = `brightness(${val}%)`;
-            document.getElementById('brightnessVal').textContent = `${val}%`;
+        
+        // Aperçu/Lecture multimédia réelle
+        function previewFile(fileId) {
+            const file = militaryFiles.find(f => f.id === fileId);
+            if (!file) return;
+        
+            document.getElementById('modalFileTitle').textContent = file.name;
+            const downloadBtn = document.getElementById('modalFileDownloadBtn');
+            const viewer = document.getElementById('modalFileViewer');
+        
+            if (file.data) {
+                downloadBtn.href = file.data;
+                downloadBtn.download = file.name;
+                downloadBtn.style.display = "inline-block";
+        
+                if (file.type === 'image') {
+                    viewer.innerHTML = `<img src="${file.data}" style="max-width: 100%; max-height: 60vh; object-fit: contain;">`;
+                } else if (file.type === 'video') {
+                    viewer.innerHTML = `<video src="${file.data}" controls autoplay style="max-width: 100%; max-height: 60vh;"></video>`;
+                } else {
+                    viewer.innerHTML = `<iframe src="${file.data}" style="width: 100%; height: 60vh; border: none;"></iframe>`;
+                }
+            } else {
+                downloadBtn.style.display = "none";
+                viewer.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">📄</div>
+                        <div style="font-weight: 800;">Fichier d'Exemple / Démo</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Catégorie : ${file.category} • Auteur : ${file.author}</div>
+                    </div>`;
+            }
+        
+            toggleModal('modalVisualiserFichier');
         }
-
-        function appliquerTheme(theme) {
-            document.body.className = '';
-            if (theme !== 'navy') document.body.classList.add(`theme-${theme}`);
-            localStorage.setItem('ena_theme', theme);
+        
+        function updateFileStats() {
+            const totalElem = document.getElementById('totalFilesCount');
+            const storageElem = document.getElementById('totalStorageUsed');
+            
+            if (totalElem) totalElem.textContent = militaryFiles.length;
+            if (storageElem) {
+                const estMB = (militaryFiles.length * 2.4).toFixed(1);
+                storageElem.textContent = `${estMB} MB / 5 GB`;
+            }
+        }
+        
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        function saveFilesToStorage() {
+            try {
+                localStorage.setItem('military_files', JSON.stringify(militaryFiles));
+            } catch(e) {
+                console.warn("Stockage saturé pour les médias vidéo.");
+            }
+        }
+        
+        function showFileNotification(msg, type = "info") {
+            alert(msg);
         }
     </script>
 </body>
