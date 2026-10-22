@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portail de Commandement - ENA</title>
+
+    <!-- SDK Firebase Compatibilité -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
@@ -19,37 +24,11 @@
             --table-row-hover: rgba(255, 255, 255, 0.03);
         }
 
-        body.theme-tactical {
-            --accent-color: #10b981;
-            --bg-main: #0a0a0c;
-            --bg-card: #121215;
-            --bg-input: #18181c;
-            --border-color: #27272a;
-            --table-header: #141418;
-        }
+        body.theme-tactical { --accent-color: #10b981; --bg-main: #0a0a0c; --bg-card: #121215; --bg-input: #18181c; --border-color: #27272a; --table-header: #141418; }
+        body.theme-cyber { --accent-color: #a855f7; --bg-main: #0d0614; --bg-card: #150a21; --bg-input: #1f0e30; --border-color: #32164d; --table-header: #1a0b28; }
+        body.theme-light { --accent-color: #2563eb; --bg-main: #f1f5f9; --bg-card: #ffffff; --bg-input: #e2e8f0; --border-color: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b; --table-header: #e2e8f0; }
 
-        body.theme-cyber {
-            --accent-color: #a855f7;
-            --bg-main: #0d0614;
-            --bg-card: #150a21;
-            --bg-input: #1f0e30;
-            --border-color: #32164d;
-            --table-header: #1a0b28;
-        }
-
-        body.theme-light {
-            --accent-color: #2563eb;
-            --bg-main: #f1f5f9;
-            --bg-card: #ffffff;
-            --bg-input: #e2e8f0;
-            --border-color: #cbd5e1;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --table-header: #e2e8f0;
-            --table-row-hover: rgba(0, 0, 0, 0.03);
-        }
-
-        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; font-size: 13px; transition: background-color 0.2s, color 0.2s, filter 0.2s; }
+        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; font-size: 13px; transition: background-color 0.2s, color 0.2s; }
 
         /* EN-TÊTE */
         header { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
@@ -87,10 +66,8 @@
 
         /* GRILLES UI */
         .grid-2-split { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
-        @media(max-width: 900px) { .grid-2-split { grid-template-columns: 1fr; } }
-
         .grid-3-split { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        @media(max-width: 900px) { .grid-3-split { grid-template-columns: 1fr; } }
+        @media(max-width: 900px) { .grid-2-split, .grid-3-split { grid-template-columns: 1fr; } }
 
         .instructors-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 250px; overflow-y: auto; padding-right: 4px; }
         @media(max-width: 600px) { .instructors-grid { grid-template-columns: 1fr; } }
@@ -114,19 +91,18 @@
         .badge-unit { background-color: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
 
         /* BOUTONS ACTIONS */
-        .btn-act { border: none; padding: 5px 9px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; transition: opacity 0.2s; }
+        .btn-act { border: none; padding: 5px 9px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; }
         .btn-act:hover { opacity: 0.85; }
         .btn-eval { background-color: #2563eb; color: #fff; }
         .btn-dip { background-color: #d97706; color: #fff; }
         .btn-del { background-color: #7f1d1d; color: #f87171; border: 1px solid #991b1b; }
 
-        /* MODALE STYLES */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
     </style>
 </head>
 <body>
 
-    <!-- EN-TÊTE -->
+    <!-- EN-TÊTE DU PORTAIL -->
     <header>
         <div class="logo-area">
             <div class="badge-logo">🛡️</div>
@@ -148,7 +124,7 @@
         </div>
     </header>
 
-    <!-- NAVIGATION -->
+    <!-- BARRE DE NAVIGATION -->
     <nav>
         <ul class="nav-list">
             <li><button onclick="changerOnglet('formation', this)" class="tab-btn active">🎓 Formation</button></li>
@@ -165,7 +141,6 @@
 
         <!-- 1. ONGLET FORMATION -->
         <div id="content-formation" class="tab-pane">
-
             <div class="grid-2-split">
                 <!-- Formulaire Ajouter Instructeur -->
                 <div class="card">
@@ -291,16 +266,15 @@
                     </table>
                 </div>
             </div>
-
         </div>
 
-        <!-- 2. ONGLET DOSSIER MILITAIRE (FICHES INDIVIDUELLES DES SOLDATS) -->
-        <div id="content-dossier" class="tab-pane hidden">
+        <!-- 2. ONGLET DOSSIER MILITAIRE (REGISTRE DES FICHES INDIVIDUELLES DES SOLDATS) -->
+        <div id="content-dossier" class="tab-pane hidden space-y-6">
 
             <!-- Formulaire d'Enregistrement / Édition d'un Soldat -->
             <div class="card space-y-4">
                 <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                    <span style="color: var(--accent-color);">🪪</span> Créer ou Éditer la Fiche d'un Soldat
+                    <span style="color: var(--accent-color);">🪪</span> Enregistrer ou Modifier la Fiche d'un Militaire
                 </h3>
                 
                 <form id="formSoldat" onsubmit="sauvegarderSoldat(event)" style="display: flex; flex-direction: column; gap: 12px;">
@@ -345,35 +319,71 @@
                         </div>
                         <div>
                             <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Groupe Sanguin / VMA</label>
-                            <input type="text" id="soldatProfilMed" class="input-field" placeholder="ex: O+ | VMA: 16.5 km/h">
+                            <input type="text" id="soldatProfilMed" class="input-field" placeholder="ex: O+ | VMA: 17.2 km/h">
                         </div>
                     </div>
 
+                    <!-- Sélecteur Officiel de Qualifications pour le dossier -->
                     <div>
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Qualifications / Brevets de l'Opérateur</label>
-                        <input type="text" id="soldatQualifications" class="input-field" placeholder="ex: Brevet Parachutiste, CQB, Tireur d'Élite, Permis SPL">
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">Qualifications & Brevets du Soldat (Maintenir Ctrl pour choix multiples)</label>
+                        <select id="soldatQualificationsSelect" class="select-field" multiple style="height: 120px;">
+                            <optgroup label="🎓 Diplômes ENA (Officiels)">
+                                <option value="[FGI] Formation Général Initiale (Soldat 1cl)">[FGI] Formation Général Initiale (Soldat 1cl)</option>
+                                <option value="[CAT1] Brevet Caporal">[CAT1] Brevet Caporal</option>
+                                <option value="[CME] Brevet Caporal-Chef">[CME] Brevet Caporal-Chef</option>
+                                <option value="[CC1] Caporal-Chef de 1ère classe">[CC1] Caporal-Chef de 1ère classe</option>
+                                <option value="[FG1 / BS1] Brevet de Sergent">[FG1 / BS1] Brevet de Sergent</option>
+                                <option value="[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste">[FG2 / BSTAT] Brevet d'Adjoint & Spécialiste</option>
+                                <option value="[BM2] Brevet Militaire de niveau 2">[BM2] Brevet Militaire de niveau 2</option>
+                                <option value="[FG3] Brevet de Major">[FG3] Brevet de Major</option>
+                                <option value="[FAE] Formation d'Application (Lieutenant)">[FAE] Formation d'Application (Lieutenant)</option>
+                                <option value="[CDU] Cursus de Chef d'Unité (Capitaine)">[CDU] Cursus de Chef d'Unité (Capitaine)</option>
+                                <option value="[DEM] Diplôme d'État-Major (Commandant)">[DEM] Diplôme d'État-Major (Commandant)</option>
+                            </optgroup>
+                            <optgroup label="🪂 Brevets & Qualifications">
+                                <option value="🪂 Brevet Parachutiste">🪂 Brevet Parachutiste</option>
+                                <option value="🥊 Qualification CQB">🥊 Qualification CQB</option>
+                            </optgroup>
+                            <optgroup label="🚘 Permis & Conduite Véhicules">
+                                <option value="🚘 Pilote Blindés (VBCI/VAB/VBMR/GBC)">🚘 Pilote Blindés (VBCI/VAB/VBMR/GBC)</option>
+                                <option value="🎯 Opérateur Tourelle">🎯 Opérateur Tourelle</option>
+                                <option value="🔧 Qualification Mécanicien">🔧 Qualification Mécanicien</option>
+                                <option value="🪪 Permis B">🪪 Permis B</option>
+                                <option value="🚛 Permis C">🚛 Permis C</option>
+                                <option value="🚌 Permis D">🚌 Permis D</option>
+                                <option value="🚚 Permis SPL (Conducteur SPL)">🚚 Permis SPL (Conducteur SPL)</option>
+                                <option value="⚓ Permis Bateau Commando">⚓ Permis Bateau Commando</option>
+                            </optgroup>
+                            <optgroup label="🎯 Spécialités de Combat">
+                                <option value="🎯 Qualification Tireur d'Élite (TE)">🎯 Qualification Tireur d'Élite (TE)</option>
+                                <option value="🔫 Qualification Tireur de Précision (TP)">🔫 Qualification Tireur de Précision (TP)</option>
+                                <option value="🔭 Qualification Spotteur">🔭 Qualification Spotteur</option>
+                                <option value="🩺 Qualification Médecin / Sanitaire">🩺 Qualification Médecin / Sanitaire</option>
+                                <option value="📻 Qualification Transmetteur Radio">📻 Qualification Transmetteur Radio</option>
+                                <option value="🛸 Qualification Opérateur Drone">🛸 Qualification Opérateur Drone</option>
+                                <option value="💥 Qualification Démineur / EOD">💥 Qualification Démineur / EOD</option>
+                            </optgroup>
+                        </select>
                     </div>
 
                     <div>
                         <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Notes & Observations du Commandement</label>
-                        <textarea id="soldatNotes" class="textarea-field" rows="2" placeholder="Citations, remarques de discipline, historique d'incorporation..."></textarea>
+                        <textarea id="soldatNotes" class="textarea-field" rows="2" placeholder="Citations, remarques de discipline..."></textarea>
                     </div>
 
-                    <!-- Fichiers joints spécifiques au soldat -->
                     <div style="border: 1px dashed var(--border-color); border-radius: 8px; padding: 12px; background: var(--bg-main);">
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">📎 Joindre des Fichiers au Dossier du Soldat (Photo, Rapport, Sanction, Certificat)</label>
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">📎 Joindre des Fichiers Personnels au Dossier du Soldat (Photo d'identité, Rapport, Certificat)</label>
                         <input type="file" id="soldatFileInput" class="input-field" multiple>
-                        <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Ces documents seront consultables directement dans sa fiche individuelle.</div>
                     </div>
 
                     <div style="display: flex; gap: 8px; justify-content: flex-end;">
                         <button type="button" onclick="annulerFormSoldat()" class="btn-retour">Annuler / Effacer</button>
-                        <button type="submit" class="btn-blue">💾 Enregistrer le Dossier du Soldat</button>
+                        <button type="submit" class="btn-blue">💾 Enregistrer la Fiche du Soldat</button>
                     </div>
                 </form>
             </div>
 
-            <!-- Liste / Registre des Fiches Individuelles -->
+            <!-- Liste des Fiches Soldats -->
             <div class="card space-y-4">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main);">📑 Registre des Fiches Individuelles des Soldats</h3>
@@ -388,13 +398,13 @@
         </div>
 
         <!-- 3. ONGLET DOCUMENTS & FICHIERS (MÉDIATHÈQUE GLOBALE) -->
-        <div id="content-document" class="tab-pane hidden">
+        <div id="content-document" class="tab-pane hidden space-y-6">
 
             <div class="grid-2-split">
                 <!-- Formulaire d'Importation -->
-                <div class="card">
-                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                        <span style="color: var(--accent-color);">📤</span> Médiathèque Globale ENA (Ordres, Photos, Vidéos)
+                <div class="card space-y-4">
+                    <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <span style="color: var(--accent-color);">📤</span> Médiathèque Globale ENA (Ordres de mission, Vidéos, Photos)
                     </h3>
                     
                     <form id="fileImportForm" onsubmit="handleAddFile(event)" style="display: flex; flex-direction: column; gap: 10px;">
@@ -415,7 +425,7 @@
                             </div>
                         </div>
 
-                        <div id="dropZone" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 18px 10px; text-align: center; background: var(--bg-main); cursor: pointer; transition: border-color 0.2s;" onclick="document.getElementById('fileInput').click()">
+                        <div id="dropZone" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 18px 10px; text-align: center; background: var(--bg-main); cursor: pointer;" onclick="document.getElementById('fileInput').click()">
                             <div style="font-size: 24px; margin-bottom: 4px;">📂</div>
                             <div style="font-weight: 700; color: var(--text-main); font-size: 12px;">Glissez des fichiers ou cliquez ici</div>
                             <div style="font-size: 10px; color: var(--text-muted);">PDF, Images, Vidéos, Documents</div>
@@ -427,8 +437,8 @@
                     </form>
                 </div>
 
-                <!-- Statistiques et Filtres -->
-                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
+                <!-- Statistiques -->
+                <div class="card space-y-4" style="display: flex; flex-direction: column; justify-content: space-between;">
                     <div>
                         <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 12px;">📊 Statistiques du Stockage Tactique</h3>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -445,18 +455,14 @@
 
                     <div>
                         <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px; font-weight: 700;">Dossiers & Catégories :</label>
-                        <div id="fileCategoryFilters" style="display: flex; flex-wrap: wrap; gap: 6px;">
-                            <!-- JS Injection -->
-                        </div>
+                        <div id="fileCategoryFilters" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Grille des Fichiers -->
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+            <div class="card space-y-4">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <h3 style="font-size: 14px; font-weight: 800; color: var(--text-main);">🗂️ Registre Général des Documents</h3>
-                    
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                         <input type="text" id="searchFileName" oninput="renderFileList()" class="input-field" placeholder="🔍 Nom, tag, auteur..." style="width: 200px; padding: 6px 10px;">
                         <select id="sortOrderSelect" onchange="changeFileSorting(this.value)" class="select-field" style="width: 150px; padding: 6px 10px;">
@@ -468,9 +474,7 @@
                     </div>
                 </div>
 
-                <div id="fileList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
-                    <!-- JS Injection -->
-                </div>
+                <div id="fileList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;"></div>
             </div>
 
         </div>
@@ -584,7 +588,7 @@
         </div>
     </div>
 
-    <!-- MODAL CONSULTATION DOSSIER SOLDAT DETAILLE -->
+    <!-- MODAL CONSULTATION DETAIL SOLDAT -->
     <div id="modalSoldatDetail" class="modal-overlay hidden">
         <div class="card" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
@@ -592,9 +596,7 @@
                 <button onclick="toggleModal('modalSoldatDetail')" style="background: none; border: none; color: #f87171; font-size: 16px; cursor: pointer;">✕</button>
             </div>
 
-            <div id="soldatDetailContent" style="display: flex; flex-direction: column; gap: 12px;">
-                <!-- JS Injection -->
-            </div>
+            <div id="soldatDetailContent" style="display: flex; flex-direction: column; gap: 12px;"></div>
 
             <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 10px;">
                 <button onclick="toggleModal('modalSoldatDetail')" class="btn-retour">Fermer</button>
@@ -609,9 +611,7 @@
                 <h3 id="modalFileTitle" style="font-size: 14px; font-weight: 800; color: var(--text-main);">Aperçu du Fichier</h3>
                 <button onclick="toggleModal('modalVisualiserFichier')" style="background: none; border: none; color: #f87171; font-size: 16px; cursor: pointer; font-weight: bold;">✕</button>
             </div>
-            <div id="modalFileViewer" style="flex: 1; overflow: auto; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; min-height: 300px; max-height: 65vh;">
-                <!-- Contenu dynamique -->
-            </div>
+            <div id="modalFileViewer" style="flex: 1; overflow: auto; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; min-height: 300px; max-height: 65vh;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 10px;">
                 <a id="modalFileDownloadBtn" download class="btn-blue" style="text-decoration: none; padding: 6px 14px;">⬇️ Télécharger</a>
                 <button onclick="toggleModal('modalVisualiserFichier')" class="btn-retour">Fermer</button>
@@ -619,8 +619,21 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT GLOBAL -->
+    <!-- SCRIPT JAVASCRIPT GLOBAL -->
     <script>
+        // --- CONFIGURATION FIREBASE REALTIME DB (Optionnelle & Connectée) ---
+        const firebaseConfig = {
+            databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+        
+        let db = null;
+        try {
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+            }
+        } catch(e) { console.warn("Firebase non connecté, passage en mode local synchro window."); }
+
         let instructeurs = [];
         let formations = [];
         let militaryFiles = [];
@@ -628,6 +641,14 @@
 
         let currentCategoryFilter = "ALL";
         let currentSortOrder = "date-desc";
+
+        // Écouteur H24 de synchronisation multi-onglets
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'ena_soldats') { soldats = JSON.parse(event.newValue) || []; renderSoldatsList(); }
+            if (event.key === 'military_files') { militaryFiles = JSON.parse(event.newValue) || []; renderFileList(); updateFileStats(); }
+            if (event.key === 'ena_formations') { formations = JSON.parse(event.newValue) || []; afficherFormations(); }
+            if (event.key === 'ena_instructeurs') { instructeurs = JSON.parse(event.newValue) || []; afficherInstructeurs(); }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             chargerDonnees();
@@ -676,18 +697,17 @@
                         unite: "CPA 10",
                         statut: "Actif / Apte",
                         profilMed: "O+ | VMA 17.2 km/h",
-                        qualifications: "Brevet Parachutiste, CQB, Tireur d'Élite, CDU",
+                        qualifications: ["[CDU] Cursus de Chef d'Unité (Capitaine)", "🪂 Brevet Parachutiste", "🥊 Qualification CQB"],
                         notes: "Chef des Instructeurs ENA. Excellent état de service.",
                         fichiers: []
                     }
                 ];
             } catch(e) {
-                console.error("Erreur de chargement, réinitialisation.", e);
+                console.error("Erreur de chargement.", e);
                 localStorage.clear();
             }
         }
 
-        /* --- NAVIGATION --- */
         function changerOnglet(nomOnglet, boutonElement) {
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
             const target = document.getElementById(`content-${nomOnglet}`);
@@ -697,11 +717,15 @@
             if (boutonElement) boutonElement.classList.add('active');
         }
 
-        /* --- GESTION DOSSIER MILITAIRE (SOLDATS) --- */
+        /* --- DOSSIER MILITAIRE (SOLDATS) --- */
         function sauvegarderSoldat(event) {
             event.preventDefault();
             const editId = document.getElementById('soldatEditId').value;
             const fileInput = document.getElementById('soldatFileInput');
+
+            // Récupération des options sélectionnées dans le select multiple
+            const selectQualifs = document.getElementById('soldatQualificationsSelect');
+            const qualifsSelectionnees = Array.from(selectQualifs.selectedOptions).map(opt => opt.value);
 
             const dossierSoldat = {
                 id: editId || 'S-' + Date.now().toString().slice(-4),
@@ -711,7 +735,7 @@
                 unite: document.getElementById('soldatUnite').value,
                 statut: document.getElementById('soldatStatut').value,
                 profilMed: document.getElementById('soldatProfilMed').value,
-                qualifications: document.getElementById('soldatQualifications').value,
+                qualifications: qualifsSelectionnees,
                 notes: document.getElementById('soldatNotes').value,
                 fichiers: editId ? (soldats.find(s => s.id === editId)?.fichiers || []) : []
             };
@@ -744,6 +768,8 @@
                 }
 
                 localStorage.setItem('ena_soldats', JSON.stringify(soldats));
+                if (db) db.ref('ena_soldats/' + dossierSoldat.id).set(dossierSoldat);
+
                 renderSoldatsList();
                 annulerFormSoldat();
             });
@@ -773,7 +799,9 @@
                 return;
             }
 
-            container.innerHTML = filtered.map(s => `
+            container.innerHTML = filtered.map(s => {
+                const qualifsTxt = Array.isArray(s.qualifications) ? s.qualifications.join(', ') : (s.qualifications || 'Aucune');
+                return `
                 <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
@@ -787,8 +815,8 @@
                         <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
                             <div><strong>Statut :</strong> ${s.statut}</div>
                             <div><strong>Profil / VMA :</strong> ${s.profilMed || 'N/A'}</div>
-                            <div><strong>Qualifications :</strong> ${s.qualifications || 'Aucune'}</div>
-                            <div><strong>Fichiers joints :</strong> <span style="color: var(--accent-color); font-weight:700;">${s.fichiers ? s.fichiers.length : 0} document(s)</span></div>
+                            <div><strong>Qualifications :</strong> <span style="color: var(--text-main); font-size:10.5px;">${qualifsTxt}</span></div>
+                            <div><strong>Documents joints :</strong> <span style="color: var(--accent-color); font-weight:700;">${s.fichiers ? s.fichiers.length : 0} fichier(s)</span></div>
                         </div>
                     </div>
 
@@ -799,8 +827,8 @@
                             <button onclick="supprimerSoldat('${s.id}')" class="btn-act btn-del">🗑️</button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function voirDetailSoldat(id) {
@@ -817,6 +845,8 @@
                     </div>
                 `).join('') : '<div style="font-size:11px; color:var(--text-muted);">Aucun fichier joint à ce dossier.</div>';
 
+            const qualifsTxt = Array.isArray(s.qualifications) ? s.qualifications.join('<br>• ') : (s.qualifications || 'Aucune qualification enregistrée.');
+
             document.getElementById('soldatDetailContent').innerHTML = `
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; background:var(--bg-main); padding:10px; border-radius:8px;">
                     <div><strong>Nom Complet :</strong> ${s.nom}</div>
@@ -827,8 +857,10 @@
                     <div><strong>Profil Médical :</strong> ${s.profilMed || 'Non renseigné'}</div>
                 </div>
                 <div>
-                    <strong style="color:var(--text-muted); font-size:11px;">Qualifications & Permis :</strong>
-                    <div style="background:var(--bg-main); padding:8px; border-radius:6px; font-size:12px; margin-top:4px;">${s.qualifications || 'Aucune qualification enregistrée.'}</div>
+                    <strong style="color:var(--text-muted); font-size:11px;">Qualifications & Brevets Officiels :</strong>
+                    <div style="background:var(--bg-main); padding:8px; border-radius:6px; font-size:12px; margin-top:4px;">
+                        • ${qualifsTxt}
+                    </div>
                 </div>
                 <div>
                     <strong style="color:var(--text-muted); font-size:11px;">Notes du Commandement :</strong>
@@ -854,8 +886,15 @@
             document.getElementById('soldatUnite').value = s.unite;
             document.getElementById('soldatStatut').value = s.statut;
             document.getElementById('soldatProfilMed').value = s.profilMed || '';
-            document.getElementById('soldatQualifications').value = s.qualifications || '';
             document.getElementById('soldatNotes').value = s.notes || '';
+
+            // Sélection des options dans le select multiple
+            const selectQualifs = document.getElementById('soldatQualificationsSelect');
+            if (selectQualifs && Array.isArray(s.qualifications)) {
+                Array.from(selectQualifs.options).forEach(opt => {
+                    opt.selected = s.qualifications.includes(opt.value);
+                });
+            }
 
             changerOnglet('dossier');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -864,6 +903,7 @@
         function supprimerSoldat(id) {
             soldats = soldats.filter(s => s.id !== id);
             localStorage.setItem('ena_soldats', JSON.stringify(soldats));
+            if (db) db.ref('ena_soldats/' + id).remove();
             renderSoldatsList();
         }
 
@@ -1107,7 +1147,7 @@
             if (filtered.length === 0) {
                 container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-muted); background: var(--bg-main); border-radius: 8px;">
                     <div style="font-size: 30px; margin-bottom: 6px;">📂</div>
-                    <p style="font-size: 12px; font-weight: 700;">Aucun fichier trouvé.</p>
+                    <p style="font-size: 12px; font-weight: 700;">Aucun fichier trouvé dans ce dossier.</p>
                 </div>`;
                 return;
             }
@@ -1240,12 +1280,10 @@
         function saveFilesToStorage() {
             try {
                 localStorage.setItem('military_files', JSON.stringify(militaryFiles));
-            } catch(e) {
-                console.warn("Stockage local saturé.");
-            }
+            } catch(e) { console.warn("Stockage local saturé."); }
         }
 
-        /* --- PARAMÈTRES & UTILITAIRES --- */
+        /* --- UTILS --- */
         function toggleModal(id) {
             const el = document.getElementById(id);
             if (el) el.classList.toggle('hidden');
