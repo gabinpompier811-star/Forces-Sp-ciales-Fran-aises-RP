@@ -41,7 +41,6 @@
             background: #1e1b2e;
             transform: translateY(-2px);
         }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #060911; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
@@ -59,7 +58,7 @@
                 <h1 class="text-xl font-black text-rose-500 tracking-wide flex items-center gap-2.5">
                     <i class="fa-solid fa-heart-pulse animate-pulse text-rose-400"></i> Service Médical &amp; Santé
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Gestion tactique des dossiers et bilans chronologiques</p>
+                <p class="text-xs text-slate-400 font-medium">Centre opérationnel de gestion des actes et bilans de secours</p>
             </div>
         </div>
 
@@ -120,7 +119,7 @@
         <!-- Rendu dynamique -->
     </main>
 
-    <!-- MODAL PAS-À-PAS ET CONSULTATION -->
+    <!-- MODAL PRINCIPALE -->
     <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl p-6 md:p-8 shadow-2xl relative space-y-6 my-8">
             
@@ -133,9 +132,9 @@
                 </button>
             </div>
 
-            <!-- ÉTAPE 1 : CHOIX DES 3 BILANS -->
+            <!-- ÉTAPE 1 : SELECTION DU DOSSIER -->
             <div id="step-1" class="space-y-3">
-                <p class="text-xs text-slate-400 font-medium">Sélectionnez le type d'intervention médicale à consigner :</p>
+                <p class="text-xs text-slate-400 font-medium">Sélectionnez le type d'intervention médicale :</p>
                 <div class="grid grid-cols-1 gap-3">
                     <button onclick="selectType('Bilan d\'urgence')" class="action-type-btn p-4 rounded-2xl flex items-center gap-4 text-left cursor-pointer">
                         <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl text-xl"><i class="fa-solid fa-kit-medical"></i></div>
@@ -149,7 +148,7 @@
                         <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl text-xl"><i class="fa-solid fa-notes-medical"></i></div>
                         <div>
                             <span class="font-bold text-xs text-white block">Bilan complet</span>
-                            <span class="text-[10px] text-slate-400">XABCDE, Circonstanciel, Primaire, Secondaire &amp; Surveillance cumulée</span>
+                            <span class="text-[10px] text-slate-400">Saisie dynamique : Circonstanciel, Primaire XABCDE, Secondaire &amp; Surveillance</span>
                         </div>
                     </button>
 
@@ -157,18 +156,16 @@
                         <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-xl"><i class="fa-solid fa-plane-departure"></i></div>
                         <div>
                             <span class="font-bold text-xs text-white block">Visite Médicale d'Aptitude</span>
-                            <span class="text-[10px] text-slate-400">Aptitude TAP, VMA &amp; certificats</span>
+                            <span class="text-[10px] text-slate-400">Aptitude TAP, VMA, examens physiques &amp; certificats</span>
                         </div>
                     </button>
                 </div>
             </div>
 
-            <!-- MODE CONSULTATION (READ ONLY) -->
-            <div id="view-mode-container" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                <!-- Rendu dynamiquement lors du clic sur une carte -->
-            </div>
+            <!-- LECTURE SEULE -->
+            <div id="view-mode-container" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2"></div>
 
-            <!-- ÉTAPE 2 : FORMULAIRE D'ÉDITION ET CUMUL -->
+            <!-- ÉTAPE 2 : FORMULAIRE DYNAMIQUE D'ÉDITION ET D'AJOUT -->
             <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                 <input type="hidden" id="recordKey">
                 <input type="hidden" id="selectedType">
@@ -178,7 +175,7 @@
                     <button type="button" onclick="backToStep1()" id="changeTypeBtn" class="text-[11px] text-slate-400 hover:text-white underline cursor-pointer">Changer de type</button>
                 </div>
 
-                <!-- 1. Identité -->
+                <!-- 1. Identité globale -->
                 <div class="space-y-2">
                     <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité de l'Opérateur</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -193,7 +190,7 @@
                     </div>
                 </div>
 
-                <!-- 2. Statut -->
+                <!-- 2. Biologie & Aptitude -->
                 <div class="space-y-2 pt-2 border-t border-slate-800">
                     <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-droplet mr-1"></i> Biologie & Aptitude</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -216,7 +213,7 @@
                     </div>
                 </div>
 
-                <!-- CHAMPS DYNAMIQUES ET CUMULATIFS -->
+                <!-- ZONE DYNAMIQUE (CONTENU ADAPTÉ EN TEMPS RÉEL) -->
                 <div id="dynamic-form-fields" class="space-y-4"></div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800 sticky bottom-0 bg-slate-900 pb-2">
@@ -241,7 +238,7 @@
         const db = firebase.database();
 
         let rawMedicalData = {};
-        let currentLogs = []; // Stockage temporaire des entrées de bilan cumulées
+        let currentLogs = [];
 
         db.ref('medical').on('value', snapshot => {
             rawMedicalData = snapshot.val() || {};
@@ -330,7 +327,7 @@
 
                             ${logsCount > 0 ? `
                                 <div class="text-[11px] bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-slate-300">
-                                    <span><i class="fa-solid fa-clock-rotate-left text-blue-400 mr-1.5"></i> Évolutions enregistrées :</span>
+                                    <span><i class="fa-solid fa-clock-rotate-left text-blue-400 mr-1.5"></i> Relevés & Saisies accumulés :</span>
                                     <strong class="text-white bg-blue-500/20 px-2 py-0.5 rounded-lg border border-blue-500/30">${logsCount}</strong>
                                 </div>
                             ` : ''}
@@ -355,58 +352,69 @@
             }).join('');
         }
 
-        // --- CONSULTATION EN LECTURE SEULE ---
+        // MODE CONSULTATION DE FICHE (LECTURE SEULE)
         function viewRecord(key) {
             const data = rawMedicalData[key];
             if (!data) return;
 
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-file-medical-tone text-lg text-emerald-400"></i> Dossier de : ${escapeHtml(data.name)}`;
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-file-medical-tone text-lg text-emerald-400"></i> Dossier : ${escapeHtml(data.name)}`;
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.add('hidden');
             
             const container = document.getElementById('view-mode-container');
             container.classList.remove('hidden');
 
-            const logsHtml = (data.logs || []).map((log, index) => `
-                <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <span class="text-xs font-bold text-rose-400"><i class="fa-solid fa-clock text-rose-500 mr-1"></i> ${escapeHtml(log.time)} — ${escapeHtml(log.subType || 'Saisie')}</span>
-                        <span class="text-[10px] text-slate-500">Bilan #${index + 1}</span>
+            const logsHtml = (data.logs || []).map((log, index) => {
+                let badgeColor = 'text-blue-400 border-blue-500/30 bg-blue-500/10';
+                if (log.subType === 'Circonstanciel') badgeColor = 'text-amber-400 border-amber-500/30 bg-amber-500/10';
+                if (log.subType === 'Primaire (XABCDE)') badgeColor = 'text-rose-400 border-rose-500/30 bg-rose-500/10';
+                if (log.subType === 'Secondaire') badgeColor = 'text-purple-400 border-purple-500/30 bg-purple-500/10';
+
+                return `
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2.5">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold ${badgeColor} px-2.5 py-1 rounded-lg border">
+                                <i class="fa-solid fa-clock text-xs mr-1"></i> ${escapeHtml(log.time)} — ${escapeHtml(log.subType)}
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-mono">Entrée #${index + 1}</span>
+                        </div>
+
+                        ${log.fields ? `
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                                ${Object.keys(log.fields).map(k => `
+                                    <div><span class="text-[10px] text-slate-500 font-bold uppercase block">${k}:</span> <strong class="text-white font-mono">${escapeHtml(log.fields[k])}</strong></div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${log.details ? `<p class="text-xs text-slate-300 italic bg-slate-900 p-2.5 rounded-xl border border-slate-800/80 font-sans">"${escapeHtml(log.details)}"</p>` : ''}
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono bg-slate-900/50 p-2 rounded-xl">
-                        <div>TA: <strong class="text-white">${escapeHtml(log.ta || 'N/A')}</strong></div>
-                        <div>FC: <strong class="text-white">${escapeHtml(log.fc || 'N/A')}</strong></div>
-                        <div>SpO2: <strong class="text-white">${escapeHtml(log.spo2 || 'N/A')}</strong></div>
-                        <div>Glasgow: <strong class="text-white">${escapeHtml(log.glasgow || 'N/A')}</strong></div>
-                    </div>
-                    ${log.details ? `<p class="text-xs text-slate-300 italic bg-slate-900 p-2 rounded-lg border border-slate-800/80 font-sans">"${escapeHtml(log.details)}"</p>` : ''}
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             container.innerHTML = `
                 <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
                     <div class="flex justify-between text-xs">
-                        <span class="text-slate-400">Matricule: <strong class="text-blue-400">${escapeHtml(data.mat)}</strong></span>
-                        <span class="text-slate-400">Sang: <strong class="text-rose-400">${escapeHtml(data.sang)}</strong></span>
+                        <span class="text-slate-400">Matricule: <strong class="text-blue-400 font-mono">${escapeHtml(data.mat)}</strong></span>
+                        <span class="text-slate-400">Groupe Sanguin: <strong class="text-rose-400">${escapeHtml(data.sang)}</strong></span>
                         <span class="text-slate-400">TAP: <strong class="${data.tap ? 'text-emerald-400' : 'text-rose-400'}">${data.tap ? 'Apte' : 'Inapte'}</strong></span>
                     </div>
                 </div>
 
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex justify-between items-center">
-                        <span><i class="fa-solid fa-timeline text-blue-400 mr-1.5"></i> Historique des Bilans Accumulés</span>
-                        <button onclick="editMedical('${key}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-colors">
-                            <i class="fa-solid fa-pen mr-1"></i> Modifier / Ajouter un Bilan
+                        <span><i class="fa-solid fa-timeline text-blue-400 mr-1.5"></i> Chronologie des Relevés Accumulés</span>
+                        <button onclick="editMedical('${key}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors">
+                            <i class="fa-solid fa-pen mr-1"></i> Modifier / Ajouter des entrées
                         </button>
                     </h4>
-                    ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucun sous-bilan chronologique n\'a été ajouté pour le moment.</p>'}
+                    ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucune donnée accumulée.</p>'}
                 </div>
             `;
 
             document.getElementById('medicalModal').classList.remove('hidden');
         }
 
-        // --- EDITION & CUMUL ---
         function openWizard() {
             currentLogs = [];
             document.getElementById('recordKey').value = '';
@@ -421,58 +429,55 @@
         function selectType(typeName) {
             document.getElementById('selectedType').value = typeName;
             document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-notes-medical text-blue-400"></i> Bilan : ${typeName}`;
-            buildDynamicFields(typeName);
+            buildDynamicForm();
 
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
         }
 
-        function buildDynamicFields(typeName) {
+        // CHARGEMENT EN TEMPS RÉEL DU FORMULAIRE SELON LA SELECTION DE LA LISTE DÉROULANTE
+        function buildDynamicForm() {
             const container = document.getElementById('dynamic-form-fields');
-            
+            const mainType = document.getElementById('selectedType').value;
+
             container.innerHTML = `
-                <!-- MODULE D'AJOUT ET DE CUMUL D'ÉVOLUTION -->
                 <div class="space-y-3 pt-3 border-t border-slate-800">
                     <div class="flex justify-between items-center">
-                        <h4 class="text-[11px] font-bold uppercase text-blue-400 tracking-wider"><i class="fa-solid fa-plus-circle mr-1"></i> Ajouter une saisie de Bilan</h4>
+                        <h4 class="text-[11px] font-bold uppercase text-blue-400 tracking-wider"><i class="fa-solid fa-plus-circle mr-1"></i> Saisie du Bilan</h4>
                         <span class="text-[10px] text-slate-500">Heure automatique</span>
                     </div>
 
-                    <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Catégorie de la Saisie</label>
-                                <select id="logSubtype" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                                    <option value="Circonstanciel">Bilan Circonstanciel</option>
-                                    <option value="Primaire (XABCDE)">Bilan Primaire (XABCDE)</option>
-                                    <option value="Secondaire">Bilan Secondaire</option>
-                                    <option value="Surveillance régulière">Surveillance régulière</option>
+                                <label class="block text-[10px] text-slate-400 mb-1 font-bold">Sélectionner la sous-catégorie *</label>
+                                <select id="logSubtype" onchange="renderSubtypeFields()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white font-bold focus:outline-none focus:border-blue-500">
+                                    <option value="Circonstanciel">Circonstanciel</option>
+                                    <option value="Primaire (XABCDE)" selected>Primaire (XABCDE)</option>
+                                    <option value="Secondaire">Secondaire</option>
+                                    <option value="Surveillance">Surveillance</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-[10px] text-slate-400 mb-1">Heure du Relevé</label>
-                                <input type="text" id="logTime" value="${new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono">
+                                <input type="text" id="logTime" value="${new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                            <div><label class="block text-[10px] text-slate-400 mb-0.5">Tension (TA)</label><input type="text" id="logTa" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
-                            <div><label class="block text-[10px] text-slate-400 mb-0.5">Pouls (FC)</label><input type="text" id="logFc" placeholder="75 bpm" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
-                            <div><label class="block text-[10px] text-slate-400 mb-0.5">SpO2</label><input type="text" id="logSpo2" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
-                            <div><label class="block text-[10px] text-slate-400 mb-0.5">Glasgow</label><input type="text" id="logGlasgow" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
-                        </div>
+                        <!-- CONTENEUR DES CHAMPS SPÉCIFIQUES -->
+                        <div id="subtype-fields-container" class="space-y-3 pt-2"></div>
 
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Constatations / Gestes / Remarques</label>
-                            <textarea id="logDetails" rows="2" placeholder="Saisissez les observations pour ce moment précis..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white resize-none"></textarea>
+                            <label class="block text-[10px] text-slate-400 mb-1">Observations, Diagnostics &amp; Actes Posés</label>
+                            <textarea id="logDetails" rows="2" placeholder="Notez les constatations médicales ou remarques spécifiques..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
                         </div>
 
-                        <button type="button" onclick="addLogEntry()" class="w-full py-2 bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/50 text-blue-300 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-circle-plus"></i> Insérer cette entrée dans l'historique
+                        <button type="button" onclick="addLogEntry()" class="w-full py-2.5 bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/50 text-blue-300 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-plus"></i> Consigner et ajouter cette entrée au dossier
                         </button>
                     </div>
 
-                    <!-- LISTE CUMULÉE DANS L'ÉDITEUR -->
+                    <!-- RELEVÉS ACCUMULÉS DANS L'ÉDITEUR -->
                     <div class="space-y-2">
                         <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Entrées Accumulées (${currentLogs.length})</h5>
                         <div id="logs-editor-list" class="space-y-2">
@@ -481,27 +486,157 @@
                     </div>
                 </div>
             `;
+
+            renderSubtypeFields();
+        }
+
+        // RENDU DYNAMIQUE SELON LE SOUS-TYPE CHOISI DANS LA LISTE
+        function renderSubtypeFields() {
+            const container = document.getElementById('subtype-fields-container');
+            const subType = document.getElementById('logSubtype').value;
+
+            if (subType === 'Circonstanciel') {
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Type de lieu</label>
+                            <select id="fieldLieu" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                                <option value="Voie Publique (VP)">Voie Publique (VP)</option>
+                                <option value="Domicile">Domicile</option>
+                                <option value="Travail">Lieu de Travail</option>
+                                <option value="Autre">Autre lieu</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Cause / Mécanisme</label>
+                            <select id="fieldCause" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                                <option value="Chute / Trauma">Chute / Trauma</option>
+                                <option value="AVP (Accident de la Voie Publique)">AVP</option>
+                                <option value="Arme blanche / Feu">Arme blanche / Feu</option>
+                                <option value="Malaise / Maladie">Malaise / Maladie</option>
+                                <option value="Intoxication / Drogue">Intoxication / Drogue</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Cinétique / Vitesse</label>
+                            <input type="text" id="fieldCinetique" placeholder="ex: Forte cinétique, chute 3m" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Protection / Sécurité</label>
+                            <input type="text" id="fieldProtection" placeholder="ex: Casque / Ceinture / Airbag" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                    </div>
+                `;
+            } else if (subType === 'Primaire (XABCDE)') {
+                container.innerHTML = `
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+                        <div>
+                            <label class="block text-[10px] text-rose-400 font-bold mb-0.5">X - Hémorragie</label>
+                            <input type="text" id="fieldX" placeholder="Absence / Garrot posé..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-blue-400 font-bold mb-0.5">A - Voies Aériennes</label>
+                            <input type="text" id="fieldA" placeholder="Libres / Encombrées..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-cyan-400 font-bold mb-0.5">B - SpO2 &amp; FR</label>
+                            <input type="text" id="fieldB" placeholder="98% SpO2, 16/min" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-amber-400 font-bold mb-0.5">C - Pouls &amp; TA</label>
+                            <input type="text" id="fieldC" placeholder="120/80, TRC < 2s" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-purple-400 font-bold mb-0.5">D - Neurologie</label>
+                            <input type="text" id="fieldD" placeholder="Glasgow 15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-emerald-400 font-bold mb-0.5">E - Exposition</label>
+                            <input type="text" id="fieldE" placeholder="Hypothermie / Plaie..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                    </div>
+                `;
+            } else if (subType === 'Secondaire') {
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Allergies Connues</label>
+                            <input type="text" id="fieldAllergies" placeholder="ex: Aucune / Pénicilline" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Traitements en cours</label>
+                            <input type="text" id="fieldTraitements" placeholder="ex: Anticoagulants..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Dernier Repas (Heure)</label>
+                            <input type="text" id="fieldDernierRepas" placeholder="ex: 12h30" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Échelle Douleur (EVA)</label>
+                            <input type="text" id="fieldEva" placeholder="ex: 4 / 10" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                    </div>
+                `;
+            } else if (subType === 'Surveillance') {
+                container.innerHTML = `
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">Tension (TA)</label><input type="text" id="fieldTa" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">Pouls (FC)</label><input type="text" id="fieldFc" placeholder="75 bpm" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">SpO2 (%)</label><input type="text" id="fieldSpo2" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">Fréc. Resp. (FR)</label><input type="text" id="fieldFr" placeholder="16/min" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">Glasgow</label><input type="text" id="fieldGlasgow" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">Glycémie</label><input type="text" id="fieldGlycemie" placeholder="0.95 g/L" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div class="col-span-2"><label class="block text-[10px] text-slate-400 mb-0.5">Douleur (EVA)</label><input type="text" id="fieldEva" placeholder="0 à 10 (ex: 3/10)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                    </div>
+                `;
+            }
         }
 
         function addLogEntry() {
             const subType = document.getElementById('logSubtype').value;
             const time = document.getElementById('logTime').value.trim() || new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-            const ta = document.getElementById('logTa').value.trim();
-            const fc = document.getElementById('logFc').value.trim();
-            const spo2 = document.getElementById('logSpo2').value.trim();
-            const glasgow = document.getElementById('logGlasgow').value.trim();
             const details = document.getElementById('logDetails').value.trim();
 
-            currentLogs.push({ subType, time, ta, fc, spo2, glasgow, details });
+            let fields = {};
 
-            // Vider les champs temporaires
-            document.getElementById('logTa').value = '';
-            document.getElementById('logFc').value = '';
-            document.getElementById('logSpo2').value = '';
-            document.getElementById('logGlasgow').value = '';
+            if (subType === 'Circonstanciel') {
+                fields = {
+                    Lieu: document.getElementById('fieldLieu').value,
+                    Cause: document.getElementById('fieldCause').value,
+                    Cinétique: document.getElementById('fieldCinetique').value.trim(),
+                    Protection: document.getElementById('fieldProtection').value.trim()
+                };
+            } else if (subType === 'Primaire (XABCDE)') {
+                fields = {
+                    X: document.getElementById('fieldX').value.trim(),
+                    A: document.getElementById('fieldA').value.trim(),
+                    B: document.getElementById('fieldB').value.trim(),
+                    C: document.getElementById('fieldC').value.trim(),
+                    D: document.getElementById('fieldD').value.trim(),
+                    E: document.getElementById('fieldE').value.trim()
+                };
+            } else if (subType === 'Secondaire') {
+                fields = {
+                    Allergies: document.getElementById('fieldAllergies').value.trim(),
+                    Traitements: document.getElementById('fieldTraitements').value.trim(),
+                    DernierRepas: document.getElementById('fieldDernierRepas').value.trim(),
+                    EVA: document.getElementById('fieldEva').value.trim()
+                };
+            } else if (subType === 'Surveillance') {
+                fields = {
+                    TA: document.getElementById('fieldTa').value.trim(),
+                    FC: document.getElementById('fieldFc').value.trim(),
+                    SpO2: document.getElementById('fieldSpo2').value.trim(),
+                    FR: document.getElementById('fieldFr').value.trim(),
+                    Glasgow: document.getElementById('fieldGlasgow').value.trim(),
+                    Glycémie: document.getElementById('fieldGlycemie').value.trim(),
+                    EVA: document.getElementById('fieldEva').value.trim()
+                };
+            }
+
+            currentLogs.push({ subType, time, fields, details });
+
             document.getElementById('logDetails').value = '';
-
-            // Mettre à jour l'affichage
             document.getElementById('logs-editor-list').innerHTML = renderEditorLogs();
         }
 
@@ -512,16 +647,20 @@
 
         function renderEditorLogs() {
             if (currentLogs.length === 0) {
-                return `<p class="text-[11px] text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl text-center">Aucune entrée accumulée pour le moment.</p>`;
+                return `<p class="text-[11px] text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl text-center">Aucune entrée accumulée.</p>`;
             }
             return currentLogs.map((log, index) => `
-                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-start gap-2 text-xs">
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-start gap-2 text-xs">
                     <div class="space-y-1 flex-1">
                         <div class="flex items-center gap-2">
                             <span class="font-bold text-blue-400 font-mono">[${escapeHtml(log.time)}]</span>
                             <span class="font-semibold text-white">${escapeHtml(log.subType)}</span>
                         </div>
-                        <div class="text-[10px] text-slate-400 font-mono">TA: ${escapeHtml(log.ta || '-')} | FC: ${escapeHtml(log.fc || '-')} | SpO2: ${escapeHtml(log.spo2 || '-')} | Glasgow: ${escapeHtml(log.glasgow || '-')}</div>
+                        ${log.fields ? `
+                            <div class="text-[10px] text-slate-400 font-mono grid grid-cols-2 gap-1 bg-slate-900/50 p-1.5 rounded-lg border border-slate-800">
+                                ${Object.keys(log.fields).map(k => `<div>${k}: ${escapeHtml(log.fields[k] || '-')}</div>`).join('')}
+                            </div>
+                        ` : ''}
                         ${log.details ? `<p class="text-[11px] text-slate-300 italic">"${escapeHtml(log.details)}"</p>` : ''}
                     </div>
                     <button type="button" onclick="removeLogEntry(${index})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
@@ -551,10 +690,9 @@
             document.getElementById('formSang').value = data.sang || 'A+';
             document.getElementById('formTap').value = data.tap ? "true" : "false";
 
-            // Charger les entrées existantes
             currentLogs = data.logs || [];
 
-            buildDynamicFields(data.typeBilan);
+            buildDynamicForm();
 
             document.getElementById('view-mode-container').classList.add('hidden');
             document.getElementById('step-1').classList.add('hidden');
