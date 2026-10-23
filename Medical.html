@@ -59,7 +59,7 @@
                 <h1 class="text-xl font-black text-rose-500 tracking-wide flex items-center gap-2.5">
                     <i class="fa-solid fa-heart-pulse animate-pulse text-rose-400"></i> Service Médical &amp; Santé
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Centre opérationnel de gestion des dossiers et bilans de secours</p>
+                <p class="text-xs text-slate-400 font-medium">Gestion tactique des dossiers et bilans chronologiques</p>
             </div>
         </div>
 
@@ -120,13 +120,13 @@
         <!-- Rendu dynamique -->
     </main>
 
-    <!-- MODAL PAS-À-PAS (WIZARD) -->
+    <!-- MODAL PAS-À-PAS ET CONSULTATION -->
     <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl p-6 md:p-8 shadow-2xl relative space-y-6 my-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl p-6 md:p-8 shadow-2xl relative space-y-6 my-8">
             
             <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                 <h3 id="modalTitle" class="text-base font-bold text-rose-400 flex items-center gap-2.5">
-                    <i class="fa-solid fa-file-medical text-lg"></i> Choisir le type de dossier
+                    <i class="fa-solid fa-file-medical text-lg"></i> Création / Consultation
                 </h3>
                 <button onclick="closeModal()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer">
                     <i class="fa-solid fa-xmark"></i>
@@ -137,12 +137,11 @@
             <div id="step-1" class="space-y-3">
                 <p class="text-xs text-slate-400 font-medium">Sélectionnez le type d'intervention médicale à consigner :</p>
                 <div class="grid grid-cols-1 gap-3">
-                    
                     <button onclick="selectType('Bilan d\'urgence')" class="action-type-btn p-4 rounded-2xl flex items-center gap-4 text-left cursor-pointer">
                         <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl text-xl"><i class="fa-solid fa-kit-medical"></i></div>
                         <div>
                             <span class="font-bold text-xs text-white block">Bilan d'urgence</span>
-                            <span class="text-[10px] text-slate-400">Traumatisme, urgence vitale, détresses &amp; gestes immédiats</span>
+                            <span class="text-[10px] text-slate-400">Traumatisme, urgence vitale &amp; gestes immédiats</span>
                         </div>
                     </button>
 
@@ -150,7 +149,7 @@
                         <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl text-xl"><i class="fa-solid fa-notes-medical"></i></div>
                         <div>
                             <span class="font-bold text-xs text-white block">Bilan complet</span>
-                            <span class="text-[10px] text-slate-400">XABCDE ; circonstenciel ; primaire ; secondaire ; surveillance etc...</span>
+                            <span class="text-[10px] text-slate-400">XABCDE, Circonstanciel, Primaire, Secondaire &amp; Surveillance cumulée</span>
                         </div>
                     </button>
 
@@ -158,27 +157,30 @@
                         <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-xl"><i class="fa-solid fa-plane-departure"></i></div>
                         <div>
                             <span class="font-bold text-xs text-white block">Visite Médicale d'Aptitude</span>
-                            <span class="text-[10px] text-slate-400">Contrôle d'aptitude TAP, physique, visuel &amp; autorisations</span>
+                            <span class="text-[10px] text-slate-400">Aptitude TAP, VMA &amp; certificats</span>
                         </div>
                     </button>
-
                 </div>
             </div>
 
-            <!-- ÉTAPE 2 : FORMULAIRE ADAPTÉ DYNAMIQUEMENT -->
+            <!-- MODE CONSULTATION (READ ONLY) -->
+            <div id="view-mode-container" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                <!-- Rendu dynamiquement lors du clic sur une carte -->
+            </div>
+
+            <!-- ÉTAPE 2 : FORMULAIRE D'ÉDITION ET CUMUL -->
             <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                 <input type="hidden" id="recordKey">
                 <input type="hidden" id="selectedType">
 
-                <!-- Badge rappel du type choisi -->
                 <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 sticky top-0 z-10">
                     <span id="typeBadge" class="text-xs font-bold flex items-center gap-2"></span>
-                    <button type="button" onclick="backToStep1()" class="text-[11px] text-slate-400 hover:text-white underline cursor-pointer">Changer de type</button>
+                    <button type="button" onclick="backToStep1()" id="changeTypeBtn" class="text-[11px] text-slate-400 hover:text-white underline cursor-pointer">Changer de type</button>
                 </div>
 
-                <!-- 1. Identité commune -->
+                <!-- 1. Identité -->
                 <div class="space-y-2">
-                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité de l'Opérateur / Victime</h4>
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité de l'Opérateur</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Nom & Prénom *</label>
@@ -191,9 +193,9 @@
                     </div>
                 </div>
 
-                <!-- 2. Biologie & Aptitude -->
+                <!-- 2. Statut -->
                 <div class="space-y-2 pt-2 border-t border-slate-800">
-                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-droplet mr-1"></i> Biologie & Aptitude TAP</h4>
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-droplet mr-1"></i> Biologie & Aptitude</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Groupe Sanguin *</label>
@@ -214,14 +216,12 @@
                     </div>
                 </div>
 
-                <!-- CONTENEUR DES CHAMPS SPÉCIFIQUES DYNAMIQUES -->
-                <div id="dynamic-form-fields" class="space-y-4">
-                    <!-- Injecté dynamiquement par JavaScript -->
-                </div>
+                <!-- CHAMPS DYNAMIQUES ET CUMULATIFS -->
+                <div id="dynamic-form-fields" class="space-y-4"></div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800 sticky bottom-0 bg-slate-900 pb-2">
                     <button type="button" onclick="closeModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold cursor-pointer">Annuler</button>
-                    <button type="submit" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-950/60 cursor-pointer">Valider &amp; Enregistrer la Fiche</button>
+                    <button type="submit" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-950/60 cursor-pointer">Sauvegarder le dossier</button>
                 </div>
             </form>
 
@@ -230,43 +230,33 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        // Check Session Permissions
         const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
         if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('MEDICAL'))) {
             alert("Accès non autorisé au Service Médical !");
             window.location.href = "index.html";
         }
 
-        // Firebase Initialization
         const firebaseConfig = { databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app" };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         let rawMedicalData = {};
+        let currentLogs = []; // Stockage temporaire des entrées de bilan cumulées
 
-        // Realtime Listener
         db.ref('medical').on('value', snapshot => {
             rawMedicalData = snapshot.val() || {};
             updateDashboardStats();
             renderCards();
         });
 
-        // Safe HTML Sanitization (Anti-XSS)
         function escapeHtml(str) {
             if (!str) return '';
-            return String(str)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        // Dashboard Stats Calculation
         function updateDashboardStats() {
             const keys = Object.keys(rawMedicalData);
             const total = keys.length;
-
             if (total === 0) {
                 document.getElementById('stat-total').innerText = '0';
                 document.getElementById('stat-tap').innerText = '0%';
@@ -274,15 +264,10 @@
                 document.getElementById('stat-inapte').innerText = '0';
                 return;
             }
-
-            let tapCount = 0;
-            let urgencesCount = 0;
-            let inapteCount = 0;
-
+            let tapCount = 0, urgencesCount = 0, inapteCount = 0;
             keys.forEach(k => {
                 const item = rawMedicalData[k];
-                if (item.tap) tapCount++;
-                else inapteCount++;
+                if (item.tap) tapCount++; else inapteCount++;
                 if (item.typeBilan === "Bilan d'urgence") urgencesCount++;
             });
 
@@ -292,7 +277,6 @@
             document.getElementById('stat-inapte').innerText = inapteCount;
         }
 
-        // Render Cards
         function renderCards() {
             const container = document.getElementById('medical-cards-container');
             const search = document.getElementById('searchInput').value.toLowerCase();
@@ -302,32 +286,27 @@
                 const m = rawMedicalData[key];
                 const matchSearch = (m.name || '').toLowerCase().includes(search) || 
                                     (m.mat || '').toLowerCase().includes(search) ||
-                                    (m.typeBilan || '').toLowerCase().includes(search) ||
-                                    (m.sang || '').toLowerCase().includes(search);
-                
+                                    (m.typeBilan || '').toLowerCase().includes(search);
                 const matchType = typeFilter === 'ALL' || (m.typeBilan === typeFilter);
                 return matchSearch && matchType;
             });
 
             if (keys.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
-                        <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-3"></i>
-                        <p class="text-xs text-slate-400 font-medium">Aucun dossier médical enregistré.</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="col-span-1 md:col-span-3 text-center py-16 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
+                    <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-3"></i>
+                    <p class="text-xs text-slate-400">Aucun dossier enregistré.</p>
+                </div>`;
                 return;
             }
 
             container.innerHTML = keys.map(key => {
                 const m = rawMedicalData[key];
                 const isTap = !!m.tap;
-                const isUrgence = m.typeBilan === "Bilan d'urgence";
+                const logsCount = (m.logs || []).length;
 
                 return `
-                    <div class="custom-card p-5 rounded-3xl space-y-4 shadow-xl flex flex-col justify-between ${isUrgence ? 'border-rose-900/50 bg-rose-950/10' : ''}">
-                        <div class="space-y-3">
-                            <!-- Header Card -->
+                    <div class="custom-card p-5 rounded-3xl space-y-4 shadow-xl flex flex-col justify-between">
+                        <div class="space-y-3 cursor-pointer" onclick="viewRecord('${key}')">
                             <div class="flex justify-between items-start border-b border-slate-800/80 pb-3">
                                 <div>
                                     <h3 class="font-black text-white text-sm tracking-wide">${escapeHtml(m.name)}</h3>
@@ -338,54 +317,35 @@
                                 </span>
                             </div>
 
-                            <!-- Metrics -->
                             <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/50 p-3 rounded-2xl border border-slate-800/50">
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Type de Bilan</span>
-                                    <span class="font-bold mt-0.5 truncate ${isUrgence ? 'text-rose-400' : 'text-slate-200'}">${escapeHtml(m.typeBilan || 'Bilan complet')}</span>
+                                <div>
+                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Acte</span>
+                                    <span class="font-bold text-slate-200 block truncate">${escapeHtml(m.typeBilan)}</span>
                                 </div>
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Aptitude TAP</span>
-                                    <span class="${isTap ? 'text-emerald-400' : 'text-rose-400'} font-bold flex items-center gap-1 mt-0.5">
-                                        <i class="fa-solid ${isTap ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> ${isTap ? 'Apte' : 'Inapte'}
-                                    </span>
+                                <div>
+                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Aptitude TAP</span>
+                                    <span class="${isTap ? 'text-emerald-400' : 'text-rose-400'} font-bold block">${isTap ? 'Apte' : 'Inapte'}</span>
                                 </div>
                             </div>
 
-                            <!-- Constantes Vitales -->
-                            ${(m.ta || m.fc || m.spo2 || m.glasgow) ? `
-                                <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/80">
-                                    <div>TA: <strong class="text-white font-mono">${escapeHtml(m.ta || 'N/A')}</strong></div>
-                                    <div>FC: <strong class="text-white font-mono">${escapeHtml(m.fc || 'N/A')}</strong></div>
-                                    <div>SpO2: <strong class="text-white font-mono">${escapeHtml(m.spo2 || 'N/A')}</strong></div>
-                                    <div>Glasgow: <strong class="text-white font-mono">${escapeHtml(m.glasgow || 'N/A')}</strong></div>
-                                </div>
-                            ` : ''}
-
-                            <!-- Détails / Champs spécifiques affichés -->
-                            ${m.detailsType ? `
-                                <div class="text-[11px] text-slate-300 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                                    <strong class="text-rose-400 block mb-1">Précisions de l'acte :</strong>
-                                    <p class="text-slate-300">${escapeHtml(m.detailsType)}</p>
-                                </div>
-                            ` : ''}
-
-                            <!-- Notes -->
-                            ${m.notes ? `
-                                <div class="text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 italic">
-                                    "${escapeHtml(m.notes)}"
+                            ${logsCount > 0 ? `
+                                <div class="text-[11px] bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-slate-300">
+                                    <span><i class="fa-solid fa-clock-rotate-left text-blue-400 mr-1.5"></i> Évolutions enregistrées :</span>
+                                    <strong class="text-white bg-blue-500/20 px-2 py-0.5 rounded-lg border border-blue-500/30">${logsCount}</strong>
                                 </div>
                             ` : ''}
                         </div>
 
-                        <!-- Card Footer -->
                         <div class="pt-3 border-t border-slate-800/80 flex justify-between items-center text-[10px] text-slate-500">
-                            <span>Mise à jour : ${escapeHtml(m.date || 'Récemment')}</span>
+                            <span>MÀJ : ${escapeHtml(m.date || 'Récemment')}</span>
                             <div class="flex items-center gap-1.5">
-                                <button onclick="editMedical('${key}')" title="Modifier" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-blue-400 transition-colors cursor-pointer">
+                                <button onclick="viewRecord('${key}')" title="Consulter" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-emerald-400 transition-colors">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button onclick="editMedical('${key}')" title="Modifier / Enregistrer Bilan" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-blue-400 transition-colors">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button onclick="deleteMedical('${key}')" title="Supprimer" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-rose-400 transition-colors cursor-pointer">
+                                <button onclick="deleteMedical('${key}')" title="Supprimer" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-rose-400 transition-colors">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
@@ -395,184 +355,226 @@
             }).join('');
         }
 
-        // --- GESTION DU WIZARD (PAS À PAS) ---
+        // --- CONSULTATION EN LECTURE SEULE ---
+        function viewRecord(key) {
+            const data = rawMedicalData[key];
+            if (!data) return;
 
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-file-medical-tone text-lg text-emerald-400"></i> Dossier de : ${escapeHtml(data.name)}`;
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            
+            const container = document.getElementById('view-mode-container');
+            container.classList.remove('hidden');
+
+            const logsHtml = (data.logs || []).map((log, index) => `
+                <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <span class="text-xs font-bold text-rose-400"><i class="fa-solid fa-clock text-rose-500 mr-1"></i> ${escapeHtml(log.time)} — ${escapeHtml(log.subType || 'Saisie')}</span>
+                        <span class="text-[10px] text-slate-500">Bilan #${index + 1}</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono bg-slate-900/50 p-2 rounded-xl">
+                        <div>TA: <strong class="text-white">${escapeHtml(log.ta || 'N/A')}</strong></div>
+                        <div>FC: <strong class="text-white">${escapeHtml(log.fc || 'N/A')}</strong></div>
+                        <div>SpO2: <strong class="text-white">${escapeHtml(log.spo2 || 'N/A')}</strong></div>
+                        <div>Glasgow: <strong class="text-white">${escapeHtml(log.glasgow || 'N/A')}</strong></div>
+                    </div>
+                    ${log.details ? `<p class="text-xs text-slate-300 italic bg-slate-900 p-2 rounded-lg border border-slate-800/80 font-sans">"${escapeHtml(log.details)}"</p>` : ''}
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-400">Matricule: <strong class="text-blue-400">${escapeHtml(data.mat)}</strong></span>
+                        <span class="text-slate-400">Sang: <strong class="text-rose-400">${escapeHtml(data.sang)}</strong></span>
+                        <span class="text-slate-400">TAP: <strong class="${data.tap ? 'text-emerald-400' : 'text-rose-400'}">${data.tap ? 'Apte' : 'Inapte'}</strong></span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex justify-between items-center">
+                        <span><i class="fa-solid fa-timeline text-blue-400 mr-1.5"></i> Historique des Bilans Accumulés</span>
+                        <button onclick="editMedical('${key}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-colors">
+                            <i class="fa-solid fa-pen mr-1"></i> Modifier / Ajouter un Bilan
+                        </button>
+                    </h4>
+                    ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucun sous-bilan chronologique n\'a été ajouté pour le moment.</p>'}
+                </div>
+            `;
+
+            document.getElementById('medicalModal').classList.remove('hidden');
+        }
+
+        // --- EDITION & CUMUL ---
         function openWizard() {
+            currentLogs = [];
             document.getElementById('recordKey').value = '';
             document.getElementById('step-1').classList.remove('hidden');
             document.getElementById('step-2').classList.add('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-file-medical text-lg"></i> Choisir le type de dossier`;
+            document.getElementById('view-mode-container').classList.add('hidden');
+            document.getElementById('changeTypeBtn').classList.remove('hidden');
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-file-medical text-lg"></i> Créer un nouveau dossier`;
             document.getElementById('medicalModal').classList.remove('hidden');
         }
 
         function selectType(typeName) {
             document.getElementById('selectedType').value = typeName;
-            
-            let icon = 'fa-kit-medical text-rose-400';
-            if (typeName === 'Bilan complet') icon = 'fa-notes-medical text-blue-400';
-            if (typeName === "Visite Médicale d'Aptitude") icon = 'fa-plane-departure text-emerald-400';
-
-            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid ${icon}"></i> Dossier : ${typeName}`;
-            
+            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-notes-medical text-blue-400"></i> Bilan : ${typeName}`;
             buildDynamicFields(typeName);
 
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> Renseigner : ${typeName}`;
         }
 
-        function buildDynamicFields(typeName, existingData = {}) {
+        function buildDynamicFields(typeName) {
             const container = document.getElementById('dynamic-form-fields');
             
-            if (typeName === "Bilan d'urgence") {
-                container.innerHTML = `
-                    <div class="space-y-2 pt-2 border-t border-slate-800">
-                        <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-kit-medical mr-1"></i> Paramètres d'Urgence &amp; Constantes</h4>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Tension (TA)</label>
-                                <input type="text" id="formTa" value="${existingData.ta || ''}" placeholder="120/80" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Pouls (FC)</label>
-                                <input type="text" id="formFc" value="${existingData.fc || ''}" placeholder="80 bpm" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">SpO2</label>
-                                <input type="text" id="formSpo2" value="${existingData.spo2 || ''}" placeholder="98%" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Glasgow</label>
-                                <input type="text" id="formGlasgow" value="${existingData.glasgow || ''}" placeholder="15/15" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
-                            </div>
-                        </div>
+            container.innerHTML = `
+                <!-- MODULE D'AJOUT ET DE CUMUL D'ÉVOLUTION -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-[11px] font-bold uppercase text-blue-400 tracking-wider"><i class="fa-solid fa-plus-circle mr-1"></i> Ajouter une saisie de Bilan</h4>
+                        <span class="text-[10px] text-slate-500">Heure automatique</span>
                     </div>
-                    <div class="space-y-2 pt-2 border-t border-slate-800">
-                        <label class="block text-[11px] font-bold text-rose-400 uppercase tracking-wider">Gestes d'urgence &amp; Traumatologie</label>
-                        <textarea id="formDetailsType" rows="3" placeholder="Décrivez les blessures, hémorragies, garrots posés, oxygénothérapie..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-500 resize-none">${existingData.detailsType || ''}</textarea>
-                    </div>
-                `;
-            } else if (typeName === "Bilan complet") {
-                container.innerHTML = `
-                    <div class="space-y-2 pt-2 border-t border-slate-800">
-                        <h4 class="text-[11px] font-bold uppercase text-blue-400 tracking-wider"><i class="fa-solid fa-clipboard-list mr-1"></i> Protocole XABCDE &amp; Examens</h4>
+
+                    <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-3">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Sous-type de Bilan</label>
-                                <select id="formSubtype" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
-                                    <option value="XABCDE complet">XABCDE complet</option>
-                                    <option value="Circonstenciel">Circonstenciel</option>
-                                    <option value="Primaire">Primaire</option>
-                                    <option value="Secondaire">Secondaire</option>
-                                    <option value="Surveillance">Surveillance</option>
+                                <label class="block text-[10px] text-slate-400 mb-1">Catégorie de la Saisie</label>
+                                <select id="logSubtype" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                                    <option value="Circonstanciel">Bilan Circonstanciel</option>
+                                    <option value="Primaire (XABCDE)">Bilan Primaire (XABCDE)</option>
+                                    <option value="Secondaire">Bilan Secondaire</option>
+                                    <option value="Surveillance régulière">Surveillance régulière</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Constantes (TA / FC / SpO2)</label>
-                                <input type="text" id="formTa" value="${existingData.ta || ''}" placeholder="TA: 120/80, FC: 72" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                                <label class="block text-[10px] text-slate-400 mb-1">Heure du Relevé</label>
+                                <input type="text" id="logTime" value="${new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono">
                             </div>
                         </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <div><label class="block text-[10px] text-slate-400 mb-0.5">Tension (TA)</label><input type="text" id="logTa" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                            <div><label class="block text-[10px] text-slate-400 mb-0.5">Pouls (FC)</label><input type="text" id="logFc" placeholder="75 bpm" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                            <div><label class="block text-[10px] text-slate-400 mb-0.5">SpO2</label><input type="text" id="logSpo2" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                            <div><label class="block text-[10px] text-slate-400 mb-0.5">Glasgow</label><input type="text" id="logGlasgow" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Constatations / Gestes / Remarques</label>
+                            <textarea id="logDetails" rows="2" placeholder="Saisissez les observations pour ce moment précis..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white resize-none"></textarea>
+                        </div>
+
+                        <button type="button" onclick="addLogEntry()" class="w-full py-2 bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/50 text-blue-300 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-plus"></i> Insérer cette entrée dans l'historique
+                        </button>
                     </div>
-                    <div class="space-y-2 pt-2 border-t border-slate-800">
-                        <label class="block text-[11px] font-bold text-blue-400 uppercase tracking-wider">Détails du protocole &amp; Observations</label>
-                        <textarea id="formDetailsType" rows="3" placeholder="Renseignez les détails de l'examen clinique approfondi, l'anamnèse, les antécédents..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500 resize-none">${existingData.detailsType || ''}</textarea>
-                    </div>
-                `;
-            } else if (typeName === "Visite Médicale d'Aptitude") {
-                container.innerHTML = `
-                    <div class="space-y-2 pt-2 border-t border-slate-800">
-                        <h4 class="text-[11px] font-bold uppercase text-emerald-400 tracking-wider"><i class="fa-solid fa-plane-departure mr-1"></i> Contrôle d'Aptitude TAP &amp; Physique</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">VMA / Capacité Physique</label>
-                                <input type="text" id="formVma" value="${existingData.vma || ''}" placeholder="ex: 16.5 km/h" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Avis d'aptitude final</label>
-                                <select id="formAvisAptitude" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
-                                    <option value="Apte sans réserve">Apte sans réserve</option>
-                                    <option value="Apte avec restrictions">Apte avec restrictions</option>
-                                    <option value="Inapte temporaire">Inapte temporaire</option>
-                                    <option value="Inapte définitif">Inapte définitif</option>
-                                </select>
-                            </div>
+
+                    <!-- LISTE CUMULÉE DANS L'ÉDITEUR -->
+                    <div class="space-y-2">
+                        <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Entrées Accumulées (${currentLogs.length})</h5>
+                        <div id="logs-editor-list" class="space-y-2">
+                            ${renderEditorLogs()}
                         </div>
                     </div>
-                    <div class="space-y-2 pt-2 border-t border-slate-800">
-                        <label class="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Remarques de la Visite</label>
-                        <textarea id="formDetailsType" rows="3" placeholder="Test visuel, auditif, certificat d'aptitude au saut ou remarques spécifiques..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 resize-none">${existingData.detailsType || ''}</textarea>
-                    </div>
-                `;
+                </div>
+            `;
+        }
+
+        function addLogEntry() {
+            const subType = document.getElementById('logSubtype').value;
+            const time = document.getElementById('logTime').value.trim() || new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+            const ta = document.getElementById('logTa').value.trim();
+            const fc = document.getElementById('logFc').value.trim();
+            const spo2 = document.getElementById('logSpo2').value.trim();
+            const glasgow = document.getElementById('logGlasgow').value.trim();
+            const details = document.getElementById('logDetails').value.trim();
+
+            currentLogs.push({ subType, time, ta, fc, spo2, glasgow, details });
+
+            // Vider les champs temporaires
+            document.getElementById('logTa').value = '';
+            document.getElementById('logFc').value = '';
+            document.getElementById('logSpo2').value = '';
+            document.getElementById('logGlasgow').value = '';
+            document.getElementById('logDetails').value = '';
+
+            // Mettre à jour l'affichage
+            document.getElementById('logs-editor-list').innerHTML = renderEditorLogs();
+        }
+
+        function removeLogEntry(index) {
+            currentLogs.splice(index, 1);
+            document.getElementById('logs-editor-list').innerHTML = renderEditorLogs();
+        }
+
+        function renderEditorLogs() {
+            if (currentLogs.length === 0) {
+                return `<p class="text-[11px] text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl text-center">Aucune entrée accumulée pour le moment.</p>`;
             }
+            return currentLogs.map((log, index) => `
+                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-start gap-2 text-xs">
+                    <div class="space-y-1 flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-blue-400 font-mono">[${escapeHtml(log.time)}]</span>
+                            <span class="font-semibold text-white">${escapeHtml(log.subType)}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono">TA: ${escapeHtml(log.ta || '-')} | FC: ${escapeHtml(log.fc || '-')} | SpO2: ${escapeHtml(log.spo2 || '-')} | Glasgow: ${escapeHtml(log.glasgow || '-')}</div>
+                        ${log.details ? `<p class="text-[11px] text-slate-300 italic">"${escapeHtml(log.details)}"</p>` : ''}
+                    </div>
+                    <button type="button" onclick="removeLogEntry(${index})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
         }
 
         function backToStep1() {
             document.getElementById('step-2').classList.add('hidden');
             document.getElementById('step-1').classList.remove('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-file-medical text-lg"></i> Choisir le type de dossier`;
         }
 
         function closeModal() {
             document.getElementById('medicalModal').classList.add('hidden');
-            document.getElementById('step-2').reset();
         }
 
-        // ÉDITION DE FICHE
         function editMedical(key) {
             const data = rawMedicalData[key];
             if (!data) return;
 
             document.getElementById('recordKey').value = key;
-            document.getElementById('selectedType').value = data.typeBilan || "Bilan d'urgence";
-            
-            let icon = 'fa-kit-medical text-rose-400';
-            if (data.typeBilan === 'Bilan complet') icon = 'fa-notes-medical text-blue-400';
-            if (data.typeBilan === "Visite Médicale d'Aptitude") icon = 'fa-plane-departure text-emerald-400';
-
-            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid ${icon}"></i> Modification : ${data.typeBilan}`;
+            document.getElementById('selectedType').value = data.typeBilan || 'Bilan complet';
+            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-pen text-blue-400"></i> Modification : ${escapeHtml(data.typeBilan)}`;
             
             document.getElementById('formName').value = data.name || '';
             document.getElementById('formMat').value = data.mat || '';
             document.getElementById('formSang').value = data.sang || 'A+';
             document.getElementById('formTap').value = data.tap ? "true" : "false";
 
-            buildDynamicFields(data.typeBilan, data);
+            // Charger les entrées existantes
+            currentLogs = data.logs || [];
 
-            setTimeout(() => {
-                if (document.getElementById('formTa')) document.getElementById('formTa').value = data.ta || '';
-                if (document.getElementById('formFc')) document.getElementById('formFc').value = data.fc || '';
-                if (document.getElementById('formSpo2')) document.getElementById('formSpo2').value = data.spo2 || '';
-                if (document.getElementById('formGlasgow')) document.getElementById('formGlasgow').value = data.glasgow || '';
-                if (document.getElementById('formDetailsType')) document.getElementById('formDetailsType').value = data.detailsType || '';
-                if (document.getElementById('formSubtype') && data.subtype) document.getElementById('formSubtype').value = data.subtype;
-                if (document.getElementById('formVma')) document.getElementById('formVma').value = data.vma || '';
-            }, 50);
+            buildDynamicFields(data.typeBilan);
 
+            document.getElementById('view-mode-container').classList.add('hidden');
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> Modifier la fiche`;
+            document.getElementById('changeTypeBtn').classList.add('hidden');
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> Modifier le dossier`;
             document.getElementById('medicalModal').classList.remove('hidden');
         }
 
-        // SOUMISSION FORMULAIRE
         function handleFormSubmit(e) {
             e.preventDefault();
             const key = document.getElementById('recordKey').value;
-            const typeBilan = document.getElementById('selectedType').value;
 
             const payload = {
                 name: document.getElementById('formName').value.trim(),
                 mat: document.getElementById('formMat').value.trim(),
-                typeBilan: typeBilan,
+                typeBilan: document.getElementById('selectedType').value,
                 sang: document.getElementById('formSang').value,
                 tap: document.getElementById('formTap').value === 'true',
-                ta: document.getElementById('formTa') ? document.getElementById('formTa').value.trim() : '',
-                fc: document.getElementById('formFc') ? document.getElementById('formFc').value.trim() : '',
-                spo2: document.getElementById('formSpo2') ? document.getElementById('formSpo2').value.trim() : '',
-                glasgow: document.getElementById('formGlasgow') ? document.getElementById('formGlasgow').value.trim() : '',
-                detailsType: document.getElementById('formDetailsType') ? document.getElementById('formDetailsType').value.trim() : '',
-                subtype: document.getElementById('formSubtype') ? document.getElementById('formSubtype').value : '',
-                vma: document.getElementById('formVma') ? document.getElementById('formVma').value.trim() : '',
+                logs: currentLogs,
                 date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
             };
 
@@ -587,12 +589,9 @@
             }
         }
 
-        // SUPPRESSION
         function deleteMedical(key) {
             const record = rawMedicalData[key];
-            const name = record ? record.name : 'ce dossier';
-            
-            if (confirm(`Voulez-vous vraiment supprimer le dossier médical de ${name} ?`)) {
+            if (confirm(`Supprimer définitivement le dossier médical de ${record ? record.name : 'ce dossier'} ?`)) {
                 db.ref('medical/' + key).remove();
             }
         }
