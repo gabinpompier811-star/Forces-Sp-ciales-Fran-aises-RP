@@ -41,6 +41,10 @@
             background: #1e1b2e;
             transform: translateY(-2px);
         }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #060911; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col p-4 md:p-8 max-w-7xl mx-auto space-y-6">
@@ -55,7 +59,7 @@
                 <h1 class="text-xl font-black text-rose-500 tracking-wide flex items-center gap-2.5">
                     <i class="fa-solid fa-heart-pulse animate-pulse text-rose-400"></i> Service Médical &amp; Santé
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Centre opérationnel de gestion des fiches et bilans médicaux</p>
+                <p class="text-xs text-slate-400 font-medium">Centre opérationnel de gestion des dossiers et bilans de secours</p>
             </div>
         </div>
 
@@ -129,9 +133,9 @@
                 </button>
             </div>
 
-            <!-- ÉTAPE 1 : LES 3 BOUTONS DEMANDÉS -->
+            <!-- ÉTAPE 1 : CHOIX DES 3 BILANS -->
             <div id="step-1" class="space-y-3">
-                <p class="text-xs text-slate-400 font-medium">Sélectionnez le type d'intervention médicale :</p>
+                <p class="text-xs text-slate-400 font-medium">Sélectionnez le type d'intervention médicale à consigner :</p>
                 <div class="grid grid-cols-1 gap-3">
                     
                     <button onclick="selectType('Bilan d\'urgence')" class="action-type-btn p-4 rounded-2xl flex items-center gap-4 text-left cursor-pointer">
@@ -174,7 +178,7 @@
 
                 <!-- 1. Identité commune -->
                 <div class="space-y-2">
-                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité de l'Opérateur</h4>
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité de l'Opérateur / Victime</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Nom & Prénom *</label>
@@ -212,7 +216,7 @@
 
                 <!-- CONTENEUR DES CHAMPS SPÉCIFIQUES DYNAMIQUES -->
                 <div id="dynamic-form-fields" class="space-y-4">
-                    <!-- Injecté par JavaScript selon le bilan sélectionné -->
+                    <!-- Injecté dynamiquement par JavaScript -->
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800 sticky bottom-0 bg-slate-900 pb-2">
@@ -391,7 +395,7 @@
             }).join('');
         }
 
-        // --- GESTION DU WIZARD (PAS À PAS AVEC FORMULAIRES SPÉCIFIQUES) ---
+        // --- GESTION DU WIZARD (PAS À PAS) ---
 
         function openWizard() {
             document.getElementById('recordKey').value = '';
@@ -410,7 +414,6 @@
 
             document.getElementById('typeBadge').innerHTML = `<i class="fa-solid ${icon}"></i> Dossier : ${typeName}`;
             
-            // Génération dynamique des champs selon le type choisi
             buildDynamicFields(typeName);
 
             document.getElementById('step-1').classList.add('hidden');
@@ -428,19 +431,19 @@
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                             <div>
                                 <label class="block text-[10px] text-slate-400 mb-1">Tension (TA)</label>
-                                <input type="text" id="formTa" value="${existingData.ta || ''}" placeholder="120/80" class="w-full bg-slate-955 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                                <input type="text" id="formTa" value="${existingData.ta || ''}" placeholder="120/80" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
                             </div>
                             <div>
                                 <label class="block text-[10px] text-slate-400 mb-1">Pouls (FC)</label>
-                                <input type="text" id="formFc" value="${existingData.fc || ''}" placeholder="80 bpm" class="w-full bg-slate-955 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                                <input type="text" id="formFc" value="${existingData.fc || ''}" placeholder="80 bpm" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
                             </div>
                             <div>
                                 <label class="block text-[10px] text-slate-400 mb-1">SpO2</label>
-                                <input type="text" id="formSpo2" value="${existingData.spo2 || ''}" placeholder="98%" class="w-full bg-slate-955 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                                <input type="text" id="formSpo2" value="${existingData.spo2 || ''}" placeholder="98%" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
                             </div>
                             <div>
                                 <label class="block text-[10px] text-slate-400 mb-1">Glasgow</label>
-                                <input type="text" id="formGlasgow" value="${existingData.glasgow || ''}" placeholder="15/15" class="w-full bg-slate-955 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                                <input type="text" id="formGlasgow" value="${existingData.glasgow || ''}" placeholder="15/15" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
                             </div>
                         </div>
                     </div>
@@ -533,10 +536,8 @@
             document.getElementById('formSang').value = data.sang || 'A+';
             document.getElementById('formTap').value = data.tap ? "true" : "false";
 
-            // Charger les champs dynamiques spécifiques
             buildDynamicFields(data.typeBilan, data);
 
-            // Remplir les champs additionnels si présents
             setTimeout(() => {
                 if (document.getElementById('formTa')) document.getElementById('formTa').value = data.ta || '';
                 if (document.getElementById('formFc')) document.getElementById('formFc').value = data.fc || '';
