@@ -37,18 +37,21 @@
             border-color: #38bdf8 !important;
             box-shadow: 0 4px 20px -5px rgba(56, 189, 248, 0.4);
         }
-        .step-active { border-color: #38bdf8; background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; }
-        .step-completed { border-color: #10b981; background-color: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .step-locked { border-color: #1e293b; background-color: rgba(15, 23, 42, 0.5); color: #475569; cursor: not-allowed; }
-        @keyframes tactical-pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1.02); box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        .step-active {
+            border-color: #38bdf8;
+            background-color: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
         }
-        .tactical-alarm {
-            animation: tactical-pulse 1.5s infinite;
-            border: 2px solid #ef4444;
-            background: linear-gradient(135deg, #450a0a 0%, #1f1010 100%);
+        .step-completed {
+            border-color: #10b981;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        .step-locked {
+            border-color: #1e293b;
+            background-color: rgba(15, 23, 42, 0.5);
+            color: #475569;
+            cursor: not-allowed;
         }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #060911; }
@@ -56,25 +59,6 @@
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col p-4 md:p-8 max-w-7xl mx-auto space-y-6">
-
-    <!-- POP-UP ALERTE MEDEVAC (BIP GLOBAL EN TEMPS RÉEL) -->
-    <div id="medevacAlertModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
-        <div class="tactical-alarm rounded-3xl w-full max-w-lg p-6 md:p-8 shadow-2xl relative space-y-5 text-center">
-            <div class="inline-flex p-4 bg-rose-500/20 text-rose-500 rounded-full text-3xl animate-bounce border border-rose-500/40">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <div>
-                <span class="text-xs font-black uppercase tracking-widest text-rose-400 bg-rose-950/80 px-3 py-1 rounded-full border border-rose-800">ALERTE MEDEVAC ACTIVE</span>
-                <h2 id="alertMissionTitle" class="text-xl font-black text-white mt-2">MISSION MEDEVAC ENGAGÉE</h2>
-            </div>
-            <div id="alertMissionContent" class="bg-slate-950/80 p-4 rounded-2xl border border-rose-900/50 text-xs space-y-2 text-left font-mono text-slate-300">
-                <!-- Données injectées -->
-            </div>
-            <button onclick="acknowledgeMedevac()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-rose-950/80 transition-all cursor-pointer">
-                <i class="fa-solid fa-check mr-2"></i> Accuser Réception &amp; Fermer l'Alerte
-            </button>
-        </div>
-    </div>
 
     <!-- HEADER PRINCIPAL -->
     <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/80 p-5 rounded-2xl border border-slate-800 backdrop-blur-md shadow-2xl">
@@ -86,22 +70,22 @@
                 <h1 class="text-xl font-black text-sky-400 tracking-wide flex items-center gap-2.5">
                     <i class="fa-solid fa-hospital-user text-rose-500 animate-pulse"></i> Centre Médical Tactique &amp; Régulation
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Plateforme unifiée : Santé, Prise en charge séquentielle &amp; Alerte MEDEVAC</p>
+                <p class="text-xs text-slate-400 font-medium">Plateforme unifiée : Protocole Sécurisé &amp; Régulation de Transport</p>
             </div>
         </div>
 
         <button onclick="openWizard()" class="w-full md:w-auto px-5 py-2.5 bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-sky-950/60 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 cursor-pointer">
-            <i class="fa-solid fa-plus-circle text-sm"></i> + Nouvelle Fiche / Trans
+            <i class="fa-solid fa-plus-circle text-sm"></i> + Nouvelle Prise en Charge
         </button>
     </header>
 
-    <!-- NAVIGATION PAR CATÉGORIES (3 ONGLETS) -->
+    <!-- NAVIGATION PAR CATÉGORIES PRINCIPALES -->
     <nav class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <button onclick="switchCategory('SANTE')" id="tab-SANTE" class="p-4 rounded-2xl border border-slate-800 font-bold text-xs flex items-center justify-center gap-3 transition-all cursor-pointer bg-slate-900/60 text-slate-400 hover:text-white">
             <i class="fa-solid fa-notes-medical text-lg"></i>
             <div class="text-left">
                 <div class="text-sm font-extrabold">Service Médical &amp; Santé</div>
-                <div class="text-[10px] opacity-75 font-normal">Aptitude, TAP &amp; Effectif</div>
+                <div class="text-[10px] opacity-75 font-normal">Visites d'aptitude, TAP &amp; Effectif</div>
             </div>
         </button>
 
@@ -109,7 +93,7 @@
             <i class="fa-solid fa-truck-medical text-lg"></i>
             <div class="text-left">
                 <div class="text-sm font-extrabold">Médical Prise en Charge</div>
-                <div class="text-[10px] opacity-75 font-normal">Bilan Séquentiel Obligatoire</div>
+                <div class="text-[10px] opacity-75 font-normal">Bilan Séquentiel Obligatoire &amp; XABCDE</div>
             </div>
         </button>
 
@@ -117,7 +101,7 @@
             <i class="fa-solid fa-tower-cell text-lg"></i>
             <div class="text-left">
                 <div class="text-sm font-extrabold">Transmission &amp; Régulation</div>
-                <div class="text-[10px] opacity-75 font-normal">Appels Radio &amp; Bip MEDEVAC</div>
+                <div class="text-[10px] opacity-75 font-normal">Accord / Refus de Transport &amp; Vecteurs</div>
             </div>
         </button>
     </nav>
@@ -127,14 +111,14 @@
         <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
             <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl text-lg border border-sky-500/20"><i class="fa-solid fa-folder-open"></i></div>
             <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Enregistrements</span>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Dossiers</span>
                 <p id="stat-total" class="text-xl font-black text-white">0</p>
             </div>
         </div>
         <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
             <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-lg border border-emerald-500/20"><i class="fa-solid fa-truck-arrow-right"></i></div>
             <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Transports Accordés</span>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Transports Validés</span>
                 <p id="stat-transports-accordes" class="text-xl font-black text-emerald-400">0</p>
             </div>
         </div>
@@ -158,7 +142,7 @@
     <div class="flex flex-col sm:flex-row gap-3 bg-slate-900/40 p-3 rounded-2xl border border-slate-800">
         <div class="relative flex-1">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
-            <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule, canal, statut..." 
+            <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule, statut de transport..." 
                    class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition-colors">
         </div>
     </div>
@@ -168,13 +152,13 @@
         <!-- Rendu dynamique -->
     </main>
 
-    <!-- MODAL PRINCIPALE -->
+    <!-- MODAL PRINCIPALE (PRAGMATIQUE & PROTOCOLÉE) -->
     <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl p-6 md:p-8 shadow-2xl relative space-y-6 my-8">
             
             <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                 <h3 id="modalTitle" class="text-base font-bold text-sky-400 flex items-center gap-2.5">
-                    <i class="fa-solid fa-file-medical text-lg"></i> Fiche Opérationnelle
+                    <i class="fa-solid fa-file-medical text-lg"></i> Prise en Charge Médicale
                 </h3>
                 <button onclick="closeModal()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer">
                     <i class="fa-solid fa-xmark"></i>
@@ -184,31 +168,33 @@
             <!-- MODE CONSULTATION (READ ONLY) -->
             <div id="view-mode-container" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2"></div>
 
-            <!-- FORMULAIRE DE SAISIE -->
+            <!-- FORMULAIRE SÉQUENTIEL OBLIGATOIRE -->
             <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                 <input type="hidden" id="recordKey">
                 <input type="hidden" id="selectedMainCategory">
 
+                <!-- Badge Categorie Active -->
                 <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 sticky top-0 z-10">
                     <span id="typeBadge" class="text-xs font-bold flex items-center gap-2"></span>
+                    <span id="transportStatusBadge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-lg border"></span>
                 </div>
 
-                <!-- IDENTITÉ -->
+                <!-- IDENTITÉ DU PATIENT -->
                 <div class="space-y-2">
-                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité Patient / Événement</h4>
+                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité Patient / Victime</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Nom / Indicatif Mission *</label>
-                            <input type="text" id="formName" required placeholder="ex: John Doe ou MEDEVAC Alpha-1" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                            <label class="block text-[10px] text-slate-400 mb-1">Nom &amp; Prénom *</label>
+                            <input type="text" id="formName" required placeholder="ex: John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-sky-500">
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Matricule / Fréquence Radio *</label>
-                            <input type="text" id="formMat" required placeholder="ex: FSF-042 ou CH-04" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-sky-400 focus:outline-none focus:border-sky-500">
+                            <label class="block text-[10px] text-slate-400 mb-1">Matricule / Identifiant *</label>
+                            <input type="text" id="formMat" required placeholder="ex: FSF-042" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-sky-400 focus:outline-none focus:border-sky-500">
                         </div>
                     </div>
                 </div>
 
-                <!-- BLOC SANTE -->
+                <!-- SANTE SPÉCIFIQUE (SI COMPTE SANTE) -->
                 <div id="sante-fields-block" class="space-y-3 pt-2 border-t border-slate-800">
                     <h4 class="text-[11px] font-bold uppercase text-emerald-400 tracking-wider"><i class="fa-solid fa-notes-medical mr-1"></i> Données de Santé &amp; Aptitude</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -235,74 +221,74 @@
                     </div>
                 </div>
 
-                <!-- BLOC TRANSMISSION & RÉGULATION / TRANSPORT -->
+                <!-- BLOC RÉGULATION (EXCLUSIF RÉGULATEUR POUR ACCORDER LE TRANSPORT) -->
                 <div id="regulation-fields-block" class="space-y-3 pt-2 border-t border-slate-800 bg-amber-950/10 p-3.5 rounded-2xl border-amber-900/40">
                     <h4 class="text-[11px] font-bold uppercase text-amber-400 tracking-wider flex items-center justify-between">
-                        <span><i class="fa-solid fa-tower-cell mr-1"></i> Régulation &amp; Avis de Transport</span>
-                        <span class="text-[10px] text-amber-500 font-bold">Régulateur CTA / SMUR</span>
+                        <span><i class="fa-solid fa-tower-cell mr-1"></i> Décision de Régulation &amp; Accord de Transport</span>
+                        <span class="text-[10px] text-amber-500 font-bold">Régulateur Uniquement</span>
                     </h4>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1 font-bold">Décision Transport Médicalisé *</label>
+                            <label class="block text-[10px] text-slate-400 mb-1 font-bold">Décision Transport Medicalisé *</label>
                             <select id="formTransportStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-bold">
-                                <option value="EN_ATTENTE" class="text-amber-400">⏳ En Attente d'Avis</option>
-                                <option value="ACCORDE" class="text-emerald-400">✅ Transport ACCORDÉ</option>
+                                <option value="EN_ATTENTE" class="text-amber-400">⏳ En Attente d'Avis Régulation</option>
+                                <option value="ACCORDE" class="text-emerald-400">✅ Transport ACCORDÉ par Régulateur</option>
                                 <option value="REFUSE" class="text-rose-400">❌ Transport REFUSÉ / Laissé sur place</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Vecteur d'Évacuation</label>
+                            <label class="block text-[10px] text-slate-400 mb-1">Vecteur d'Évacuation Attribué</label>
                             <input type="text" id="formVecteur" placeholder="ex: Héli / UMH / DRAGON 25" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white">
-                        </div>
-                        <div class="flex items-end">
-                            <button type="button" onclick="triggerMedevacBip()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs rounded-xl shadow-lg shadow-rose-950/60 flex items-center justify-center gap-2 cursor-pointer">
-                                <i class="fa-solid fa-bullhorn"></i> BIPER ALERTE MEDEVAC
-                            </button>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] text-slate-400 mb-1">Consignes &amp; Ordres de Régulation</label>
-                        <textarea id="formRegNotes" rows="2" placeholder="Consignes radio, hôpital de destination..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
+                        <label class="block text-[10px] text-slate-400 mb-1">Consignes Régulation / Destination</label>
+                        <textarea id="formRegNotes" rows="2" placeholder="Consignes transmises aux secouristes par le médecin régulateur..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
                     </div>
                 </div>
 
-                <!-- BLOC PROTOCOLE SÉQUENTIEL (POUR PRISE EN CHARGE) -->
+                <!-- WORKFLOW ÉTAPE PAR ÉTAPE OBLIGATOIRE POUR LA PRISE EN CHARGE -->
                 <div id="logs-module-block" class="space-y-4 pt-3 border-t border-slate-800">
                     <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider flex justify-between items-center">
                         <span><i class="fa-solid fa-list-check mr-1"></i> Protocole Séquentiel Obligatoire</span>
                         <span id="currentStepIndicator" class="text-[10px] text-sky-300 bg-sky-950/80 px-2 py-0.5 rounded-lg border border-sky-800">Étape 1 / 5</span>
                     </h4>
 
+                    <!-- BARRE DE PROGRESSION PAR ÉTAPES -->
                     <div class="grid grid-cols-5 gap-1.5 text-[10px] font-bold text-center">
-                        <div id="step-btn-1" class="p-2 rounded-xl border transition-all step-active">1. Circo</div>
-                        <div id="step-btn-2" class="p-2 rounded-xl border transition-all step-locked">2. Trans</div>
+                        <div id="step-btn-1" class="p-2 rounded-xl border transition-all step-active">1. Circonstanciel</div>
+                        <div id="step-btn-2" class="p-2 rounded-xl border transition-all step-locked">2. Trans / CTA</div>
                         <div id="step-btn-3" class="p-2 rounded-xl border transition-all step-locked">3. Primaire</div>
                         <div id="step-btn-4" class="p-2 rounded-xl border transition-all step-locked">4. Secondaire</div>
-                        <div id="step-btn-5" class="p-2 rounded-xl border transition-all step-locked">5. Suivi</div>
+                        <div id="step-btn-5" class="p-2 rounded-xl border transition-all step-locked">5. Surveillance</div>
                     </div>
 
+                    <!-- FORMULAIRE D'ÉTAPE ACTUELLE -->
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
                         <div class="flex justify-between items-center">
                             <span id="stepTitleDisplay" class="text-xs font-bold text-sky-400">Étape 1: Bilan Circonstanciel</span>
                             <span class="text-[10px] font-mono text-slate-500" id="stepTimeDisplay">--:--</span>
                         </div>
 
-                        <div id="stepFormContainer" class="space-y-3"></div>
+                        <div id="stepFormContainer" class="space-y-3">
+                            <!-- Injecté dynamiquement selon l'étape obligatoire actuelle -->
+                        </div>
 
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Remarques de l'étape *</label>
-                            <textarea id="stepNotesInput" rows="2" placeholder="Constatations pour valider cette étape..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
+                            <textarea id="stepNotesInput" rows="2" placeholder="Notez les constatations précises pour valider cette étape..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
                         </div>
 
                         <button type="button" onclick="validateAndAdvanceStep()" class="w-full py-2.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/50 text-emerald-300 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-circle-check"></i> Valider l'Étape et Continuer
+                            <i class="fa-solid fa-circle-check"></i> Valider l'Étape et Passer à la Suivante
                         </button>
                     </div>
 
+                    <!-- RELEVÉS ENREGISTRÉS DANS LE DOSSIER -->
                     <div class="space-y-2">
-                        <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Étapes Validées (${currentLogs.length})</h5>
+                        <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Étapes Validées &amp; Historique (${currentLogs.length})</h5>
                         <div id="logs-editor-list" class="space-y-2"></div>
                     </div>
                 </div>
@@ -320,7 +306,7 @@
     <script>
         const currentUser = JSON.parse(localStorage.getItem('fsf_user_session'));
         if (!currentUser || (!currentUser.isOwner && !(currentUser.perms || []).includes('MEDICAL'))) {
-            alert("Accès non autorisé !");
+            alert("Accès non autorisé au Service Médical !");
             window.location.href = "index.html";
         }
 
@@ -331,88 +317,21 @@
         let rawMedicalData = {};
         let activeCategory = 'PRISE_EN_CHARGE';
         let currentLogs = [];
-        let currentStepNumber = 1;
+        let currentStepNumber = 1; // 1: Circonstanciel, 2: Trans, 3: Primaire, 4: Secondaire, 5: Surveillance
 
         const STEPS_CONFIG = [
-            { id: 1, name: 'Circo', title: 'Étape 1: Bilan Circonstanciel (Lieu & Cause)' },
-            { id: 2, name: 'Trans', title: 'Étape 2: Transmission Radio initiale CTA' },
+            { id: 1, name: 'Circonstanciel', title: 'Étape 1: Bilan Circonstanciel (Secteur & Cause)' },
+            { id: 2, name: 'Trans / CTA', title: 'Étape 2: Transmission Radio initiale CTA / Régulation' },
             { id: 3, name: 'Primaire', title: 'Étape 3: Bilan Primaire Vitale (XABCDE)' },
-            { id: 4, name: 'Secondaire', title: 'Étape 4: Bilan Secondaire & EVA' },
-            { id: 5, name: 'Suivi', title: 'Étape 5: Surveillance Régulière' }
+            { id: 4, name: 'Secondaire', title: 'Étape 4: Bilan Secondaire & Anamnèse' },
+            { id: 5, name: 'Surveillance', title: 'Étape 5: Surveillance Régulière des Constantes' }
         ];
 
-        // ÉCOUTEUR PRINCIPAL FIREBASE (DONNÉES + ALERTES MEDEVAC EN TEMPS RÉEL)
         db.ref('medical').on('value', snapshot => {
             rawMedicalData = snapshot.val() || {};
             updateDashboardStats();
             renderCards();
         });
-
-        // ÉCOUTEUR DES ALERTES MÉDEVAC EN DIRECT
-        db.ref('medevac_alert').on('value', snapshot => {
-            const alertData = snapshot.val();
-            if (alertData && alertData.active) {
-                triggerTacticalAlarmSound();
-                showMedevacPopup(alertData);
-            }
-        });
-
-        function playBeepSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Fréquence strident alerte
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.6);
-            } catch(e) {
-                console.log("Audio non autorisé par le navigateur sans interaction préalable.");
-            }
-        }
-
-        function triggerTacticalAlarmSound() {
-            playBeepSound();
-            setTimeout(playBeepSound, 700);
-            setTimeout(playBeepSound, 1400);
-        }
-
-        function triggerMedevacBip() {
-            const name = document.getElementById('formName').value.trim() || 'Mission Inconnue';
-            const canal = document.getElementById('formMat').value.trim() || 'CH-01';
-            const notes = document.getElementById('formRegNotes').value.trim() || 'Urgence vitale déclarée sur zone.';
-
-            const alertPayload = {
-                active: true,
-                title: name,
-                canal: canal,
-                details: notes,
-                timestamp: new Date().toLocaleTimeString('fr-FR')
-            };
-
-            db.ref('medevac_alert').set(alertPayload)
-                .then(() => alert("Bip MEDEVAC diffusé à tout le personnel actif !"))
-                .catch(err => alert("Erreur alerte : " + err.message));
-        }
-
-        function showMedevacPopup(data) {
-            document.getElementById('alertMissionTitle').innerText = `ALERTE MEDEVAC : ${data.title}`;
-            document.getElementById('alertMissionContent').innerHTML = `
-                <div><strong class="text-rose-400">Canal / Fréquence :</strong> ${data.canal}</div>
-                <div><strong class="text-rose-400">Heure d'Alerte :</strong> ${data.timestamp}</div>
-                <div class="pt-2 border-t border-rose-900/40 text-slate-200"><strong class="text-rose-400">Détails :</strong> "${data.details}"</div>
-            `;
-            document.getElementById('medevacAlertModal').classList.remove('hidden');
-        }
-
-        function acknowledgeMedevac() {
-            document.getElementById('medevacAlertModal').classList.add('hidden');
-            // Désactiver l'alerte globale sur la base si l'utilisateur est admin/owner
-            db.ref('medevac_alert/active').set(false);
-        }
 
         function escapeHtml(str) {
             if (!str) return '';
@@ -463,7 +382,7 @@
             if (keys.length === 0) {
                 container.innerHTML = `<div class="col-span-1 md:col-span-3 text-center py-16 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
                     <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-3"></i>
-                    <p class="text-xs text-slate-400">Aucun enregistrement dans cet onglet.</p>
+                    <p class="text-xs text-slate-400">Aucune fiche enregistrée dans cet onglet.</p>
                 </div>`;
                 return;
             }
@@ -472,9 +391,9 @@
                 const m = rawMedicalData[key];
                 const status = m.transportStatus || 'EN_ATTENTE';
                 
-                let statusBadge = '<span class="bg-amber-950/80 text-amber-400 border-amber-800 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-clock mr-1"></i>En attente</span>';
-                if (status === 'ACCORDE') statusBadge = '<span class="bg-emerald-950/80 text-emerald-300 border-emerald-800 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-circle-check mr-1"></i>Accordé</span>';
-                if (status === 'REFUSE') statusBadge = '<span class="bg-rose-950/80 text-rose-300 border-rose-800 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-circle-xmark mr-1"></i>Refusé / Sur place</span>';
+                let statusBadge = '<span class="bg-amber-950/80 text-amber-400 border-amber-800/80 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-clock mr-1"></i>En attente Régulation</span>';
+                if (status === 'ACCORDE') statusBadge = '<span class="bg-emerald-950/80 text-emerald-300 border-emerald-800/80 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-circle-check mr-1"></i>Transport ACCORDÉ</span>';
+                if (status === 'REFUSE') statusBadge = '<span class="bg-rose-950/80 text-rose-300 border-rose-800/80 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-circle-xmark mr-1"></i>Refus / Sur place</span>';
 
                 const logsCount = (m.logs || []).length;
 
@@ -496,7 +415,7 @@
 
                             ${logsCount > 0 ? `
                                 <div class="text-[11px] bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-slate-300">
-                                    <span><i class="fa-solid fa-list-check text-sky-400 mr-1.5"></i> Étapes validées :</span>
+                                    <span><i class="fa-solid fa-list-check text-sky-400 mr-1.5"></i> Étapes de bilan validées :</span>
                                     <strong class="text-white bg-sky-500/20 px-2 py-0.5 rounded-lg border border-sky-500/30">${logsCount} / 5</strong>
                                 </div>
                             ` : ''}
@@ -505,9 +424,15 @@
                         <div class="pt-3 border-t border-slate-800/80 flex justify-between items-center text-[10px] text-slate-500">
                             <span>MÀJ : ${escapeHtml(m.date || 'Récemment')}</span>
                             <div class="flex items-center gap-1.5">
-                                <button onclick="viewRecord('${key}')" title="Consulter" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-emerald-400 transition-colors"><i class="fa-solid fa-eye"></i></button>
-                                <button onclick="editMedical('${key}')" title="Modifier" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-sky-400 transition-colors"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="deleteMedical('${key}')" title="Supprimer" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-rose-400 transition-colors"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="viewRecord('${key}')" title="Consulter" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-emerald-400 transition-colors">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button onclick="editMedical('${key}')" title="Modifier / Réguler" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-sky-400 transition-colors">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="deleteMedical('${key}')" title="Supprimer" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-rose-400 transition-colors">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -526,9 +451,9 @@
             container.classList.remove('hidden');
 
             const status = data.transportStatus || 'EN_ATTENTE';
-            let statusBanner = '<div class="p-3 bg-amber-950/40 border border-amber-800 rounded-2xl text-amber-400 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-clock text-lg"></i> Transport en attente d\'arbitrage régulateur</div>';
-            if (status === 'ACCORDE') statusBanner = '<div class="p-3 bg-emerald-950/40 border border-emerald-800 rounded-2xl text-emerald-300 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-circle-check text-lg"></i> Transport ACCORDÉ — Vecteur : ' + escapeHtml(data.vecteur || 'Standard') + '</div>';
-            if (status === 'REFUSE') statusBanner = '<div class="p-3 bg-rose-950/40 border border-rose-800 rounded-2xl text-rose-300 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-lg"></i> Transport REFUSÉ / Laissé sur place</div>';
+            let statusBanner = '<div class="p-3 bg-amber-950/40 border border-amber-800/80 rounded-2xl text-amber-400 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-clock text-lg"></i> Transport en attente d\'arbitrage par le Régulateur</div>';
+            if (status === 'ACCORDE') statusBanner = '<div class="p-3 bg-emerald-950/40 border border-emerald-800/80 rounded-2xl text-emerald-300 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-circle-check text-lg"></i> Transport ACCORDÉ par le Régulateur — Vecteur : ' + escapeHtml(data.vecteur || 'Standard') + '</div>';
+            if (status === 'REFUSE') statusBanner = '<div class="p-3 bg-rose-950/40 border border-rose-800/80 rounded-2xl text-rose-300 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-lg"></i> Transport REFUSÉ — Victime laissée sur place / Décharge</div>';
 
             const logsHtml = (data.logs || []).map((log, index) => `
                 <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
@@ -537,16 +462,17 @@
                         <span class="text-[10px] text-slate-500 font-mono">Étape #${index + 1}</span>
                     </div>
                     ${log.fields ? `
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
                             ${Object.keys(log.fields).map(k => `<div><span class="text-[10px] text-slate-500 font-bold uppercase block">${k}:</span> <strong class="text-white font-mono">${escapeHtml(log.fields[k])}</strong></div>`).join('')}
                         </div>
                     ` : ''}
-                    ${log.details ? `<p class="text-xs text-slate-300 italic bg-slate-900 p-2.5 rounded-xl border border-slate-800">"${escapeHtml(log.details)}"</p>` : ''}
+                    ${log.details ? `<p class="text-xs text-slate-300 italic bg-slate-900 p-2.5 rounded-xl border border-slate-800/80 font-sans">"${escapeHtml(log.details)}"</p>` : ''}
                 </div>
             `).join('');
 
             container.innerHTML = `
                 ${statusBanner}
+
                 <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 text-xs">
                     <div class="flex justify-between">
                         <span>Matricule: <strong class="text-sky-400 font-mono">${escapeHtml(data.mat)}</strong></span>
@@ -558,8 +484,10 @@
 
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex justify-between items-center">
-                        <span><i class="fa-solid fa-timeline text-sky-400 mr-1.5"></i> Étapes Validées</span>
-                        <button onclick="editMedical('${key}')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-pen mr-1"></i> Éditer</button>
+                        <span><i class="fa-solid fa-timeline text-sky-400 mr-1.5"></i> Chronologie des Étapes Validées</span>
+                        <button onclick="editMedical('${key}')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition-colors">
+                            <i class="fa-solid fa-pen mr-1"></i> Poursuivre / Éditer
+                        </button>
                     </h4>
                     ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucune étape validée.</p>'}
                 </div>
@@ -573,21 +501,20 @@
             currentStepNumber = 1;
             document.getElementById('recordKey').value = '';
             document.getElementById('selectedMainCategory').value = activeCategory;
-            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-folder-open text-sky-400"></i> Nouvelle Fiche`;
+            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-folder-open text-sky-400"></i> Nouvelle Prise en Charge`;
             
             toggleCategoryBlocks(activeCategory);
             updateStepUI();
 
             document.getElementById('view-mode-container').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-plus-circle text-lg"></i> Créer Fiche`;
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-plus-circle text-lg"></i> Nouvelle Prise en Charge`;
             document.getElementById('medicalModal').classList.remove('hidden');
         }
 
         function toggleCategoryBlocks(cat) {
             document.getElementById('sante-fields-block').style.display = (cat === 'SANTE') ? 'block' : 'none';
             document.getElementById('regulation-fields-block').style.display = (cat === 'REGULATION' || cat === 'PRISE_EN_CHARGE') ? 'block' : 'none';
-            document.getElementById('logs-module-block').style.display = (cat === 'PRISE_EN_CHARGE') ? 'block' : 'none';
         }
 
         function updateStepUI() {
@@ -618,16 +545,48 @@
 
         function renderStepFormFields(stepId) {
             const container = document.getElementById('stepFormContainer');
-            if (stepId === 1) {
-                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Lieu *</label><input type="text" id="fieldLieu" placeholder="Voie Publique..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-slate-400 mb-1">Cause *</label><input type="text" id="fieldCause" placeholder="Chute, AVP..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
-            } else if (stepId === 2) {
-                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Canal</label><input type="text" id="fieldCanal" placeholder="CH-04" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-1">SMUR</label><select id="fieldSmur" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"><option value="Oui">Oui</option><option value="Non">Non</option></select></div></div>`;
-            } else if (stepId === 3) {
-                container.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs"><div><label class="block text-[10px] text-rose-400 font-bold mb-0.5">X</label><input type="text" id="fieldX" placeholder="Absence" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-sky-400 font-bold mb-0.5">A</label><input type="text" id="fieldA" placeholder="Libres" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-cyan-400 font-bold mb-0.5">B</label><input type="text" id="fieldB" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-amber-400 font-bold mb-0.5">C</label><input type="text" id="fieldC" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-purple-400 font-bold mb-0.5">D</label><input type="text" id="fieldD" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-emerald-400 font-bold mb-0.5">E</label><input type="text" id="fieldE" placeholder="RAS" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
-            } else if (stepId === 4) {
-                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Allergies</label><input type="text" id="fieldAllergies" placeholder="Aucune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-slate-400 mb-1">EVA</label><input type="text" id="fieldEva" placeholder="3/10" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
-            } else if (stepId === 5) {
-                container.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"><div><label class="block text-[10px] text-slate-400 mb-0.5">TA</label><input type="text" id="fieldTa" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">FC</label><input type="text" id="fieldFc" placeholder="75" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">SpO2</label><input type="text" id="fieldSpo2" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">Glasgow</label><input type="text" id="fieldGlasgow" placeholder="15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div></div>`;
+
+            if (stepId === 1) { // Circonstanciel
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div><label class="block text-[10px] text-slate-400 mb-1">Type de lieu *</label><input type="text" id="fieldLieu" placeholder="Voie Publique, Domicile..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-1">MÉCANISME / CAUSE *</label><input type="text" id="fieldCause" placeholder="Chute, AVP, Arme..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                    </div>
+                `;
+            } else if (stepId === 2) { // Transmission Radio CTA
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div><label class="block text-[10px] text-slate-400 mb-1">Canal Radio d'Émission</label><input type="text" id="fieldCanal" placeholder="CH-04 / 446.050" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-1">Demande Médicalisation SMUR</label><select id="fieldSmur" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"><option value="Oui">Oui (Renfort Médical requis)</option><option value="Non">Non (Secours seul)</option></select></div>
+                    </div>
+                `;
+            } else if (stepId === 3) { // Primaire XABCDE
+                container.innerHTML = `
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                        <div><label class="block text-[10px] text-rose-400 font-bold mb-0.5">X - Hémorragie</label><input type="text" id="fieldX" placeholder="Garrot..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                        <div><label class="block text-[10px] text-sky-400 font-bold mb-0.5">A - Voies Aériennes</label><input type="text" id="fieldA" placeholder="Libres..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                        <div><label class="block text-[10px] text-cyan-400 font-bold mb-0.5">B - SpO2 / FR</label><input type="text" id="fieldB" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                        <div><label class="block text-[10px] text-amber-400 font-bold mb-0.5">C - Pouls / TA</label><input type="text" id="fieldC" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                        <div><label class="block text-[10px] text-purple-400 font-bold mb-0.5">D - Glasgow</label><input type="text" id="fieldD" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                        <div><label class="block text-[10px] text-emerald-400 font-bold mb-0.5">E - Exposition</label><input type="text" id="fieldE" placeholder="Brûlures..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                    </div>
+                `;
+            } else if (stepId === 4) { // Secondaire
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div><label class="block text-[10px] text-slate-400 mb-1">Allergies Connues</label><input type="text" id="fieldAllergies" placeholder="Aucune..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-1">Douleur (EVA 0 à 10)</label><input type="text" id="fieldEva" placeholder="3/10" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div>
+                    </div>
+                `;
+            } else if (stepId === 5) { // Surveillance
+                container.innerHTML = `
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">TA</label><input type="text" id="fieldTa" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">FC</label><input type="text" id="fieldFc" placeholder="75 bpm" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">SpO2</label><input type="text" id="fieldSpo2" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                        <div><label class="block text-[10px] text-slate-400 mb-0.5">Glasgow</label><input type="text" id="fieldGlasgow" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div>
+                    </div>
+                `;
             }
         }
 
@@ -637,21 +596,32 @@
             const stepObj = STEPS_CONFIG.find(s => s.id === currentStepNumber);
 
             let fields = {};
-            if (currentStepNumber === 1) fields = { Lieu: document.getElementById('fieldLieu').value.trim(), Cause: document.getElementById('fieldCause').value.trim() };
-            if (currentStepNumber === 2) fields = { Canal: document.getElementById('fieldCanal').value.trim(), SMUR: document.getElementById('fieldSmur').value };
-            if (currentStepNumber === 3) fields = { X: document.getElementById('fieldX').value.trim(), A: document.getElementById('fieldA').value.trim(), B: document.getElementById('fieldB').value.trim(), C: document.getElementById('fieldC').value.trim(), D: document.getElementById('fieldD').value.trim(), E: document.getElementById('fieldE').value.trim() };
-            if (currentStepNumber === 4) fields = { Allergies: document.getElementById('fieldAllergies').value.trim(), EVA: document.getElementById('fieldEva').value.trim() };
-            if (currentStepNumber === 5) fields = { TA: document.getElementById('fieldTa').value.trim(), FC: document.getElementById('fieldFc').value.trim(), SpO2: document.getElementById('fieldSpo2').value.trim(), Glasgow: document.getElementById('fieldGlasgow').value.trim() };
+
+            if (currentStepNumber === 1) {
+                fields = { Lieu: document.getElementById('fieldLieu').value.trim(), Cause: document.getElementById('fieldCause').value.trim() };
+            } else if (currentStepNumber === 2) {
+                fields = { Canal: document.getElementById('fieldCanal').value.trim(), DemandeSMUR: document.getElementById('fieldSmur').value };
+            } else if (currentStepNumber === 3) {
+                fields = { X: document.getElementById('fieldX').value.trim(), A: document.getElementById('fieldA').value.trim(), B: document.getElementById('fieldB').value.trim(), C: document.getElementById('fieldC').value.trim(), D: document.getElementById('fieldD').value.trim(), E: document.getElementById('fieldE').value.trim() };
+            } else if (currentStepNumber === 4) {
+                fields = { Allergies: document.getElementById('fieldAllergies').value.trim(), EVA: document.getElementById('fieldEva').value.trim() };
+            } else if (currentStepNumber === 5) {
+                fields = { TA: document.getElementById('fieldTa').value.trim(), FC: document.getElementById('fieldFc').value.trim(), SpO2: document.getElementById('fieldSpo2').value.trim(), Glasgow: document.getElementById('fieldGlasgow').value.trim() };
+            }
 
             currentLogs.push({ stepNumber: currentStepNumber, stepName: stepObj.name, time, fields, details });
             document.getElementById('stepNotesInput').value = '';
 
-            if (currentStepNumber < 5) currentStepNumber++;
+            if (currentStepNumber < 5) {
+                currentStepNumber++;
+            }
             updateStepUI();
         }
 
         function renderEditorLogs() {
-            if (currentLogs.length === 0) return `<p class="text-[11px] text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl text-center">Aucune étape validée.</p>`;
+            if (currentLogs.length === 0) {
+                return `<p class="text-[11px] text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl text-center">Aucune étape validée pour l'instant.</p>`;
+            }
             return currentLogs.map((log, index) => `
                 <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-start gap-2 text-xs">
                     <div class="space-y-1 flex-1">
@@ -659,14 +629,20 @@
                             <span class="font-bold text-sky-400 font-mono">[${escapeHtml(log.time)}]</span>
                             <span class="font-semibold text-white">${escapeHtml(log.stepName)}</span>
                         </div>
-                        ${log.fields ? `<div class="text-[10px] text-slate-400 font-mono grid grid-cols-2 gap-1 bg-slate-900/50 p-1.5 rounded-lg border border-slate-800">${Object.keys(log.fields).map(k => `<div>${k}: ${escapeHtml(log.fields[k] || '-')}</div>`).join('')}</div>` : ''}
+                        ${log.fields ? `
+                            <div class="text-[10px] text-slate-400 font-mono grid grid-cols-2 gap-1 bg-slate-900/50 p-1.5 rounded-lg border border-slate-800">
+                                ${Object.keys(log.fields).map(k => `<div>${k}: ${escapeHtml(log.fields[k] || '-')}</div>`).join('')}
+                            </div>
+                        ` : ''}
                         ${log.details ? `<p class="text-[11px] text-slate-300 italic">"${escapeHtml(log.details)}"</p>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
-        function closeModal() { document.getElementById('medicalModal').classList.add('hidden'); }
+        function closeModal() {
+            document.getElementById('medicalModal').classList.add('hidden');
+        }
 
         function editMedical(key) {
             const data = rawMedicalData[key];
@@ -675,7 +651,7 @@
             document.getElementById('recordKey').value = key;
             const cat = data.mainCategory || 'PRISE_EN_CHARGE';
             document.getElementById('selectedMainCategory').value = cat;
-            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-pen text-sky-400"></i> Modification`;
+            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-pen text-sky-400"></i> Modification de Fiche`;
             
             document.getElementById('formName').value = data.name || '';
             document.getElementById('formMat').value = data.mat || '';
@@ -694,7 +670,7 @@
 
             document.getElementById('view-mode-container').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> Modifier`;
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> Modifier la fiche`;
             document.getElementById('medicalModal').classList.remove('hidden');
         }
 
@@ -717,14 +693,21 @@
             };
 
             if (key) {
-                db.ref('medical/' + key).update(payload).then(() => closeModal()).catch(err => alert("Erreur : " + err.message));
+                db.ref('medical/' + key).update(payload)
+                    .then(() => closeModal())
+                    .catch(err => alert("Erreur : " + err.message));
             } else {
-                db.ref('medical').push(payload).then(() => closeModal()).catch(err => alert("Erreur : " + err.message));
+                db.ref('medical').push(payload)
+                    .then(() => closeModal())
+                    .catch(err => alert("Erreur : " + err.message));
             }
         }
 
         function deleteMedical(key) {
-            if (confirm(`Supprimer définitivement ce dossier ?`)) db.ref('medical/' + key).remove();
+            const record = rawMedicalData[key];
+            if (confirm(`Supprimer la fiche de ${record ? record.name : 'ce dossier'} ?`)) {
+                db.ref('medical/' + key).remove();
+            }
         }
     </script>
 </body>
