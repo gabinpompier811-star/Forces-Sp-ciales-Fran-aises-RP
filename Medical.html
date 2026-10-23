@@ -70,10 +70,10 @@
             </div>
         </div>
         <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl flex items-center gap-3">
-            <div class="p-3 bg-blue-500/10 text-blue-400 rounded-lg text-lg"><i class="fa-solid fa-person-running"></i></div>
+            <div class="p-3 bg-blue-500/10 text-blue-400 rounded-lg text-lg"><i class="fa-solid fa-notes-medical"></i></div>
             <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">VMA Moyenne</span>
-                <p id="stat-vma" class="text-lg font-black text-blue-400">0 km/h</p>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Bilans Complets</span>
+                <p id="stat-complets" class="text-lg font-black text-blue-400">0</p>
             </div>
         </div>
         <div class="bg-slate-900/40 border border-slate-800/80 p-4 rounded-xl flex items-center gap-3">
@@ -89,13 +89,15 @@
     <div class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
-            <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule ou groupe sanguin..." 
+            <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule ou type de bilan..." 
                    class="w-full bg-slate-900/80 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-rose-500 transition-colors">
         </div>
-        <select id="filterTap" onchange="renderCards()" class="bg-slate-900/80 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-rose-500">
-            <option value="ALL">Toutes les aptitudes TAP</option>
-            <option value="APTE">TAP : Apte uniquement</option>
-            <option value="INAPTE">TAP : Inapte uniquement</option>
+        <select id="filterType" onchange="renderCards()" class="bg-slate-900/80 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-rose-500">
+            <option value="ALL">Tous les types de bilans</option>
+            <option value="Bilan Complet">Bilan Complet</option>
+            <option value="Bilan d'Urgence">Bilan d'Urgence</option>
+            <option value="Visite Médicale d'Aptitude">Visite Médicale d'Aptitude</option>
+            <option value="Contrôle périodique">Contrôle périodique</option>
         </select>
     </div>
 
@@ -130,7 +132,16 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Type de Consultation / Bilan *</label>
+                        <select id="formType" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                            <option value="Bilan Complet">Bilan Complet</option>
+                            <option value="Bilan d'Urgence">Bilan d'Urgence</option>
+                            <option value="Visite Médicale d'Aptitude">Visite Médicale d'Aptitude</option>
+                            <option value="Contrôle périodique">Contrôle périodique</option>
+                        </select>
+                    </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-400 mb-1">Groupe Sanguin</label>
                         <select id="formSang" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
@@ -140,10 +151,9 @@
                             <option value="O+">O+</option><option value="O-">O-</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1">VMA (km/h)</label>
-                        <input type="number" step="0.5" id="formVma" value="16" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
-                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-[11px] font-bold text-slate-400 mb-1">Aptitude TAP</label>
                         <select id="formTap" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
@@ -151,11 +161,15 @@
                             <option value="false">Inapte</option>
                         </select>
                     </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Fréquence / Constantes</label>
+                        <input type="text" id="formConstantes" placeholder="Ex: 120/80 mmHg, 75 bpm" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Observations / Antécédents</label>
-                    <textarea id="formNotes" rows="2" placeholder="Allergies, blessures récentes, restrictions..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Observations / Diagnostic / Remarques</label>
+                    <textarea id="formNotes" rows="2" placeholder="Détails du bilan, allergies, blessures ou restrictions..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-rose-500 resize-none"></textarea>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
@@ -208,24 +222,23 @@
             if (total === 0) {
                 document.getElementById('stat-total').innerText = '0';
                 document.getElementById('stat-tap').innerText = '0%';
-                document.getElementById('stat-vma').innerText = '0 km/h';
+                document.getElementById('stat-complets').innerText = '0';
                 document.getElementById('stat-inapte').innerText = '0';
                 return;
             }
 
             let tapCount = 0;
-            let totalVma = 0;
+            let completsCount = 0;
 
             keys.forEach(k => {
                 const item = rawMedicalData[k];
                 if (item.tap) tapCount++;
-                const vmaVal = parseFloat(item.vma) || 0;
-                totalVma += vmaVal;
+                if (item.typeBilan === 'Bilan Complet') completsCount++;
             });
 
             document.getElementById('stat-total').innerText = total;
             document.getElementById('stat-tap').innerText = Math.round((tapCount / total) * 100) + '%';
-            document.getElementById('stat-vma').innerText = (totalVma / total).toFixed(1) + ' km/h';
+            document.getElementById('stat-complets').innerText = completsCount;
             document.getElementById('stat-inapte').innerText = (total - tapCount);
         }
 
@@ -233,19 +246,18 @@
         function renderCards() {
             const container = document.getElementById('medical-cards-container');
             const search = document.getElementById('searchInput').value.toLowerCase();
-            const tapFilter = document.getElementById('filterTap').value;
+            const typeFilter = document.getElementById('filterType').value;
 
             const keys = Object.keys(rawMedicalData).filter(key => {
                 const m = rawMedicalData[key];
                 const matchSearch = (m.name || '').toLowerCase().includes(search) || 
                                     (m.mat || '').toLowerCase().includes(search) ||
+                                    (m.typeBilan || '').toLowerCase().includes(search) ||
                                     (m.sang || '').toLowerCase().includes(search);
                 
-                const matchTap = tapFilter === 'ALL' || 
-                                 (tapFilter === 'APTE' && m.tap) || 
-                                 (tapFilter === 'INAPTE' && !m.tap);
+                const matchType = typeFilter === 'ALL' || (m.typeBilan === typeFilter);
 
-                return matchSearch && matchTap;
+                return matchSearch && matchType;
             });
 
             if (keys.length === 0) {
@@ -279,16 +291,23 @@
                             <!-- Metrics -->
                             <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/50">
                                 <div class="flex flex-col">
+                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Type de Bilan</span>
+                                    <span class="text-slate-200 font-bold mt-0.5 truncate">${escapeHtml(m.typeBilan || 'Bilan Complet')}</span>
+                                </div>
+                                <div class="flex flex-col">
                                     <span class="text-[10px] text-slate-500 font-bold uppercase">Aptitude TAP</span>
                                     <span class="${isTap ? 'text-emerald-400' : 'text-rose-400'} font-bold flex items-center gap-1 mt-0.5">
                                         <i class="fa-solid ${isTap ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> ${isTap ? 'Apte' : 'Inapte'}
                                     </span>
                                 </div>
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Statut VMA</span>
-                                    <span class="font-mono text-blue-400 font-bold mt-0.5">${escapeHtml(m.vma || 'N/A')} km/h</span>
-                                </div>
                             </div>
+
+                            ${m.constantes ? `
+                                <div class="text-[11px] text-slate-300 bg-slate-900/40 px-2.5 py-1.5 rounded-lg border border-slate-800/80 flex items-center gap-2">
+                                    <i class="fa-solid fa-heart-pulse text-rose-400"></i>
+                                    <span>Constantes : <strong class="text-white">${escapeHtml(m.constantes)}</strong></span>
+                                </div>
+                            ` : ''}
 
                             <!-- Notes Section -->
                             ${m.notes ? `
@@ -337,9 +356,10 @@
             document.getElementById('recordKey').value = key;
             document.getElementById('formName').value = data.name || '';
             document.getElementById('formMat').value = data.mat || '';
+            document.getElementById('formType').value = data.typeBilan || 'Bilan Complet';
             document.getElementById('formSang').value = data.sang || 'A+';
-            document.getElementById('formVma').value = data.vma || '16';
             document.getElementById('formTap').value = data.tap ? "true" : "false";
+            document.getElementById('formConstantes').value = data.constantes || '';
             document.getElementById('formNotes').value = data.notes || '';
 
             document.getElementById('medicalModal').classList.remove('hidden');
@@ -353,9 +373,10 @@
             const payload = {
                 name: document.getElementById('formName').value.trim(),
                 mat: document.getElementById('formMat').value.trim(),
+                typeBilan: document.getElementById('formType').value,
                 sang: document.getElementById('formSang').value,
-                vma: document.getElementById('formVma').value,
                 tap: document.getElementById('formTap').value === 'true',
+                constantes: document.getElementById('formConstantes').value.trim(),
                 notes: document.getElementById('formNotes').value.trim(),
                 date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
             };
