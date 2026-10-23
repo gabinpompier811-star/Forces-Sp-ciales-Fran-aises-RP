@@ -55,7 +55,7 @@
                 <h1 class="text-xl font-black text-rose-500 tracking-wide flex items-center gap-2.5">
                     <i class="fa-solid fa-heart-pulse animate-pulse text-rose-400"></i> Service Médical &amp; Santé
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Centre opérationnel de gestion des actes médicaux</p>
+                <p class="text-xs text-slate-400 font-medium">Centre opérationnel de gestion des fiches et bilans médicaux</p>
             </div>
         </div>
 
@@ -117,8 +117,8 @@
     </main>
 
     <!-- MODAL PAS-À-PAS (WIZARD) -->
-    <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl p-6 md:p-8 shadow-2xl relative space-y-6">
+    <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl p-6 md:p-8 shadow-2xl relative space-y-6 my-8">
             
             <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                 <h3 id="modalTitle" class="text-base font-bold text-rose-400 flex items-center gap-2.5">
@@ -129,7 +129,7 @@
                 </button>
             </div>
 
-            <!-- ÉTAPE 1 : 3 BOUTONS EXACTS -->
+            <!-- ÉTAPE 1 : 3 BOUTONS -->
             <div id="step-1" class="space-y-3">
                 <p class="text-xs text-slate-400 font-medium">Sélectionnez le type d'intervention médicale :</p>
                 <div class="grid grid-cols-1 gap-3">
@@ -161,60 +161,121 @@
                 </div>
             </div>
 
-            <!-- ÉTAPE 2 : FORMULAIRE ADAPTÉ -->
-            <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-4">
+            <!-- ÉTAPE 2 : FORMULAIRE COMPLET TYPE FICHE MÉDICALE PRO -->
+            <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                 <input type="hidden" id="recordKey">
                 <input type="hidden" id="selectedType">
 
                 <!-- Badge rappel du type choisi -->
-                <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 sticky top-0 z-10">
                     <span id="typeBadge" class="text-xs font-bold flex items-center gap-2"></span>
                     <button type="button" onclick="backToStep1()" class="text-[11px] text-slate-400 hover:text-white underline cursor-pointer">Changer</button>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Nom & Prénom *</label>
-                        <input type="text" id="formName" required placeholder="ex: John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Matricule *</label>
-                        <input type="text" id="formMat" required placeholder="ex: FSF-042" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-blue-400 focus:outline-none focus:border-rose-500">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Groupe Sanguin *</label>
-                        <select id="formSang" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500">
-                            <option value="A+">A+</option><option value="A-">A-</option>
-                            <option value="B+">B+</option><option value="B-">B-</option>
-                            <option value="AB+">AB+</option><option value="AB-">AB-</option>
-                            <option value="O+">O+</option><option value="O-">O-</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 mb-1">Aptitude TAP *</label>
-                        <select id="formTap" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500">
-                            <option value="true">Apte</option>
-                            <option value="false">Inapte</option>
-                        </select>
+                <!-- 1. Identité -->
+                <div class="space-y-2">
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité de l'Opérateur</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Nom & Prénom *</label>
+                            <input type="text" id="formName" required placeholder="ex: John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Matricule *</label>
+                            <input type="text" id="formMat" required placeholder="ex: FSF-042" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-blue-400 focus:outline-none focus:border-rose-500">
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Constantes Vitales (Pouls, Tension, SpO2)</label>
-                    <input type="text" id="formConstantes" placeholder="ex: 120/80 mmHg, 72 bpm, 98% SpO2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500">
+                <!-- 2. Biologie & Aptitude -->
+                <div class="space-y-2 pt-2 border-t border-slate-800">
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-droplet mr-1"></i> Biologie & Statut d'Aptitude</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Groupe Sanguin *</label>
+                            <select id="formSang" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                                <option value="A+">A+</option><option value="A-">A-</option>
+                                <option value="B+">B+</option><option value="B-">B-</option>
+                                <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                                <option value="O+">O+</option><option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Aptitude TAP *</label>
+                            <select id="formTap" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                                <option value="true">Apte</option>
+                                <option value="false">Inapte</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Détails / XABCDE / Notes / Circonstances</label>
-                    <textarea id="formNotes" rows="3" placeholder="Renseignez les détails du protocole, XABCDE, examen primaire/secondaire ou surveillance..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                <!-- 3. Constantes Vitales Détaillées -->
+                <div class="space-y-2 pt-2 border-t border-slate-800">
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-heart-pulse mr-1"></i> Constantes Vitales</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Tension (TA)</label>
+                            <input type="text" id="formTa" placeholder="120/80" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Pouls (FC)</label>
+                            <input type="text" id="formFc" placeholder="75 bpm" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Saturation (SpO2)</label>
+                            <input type="text" id="formSpo2" placeholder="98%" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Conscience (Glasgow)</label>
+                            <input type="text" id="formGlasgow" placeholder="15 / 15" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500 font-mono">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                <!-- 4. Protocole XABCDE & Clinique -->
+                <div class="space-y-2 pt-2 border-t border-slate-800">
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-clipboard-list mr-1"></i> Protocole & Examen Clinique</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">X - Hémorragie Massive</label>
+                            <input type="text" id="formX" placeholder="RAS / Tourniquet posé..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">A & B - Voies / Resp.</label>
+                            <input type="text" id="formAb" placeholder="Libres / Spontanée..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">C & D - Circ. / Neuro</label>
+                            <input type="text" id="formCd" placeholder="Stable / Alerte..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Antécédents, Allergies & Traitements -->
+                <div class="space-y-2 pt-2 border-t border-slate-800">
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-pills mr-1"></i> Antécédents & Traitements</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Allergies Connues</label>
+                            <input type="text" id="formAllergies" placeholder="Aucune / Pénicilline..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Traitements / Soins administrés</label>
+                            <input type="text" id="formSoins" placeholder="Perfusalgan, Pansement compressif..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Observations & Circonstances -->
+                <div class="space-y-2 pt-2 border-t border-slate-800">
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-comment-medical mr-1"></i> Observations / Circonstances</h4>
+                    <textarea id="formNotes" rows="3" placeholder="Détails du contexte, examen primaire/secondaire, surveillance..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-800 sticky bottom-0 bg-slate-900 pb-2">
                     <button type="button" onclick="closeModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold cursor-pointer">Annuler</button>
-                    <button type="submit" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-950/60 cursor-pointer">Valider &amp; Enregistrer</button>
+                    <button type="submit" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-950/60 cursor-pointer">Valider &amp; Enregistrer la Fiche</button>
                 </div>
             </form>
 
@@ -345,13 +406,34 @@
                                 </div>
                             </div>
 
-                            ${m.constantes ? `
-                                <div class="text-[11px] text-slate-300 bg-slate-900/40 px-3 py-2 rounded-xl border border-slate-800/80 flex items-center gap-2">
-                                    <i class="fa-solid fa-heart-pulse text-rose-400"></i>
-                                    <span>Constantes : <strong class="text-white">${escapeHtml(m.constantes)}</strong></span>
+                            <!-- Constantes Vitales compactes -->
+                            ${(m.ta || m.fc || m.spo2 || m.glasgow) ? `
+                                <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/80">
+                                    <div>TA: <strong class="text-white font-mono">${escapeHtml(m.ta || 'N/A')}</strong></div>
+                                    <div>FC: <strong class="text-white font-mono">${escapeHtml(m.fc || 'N/A')}</strong></div>
+                                    <div>SpO2: <strong class="text-white font-mono">${escapeHtml(m.spo2 || 'N/A')}</strong></div>
+                                    <div>Glasgow: <strong class="text-white font-mono">${escapeHtml(m.glasgow || 'N/A')}</strong></div>
                                 </div>
                             ` : ''}
 
+                            <!-- XABCDE Summary -->
+                            ${(m.x || m.ab || m.cd) ? `
+                                <div class="text-[10px] text-slate-300 bg-slate-950/60 p-2 rounded-xl border border-slate-800 space-y-1">
+                                    <div><strong class="text-rose-400">X:</strong> ${escapeHtml(m.x || 'N/A')}</div>
+                                    <div><strong class="text-blue-400">A/B:</strong> ${escapeHtml(m.ab || 'N/A')}</div>
+                                    <div><strong class="text-amber-400">C/D:</strong> ${escapeHtml(m.cd || 'N/A')}</div>
+                                </div>
+                            ` : ''}
+
+                            <!-- Allergies & Soins -->
+                            ${(m.allergies || m.soins) ? `
+                                <div class="text-[11px] text-slate-300 bg-slate-900/50 p-2 rounded-xl border border-slate-800 space-y-0.5">
+                                    ${m.allergies ? `<div><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-1"></i> Allergies: <span class="text-white">${escapeHtml(m.allergies)}</span></div>` : ''}
+                                    ${m.soins ? `<div><i class="fa-solid fa-syringe text-emerald-400 mr-1"></i> Soins: <span class="text-white">${escapeHtml(m.soins)}</span></div>` : ''}
+                                </div>
+                            ` : ''}
+
+                            <!-- Notes -->
                             ${m.notes ? `
                                 <div class="text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 italic">
                                     "${escapeHtml(m.notes)}"
@@ -392,7 +474,7 @@
             
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> Renseigner le dossier`;
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> Renseigner la fiche médicale`;
         }
 
         function backToStep1() {
@@ -419,7 +501,15 @@
             document.getElementById('formMat').value = data.mat || '';
             document.getElementById('formSang').value = data.sang || 'A+';
             document.getElementById('formTap').value = data.tap ? "true" : "false";
-            document.getElementById('formConstantes').value = data.constantes || '';
+            document.getElementById('formTa').value = data.ta || '';
+            document.getElementById('formFc').value = data.fc || '';
+            document.getElementById('formSpo2').value = data.spo2 || '';
+            document.getElementById('formGlasgow').value = data.glasgow || '';
+            document.getElementById('formX').value = data.x || '';
+            document.getElementById('formAb').value = data.ab || '';
+            document.getElementById('formCd').value = data.cd || '';
+            document.getElementById('formAllergies').value = data.allergies || '';
+            document.getElementById('formSoins').value = data.soins || '';
             document.getElementById('formNotes').value = data.notes || '';
 
             document.getElementById('step-1').classList.add('hidden');
@@ -439,7 +529,15 @@
                 typeBilan: document.getElementById('selectedType').value,
                 sang: document.getElementById('formSang').value,
                 tap: document.getElementById('formTap').value === 'true',
-                constantes: document.getElementById('formConstantes').value.trim(),
+                ta: document.getElementById('formTa').value.trim(),
+                fc: document.getElementById('formFc').value.trim(),
+                spo2: document.getElementById('formSpo2').value.trim(),
+                glasgow: document.getElementById('formGlasgow').value.trim(),
+                x: document.getElementById('formX').value.trim(),
+                ab: document.getElementById('formAb').value.trim(),
+                cd: document.getElementById('formCd').value.trim(),
+                allergies: document.getElementById('formAllergies').value.trim(),
+                soins: document.getElementById('formSoins').value.trim(),
                 notes: document.getElementById('formNotes').value.trim(),
                 date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
             };
