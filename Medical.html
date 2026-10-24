@@ -84,12 +84,12 @@
                 <h1 class="text-xl font-black text-sky-400 tracking-wide flex items-center gap-2.5">
                     <i class="fa-solid fa-hospital-user text-rose-500 animate-pulse"></i> Centre Médical Tactique &amp; Régulation (BRM5 - Sawang)
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Plateforme IRL : Bilan Séquentiel Strict, Dispatch Équipes &amp; Régulation de Transport</p>
+                <p class="text-xs text-slate-400 font-medium">Plateforme IRL : Visites, Bilans d'Urgence, Séquentiel &amp; Dispatch Équipes</p>
             </div>
         </div>
 
         <button onclick="openWizard()" class="w-full md:w-auto px-5 py-2.5 bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-sky-950/60 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 cursor-pointer">
-            <i class="fa-solid fa-plus-circle text-sm"></i> + Nouvelle Fiche Médicale
+            <i class="fa-solid fa-plus-circle text-sm"></i> + Nouvelle Fiche / Bilan
         </button>
     </header>
 
@@ -99,7 +99,7 @@
             <i class="fa-solid fa-notes-medical text-lg"></i>
             <div class="text-left">
                 <div class="text-sm font-extrabold">Service Médical &amp; Santé</div>
-                <div class="text-[10px] opacity-75 font-normal">Aptitude, TAP &amp; Effectif</div>
+                <div class="text-[10px] opacity-75 font-normal">Visites d'aptitude, TAP &amp; Effectif</div>
             </div>
         </button>
 
@@ -107,7 +107,7 @@
             <i class="fa-solid fa-truck-medical text-lg"></i>
             <div class="text-left">
                 <div class="text-sm font-extrabold">Médical Prise en Charge</div>
-                <div class="text-[10px] opacity-75 font-normal">Bilan Séquentiel (1 à 5)</div>
+                <div class="text-[10px] opacity-75 font-normal">Bilans d'Urgence &amp; Séquentiels</div>
             </div>
         </button>
 
@@ -195,8 +195,14 @@
                 <input type="hidden" id="recordKey">
                 <input type="hidden" id="selectedMainCategory">
 
-                <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 sticky top-0 z-10">
-                    <span id="typeBadge" class="text-xs font-bold flex items-center gap-2"></span>
+                <!-- SÉLECTEUR DE TYPE DE BILAN / INTERVENTION -->
+                <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                    <label class="block text-[11px] font-bold uppercase text-sky-400 tracking-wider">Type de Procédure Médicale *</label>
+                    <select id="formRecordType" onchange="onRecordTypeChange()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-bold">
+                        <option value="SANTE">🩺 Visite Médicale / Aptitude &amp; Santé</option>
+                        <option value="URGENCE">🚨 Bilan d'Urgence Rapide (Terrain)</option>
+                        <option value="COMPLET">📋 Bilan Complet Séquentiel (Étapes 1 à 5)</option>
+                    </select>
                 </div>
 
                 <!-- IDENTITÉ ET ZONE SAWANG ISLAND -->
@@ -230,7 +236,7 @@
                     </div>
                 </div>
 
-                <!-- BLOC SANTE -->
+                <!-- BLOC SANTE (POUR VISITE MÉDICALE) -->
                 <div id="sante-fields-block" class="space-y-3 pt-2 border-t border-slate-800">
                     <h4 class="text-[11px] font-bold uppercase text-emerald-400 tracking-wider"><i class="fa-solid fa-notes-medical mr-1"></i> Données de Santé &amp; Aptitude</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -253,6 +259,41 @@
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">VMA / Sport</label>
                             <input type="text" id="formVma" placeholder="ex: 16 km/h" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOC BILAN D'URGENCE RAPIDE -->
+                <div id="urgence-fields-block" class="hidden space-y-3 pt-2 border-t border-slate-800 bg-rose-950/10 p-3.5 rounded-2xl border-rose-900/40">
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Bilan d'Urgence Immédiat</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Hémorragie (X)</label>
+                            <input type="text" id="urgX" placeholder="Garrot / RAS" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Voies Aériennes (A)</label>
+                            <input type="text" id="urgA" placeholder="Libres / Obstruction" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Ventilation (B)</label>
+                            <input type="text" id="urgB" placeholder="SpO2 / FR" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Circulation (C)</label>
+                            <input type="text" id="urgC" placeholder="Pouls / TA" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Glasgow (D)</label>
+                            <input type="text" id="urgD" placeholder="15/15" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Triage Urgence</label>
+                            <select id="urgTriage" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white font-bold">
+                                <option value="UA (Urgence Absolue)">UA (Urgence Absolue)</option>
+                                <option value="UR (Urgence Relative)">UR (Urgence Relative)</option>
+                                <option value="EU (Extrême Urgence)">EU (Extrême Urgence)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -290,8 +331,8 @@
                     </div>
                 </div>
 
-                <!-- BLOC PROTOCOLE SÉQUENTIEL OBLIGATOIRE (1 À 5) -->
-                <div id="logs-module-block" class="space-y-4 pt-3 border-t border-slate-800">
+                <!-- BLOC PROTOCOLE SÉQUENTIEL COMPLET (1 À 5) -->
+                <div id="logs-module-block" class="hidden space-y-4 pt-3 border-t border-slate-800">
                     <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider flex justify-between items-center">
                         <span><i class="fa-solid fa-list-check mr-1"></i> Protocole Séquentiel Strict (Obligatoire)</span>
                         <span id="currentStepIndicator" class="text-[10px] text-sky-300 bg-sky-950/80 px-2 py-0.5 rounded-lg border border-sky-800">Étape 1 / 5</span>
@@ -529,11 +570,10 @@
                     return (p.name || '').toLowerCase().includes(search) || (p.role || '').toLowerCase().includes(search);
                 });
 
-                // Bouton d'ajout personnel dans le conteneur
                 let htmlHeader = `<div class="col-span-1 md:col-span-3 flex justify-between items-center bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
                     <div>
                         <h3 class="text-sm font-bold text-white">Gestion du Personnel &amp; Équipes Médicales</h3>
-                        <p class="text-xs text-slate-400">Modifiez en direct le statut (Disponible, En intervention) de vos médecins et infirmiers IRL.</p>
+                        <p class="text-xs text-slate-400">Modifiez en direct le statut de vos médecins et infirmiers IRL.</p>
                     </div>
                     <button onclick="openPersonnelModal()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold cursor-pointer">
                         <i class="fa-solid fa-user-plus mr-1"></i> Ajouter du Personnel
@@ -563,8 +603,8 @@
                                     <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold border ${statusColor}">${escapeHtml(p.status)}</span>
                                 </div>
                                 <div class="flex gap-2 pt-2">
-                                    <button onclick="updatePersonnelStatus('${pk}', 'DISPONIBLE')" class="flex-1 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 rounded-xl text-[10px] font-bold cursor-pointer">Dispo</button>
-                                    <button onclick="updatePersonnelStatus('${pk}', 'EN_INTERVENTION')" class="flex-1 py-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-500/30 rounded-xl text-[10px] font-bold cursor-pointer">Intervention</button>
+                                    <button onclick="updatePersonnelStatus('${pk}', 'DISPONIBLE')" class="flex-1 py-1.5 bg-emerald-600/25 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/40 rounded-xl text-[10px] font-bold cursor-pointer">Dispo</button>
+                                    <button onclick="updatePersonnelStatus('${pk}', 'EN_INTERVENTION')" class="flex-1 py-1.5 bg-rose-600/25 hover:bg-rose-600/40 text-rose-300 border border-rose-500/40 rounded-xl text-[10px] font-bold cursor-pointer">Intervention</button>
                                     <button onclick="deletePersonnel('${pk}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 rounded-xl text-[10px] cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </div>
@@ -617,7 +657,7 @@
 
                             <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/50 p-3 rounded-2xl border border-slate-800/50">
                                 <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Zone (Sawang)</span> <strong class="text-sky-400">${escapeHtml(m.zone || 'Port / Docks')}</strong></div>
-                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Équipe / Unité</span> <strong class="text-amber-400 font-mono">${escapeHtml(m.unite || 'N/A')}</strong></div>
+                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Type Fiche</span> <strong class="text-amber-400 font-mono">${escapeHtml(m.recordType || 'SANTE')}</strong></div>
                             </div>
 
                             ${logsCount > 0 ? `
@@ -676,7 +716,7 @@
                 <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 text-xs">
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         <div>Zone Sawang: <strong class="text-sky-400">${escapeHtml(data.zone)}</strong></div>
-                        <div>Unité: <strong class="text-amber-400">${escapeHtml(data.unite)}</strong></div>
+                        <div>Type: <strong class="text-amber-400">${escapeHtml(data.recordType)}</strong></div>
                         <div>Matricule: <strong class="text-sky-400 font-mono">${escapeHtml(data.mat)}</strong></div>
                         <div>Sang: <strong class="text-rose-400">${escapeHtml(data.sang)}</strong></div>
                         <div>TAP: <strong class="${data.tap ? 'text-emerald-400' : 'text-rose-400'}">${data.tap ? 'Apte' : 'Inapte'}</strong></div>
@@ -686,13 +726,13 @@
 
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex justify-between items-center">
-                        <span><i class="fa-solid fa-timeline text-sky-400 mr-1.5"></i> Étapes Séquentielles Validées</span>
+                        <span><i class="fa-solid fa-timeline text-sky-400 mr-1.5"></i> Détails / Étapes Validées</span>
                         <div class="flex gap-2">
                             <button onclick="generateMISTReport('${key}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-copy mr-1"></i> MIST</button>
                             <button onclick="editMedical('${key}')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-pen mr-1"></i> Éditer</button>
                         </div>
                     </h4>
-                    ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucune étape validée.</p>'}
+                    ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucune étape séquentielle pour ce type de fiche.</p>'}
                 </div>
             `;
 
@@ -704,10 +744,10 @@
             currentStepNumber = 1;
             document.getElementById('recordKey').value = '';
             document.getElementById('selectedMainCategory').value = activeCategory === 'PERSONNEL' ? 'SANTE' : activeCategory;
-            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-folder-open text-sky-400"></i> Nouvelle Fiche : ${activeCategory}`;
+            document.getElementById('formRecordType').value = 'SANTE';
+            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-folder-open text-sky-400"></i> Nouvelle Fiche : Visite Médicale`;
             
-            toggleCategoryBlocks(activeCategory);
-            updateStepUI();
+            onRecordTypeChange();
 
             document.getElementById('view-mode-container').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
@@ -715,10 +755,16 @@
             document.getElementById('medicalModal').classList.remove('hidden');
         }
 
-        function toggleCategoryBlocks(cat) {
-            document.getElementById('sante-fields-block').style.display = (cat === 'SANTE') ? 'block' : 'none';
-            document.getElementById('regulation-fields-block').style.display = (cat === 'REGULATION' || cat === 'PRISE_EN_CHARGE') ? 'block' : 'none';
-            document.getElementById('logs-module-block').style.display = (cat === 'PRISE_EN_CHARGE') ? 'block' : 'none';
+        function onRecordTypeChange() {
+            const rType = document.getElementById('formRecordType').value;
+            document.getElementById('sante-fields-block').style.display = (rType === 'SANTE') ? 'block' : 'none';
+            document.getElementById('urgence-fields-block').style.display = (rType === 'URGENCE') ? 'block' : 'none';
+            document.getElementById('logs-module-block').style.display = (rType === 'COMPLET') ? 'block' : 'none';
+            
+            if (rType === 'SANTE') document.getElementById('selectedMainCategory').value = 'SANTE';
+            if (rType === 'URGENCE' || rType === 'COMPLET') document.getElementById('selectedMainCategory').value = 'PRISE_EN_CHARGE';
+            
+            if (rType === 'COMPLET') updateStepUI();
         }
 
         function updateStepUI() {
@@ -830,7 +876,8 @@
             document.getElementById('recordKey').value = key;
             const cat = data.mainCategory || 'SANTE';
             document.getElementById('selectedMainCategory').value = cat;
-            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-pen text-sky-400"></i> Modification (${cat})`;
+            document.getElementById('formRecordType').value = data.recordType || 'SANTE';
+            document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-pen text-sky-400"></i> Modification (${data.recordType})`;
             
             document.getElementById('formName').value = data.name || '';
             document.getElementById('formMat').value = data.mat || '';
@@ -847,8 +894,8 @@
             currentLogs = data.logs || [];
             currentStepNumber = currentLogs.length >= 5 ? 5 : (currentLogs.length + 1);
 
-            toggleCategoryBlocks(cat);
-            updateStepUI();
+            onRecordTypeChange();
+            if (data.recordType === 'COMPLET') updateStepUI();
 
             document.getElementById('view-mode-container').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
@@ -860,9 +907,11 @@
             e.preventDefault();
             const key = document.getElementById('recordKey').value;
             const cat = document.getElementById('selectedMainCategory').value || activeCategory;
+            const rType = document.getElementById('formRecordType').value;
 
             const payload = {
                 mainCategory: cat,
+                recordType: rType,
                 name: document.getElementById('formName').value.trim(),
                 mat: document.getElementById('formMat').value.trim(),
                 zone: document.getElementById('formZone').value,
@@ -873,7 +922,7 @@
                 vma: document.getElementById('formVma') ? document.getElementById('formVma').value.trim() : '',
                 vecteur: document.getElementById('formVecteur') ? document.getElementById('formVecteur').value.trim() : '',
                 regNotes: document.getElementById('formRegNotes') ? document.getElementById('formRegNotes').value.trim() : '',
-                logs: currentLogs,
+                logs: rType === 'COMPLET' ? currentLogs : [],
                 date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
             };
 
@@ -895,6 +944,7 @@
             const mistText = `--- RAPPORT MIST (OPÉRATION TYPHON) ---\n` +
                              `• Patient / Indicatif : ${data.name} (${data.mat})\n` +
                              `• Zone Sawang : ${data.zone || 'Inconnue'}\n` +
+                             `• Type Procédure : ${data.recordType}\n` +
                              `• Unité Engagée : ${data.unite || 'N/A'}\n` +
                              `• Statut Transport : ${data.transportStatus} (${data.vecteur || 'Non assigné'})\n` +
                              `• Consignes : ${data.regNotes || 'Aucune'}\n` +
