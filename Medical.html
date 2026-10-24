@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centre Médical Tactique &amp; Régulation - FSF (Opération Typhoon)</title>
+    <title>Centre Médical Tactique &amp; Régulation - FSF (Operation Typhoon)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome icons -->
@@ -84,7 +84,7 @@
                 <h1 class="text-xl font-black text-sky-400 tracking-wide flex items-center gap-2.5">
                     <i class="fa-solid fa-hospital-user text-rose-500 animate-pulse"></i> Centre Médical Tactique &amp; Régulation (BRM5 - Sawang)
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Plateforme IRL : Visites, Bilans d'Urgence, Séquentiel &amp; Dispatch Équipes</p>
+                <p class="text-xs text-slate-400 font-medium">Plateforme FSF : Visites, Bilans d'Urgence, Séquentiel &amp; Dispatch Équipes</p>
             </div>
         </div>
 
@@ -195,19 +195,19 @@
                 <input type="hidden" id="recordKey">
                 <input type="hidden" id="selectedMainCategory">
 
-                <!-- SÉLECTEUR DE TYPE DE BILAN / INTERVENTION -->
+                <!-- SÉLECTEUR DU TYPE DE BILAN -->
                 <div class="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <label class="block text-[11px] font-bold uppercase text-sky-400 tracking-wider">Type de Procédure Médicale *</label>
-                    <select id="formRecordType" onchange="onRecordTypeChange()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-bold">
-                        <option value="SANTE">🩺 Visite Médicale / Aptitude &amp; Santé</option>
-                        <option value="URGENCE">🚨 Bilan d'Urgence Rapide (Terrain)</option>
-                        <option value="COMPLET">📋 Bilan Complet Séquentiel (Étapes 1 à 5)</option>
+                    <label class="block text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-list-check mr-1"></i> Choix de la Procédure Médicale *</label>
+                    <select id="formRecordType" onchange="onRecordTypeChange()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-bold focus:outline-none focus:border-sky-500">
+                        <option value="SANTE">🩺 Visite Médicale / Aptitude &amp; Santé Personnel</option>
+                        <option value="URGENCE">🚨 Bilan d'Urgence Rapide (Prise en charge terrain)</option>
+                        <option value="COMPLET">📋 Bilan Complet Séquentiel Strict (Étapes 1 à 5)</option>
                     </select>
                 </div>
 
                 <!-- IDENTITÉ ET ZONE SAWANG ISLAND -->
                 <div class="space-y-2">
-                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité &amp; Zone (Operation Typhoon)</h4>
+                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité &amp; Localisation (Operation Typhoon)</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Nom / Indicatif Patient *</label>
@@ -220,18 +220,22 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Zone Tactique (Sawang Island)</label>
+                            <label class="block text-[10px] text-slate-400 mb-1">Zone Tactique (Sawang Island - BRM5)</label>
                             <select id="formZone" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white">
-                                <option value="Port / Docks">Port / Docks</option>
-                                <option value="Usine Chimique (Chemical Plant)">Usine Chimique (Chemical Plant)</option>
-                                <option value="Plages & Côtes">Plages & Côtes (Zone Maritime)</option>
-                                <option value="Zone Forestière Dense">Zone Forestière Dense</option>
-                                <option value="Base Insurgée Principale">Base Insurgée Principale</option>
+                                <option value="UNS ATHENS (QG / Carrier)">UNS ATHENS (Porte-hélicoptères QG)</option>
+                                <option value="Docks / Port Commercial">Docks / Port Commercial</option>
+                                <option value="Sawang Maha Nakhon (Capitale)">Sawang Maha Nakhon (Capitale)</option>
+                                <option value="Pharmaceuticals Lab (Usine Chimique)">Pharmaceuticals Lab (Usine Chimique)</option>
+                                <option value="Yāk Airbase (Base Aérienne)">Yāk Airbase (Base Aérienne)</option>
+                                <option value="Banana Plantation">Banana Plantation</option>
+                                <option value="Royal Manor">Royal Manor</option>
+                                <option value="Trench Camp">Trench Camp</option>
+                                <option value="Nathon Town Safehouse">Nathon Town Safehouse</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Équipe Affectée / Intervenante</label>
-                            <input type="text" id="formUnite" placeholder="ex: MEDEVAC-1 / Alpha Team" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
+                            <label class="block text-[10px] text-slate-400 mb-1">Équipe / Médecin Affecté</label>
+                            <input type="text" id="formUnite" placeholder="ex: Dr. House / MEDEVAC-1" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
                         </div>
                     </div>
                 </div>
@@ -250,14 +254,14 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Aptitude TAP</label>
+                            <label class="block text-[10px] text-slate-400 mb-1">Aptitude TAP (Paras)</label>
                             <select id="formTap" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white">
                                 <option value="true">Apte</option>
                                 <option value="false">Inapte</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">VMA / Sport</label>
+                            <label class="block text-[10px] text-slate-400 mb-1">VMA / Test Physique</label>
                             <input type="text" id="formVma" placeholder="ex: 16 km/h" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
                         </div>
                     </div>
@@ -265,11 +269,11 @@
 
                 <!-- BLOC BILAN D'URGENCE RAPIDE -->
                 <div id="urgence-fields-block" class="hidden space-y-3 pt-2 border-t border-slate-800 bg-rose-950/10 p-3.5 rounded-2xl border-rose-900/40">
-                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Bilan d'Urgence Immédiat</h4>
+                    <h4 class="text-[11px] font-bold uppercase text-rose-400 tracking-wider"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Bilan d'Urgence Terrain Rapide</h4>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Hémorragie (X)</label>
-                            <input type="text" id="urgX" placeholder="Garrot / RAS" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
+                            <input type="text" id="urgX" placeholder="Garrot posé / RAS" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
                         </div>
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Voies Aériennes (A)</label>
@@ -288,7 +292,7 @@
                             <input type="text" id="urgD" placeholder="15/15" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white">
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Triage Urgence</label>
+                            <label class="block text-[10px] text-slate-400 mb-1">Gravité Triage</label>
                             <select id="urgTriage" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white font-bold">
                                 <option value="UA (Urgence Absolue)">UA (Urgence Absolue)</option>
                                 <option value="UR (Urgence Relative)">UR (Urgence Relative)</option>
@@ -338,6 +342,7 @@
                         <span id="currentStepIndicator" class="text-[10px] text-sky-300 bg-sky-950/80 px-2 py-0.5 rounded-lg border border-sky-800">Étape 1 / 5</span>
                     </h4>
 
+                    <!-- BARRE DES ÉTAPES -->
                     <div class="grid grid-cols-5 gap-1.5 text-[10px] font-bold text-center">
                         <div id="step-btn-1" class="p-2 rounded-xl border transition-all step-active">1. Circo</div>
                         <div id="step-btn-2" class="p-2 rounded-xl border transition-all step-locked">2. Trans</div>
@@ -384,7 +389,7 @@
         <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative space-y-5">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
-                    <i class="fa-solid fa-user-doctor"></i> Ajouter un Membre du Personnel Médical
+                    <i class="fa-solid fa-user-doctor"></i> Déclarer un Membre du Personnel Médical
                 </h3>
                 <button onclick="closePersonnelModal()" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
                     <i class="fa-solid fa-xmark"></i>
@@ -392,29 +397,29 @@
             </div>
             <form onsubmit="handlePersonnelSubmit(event)" class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-[10px] text-slate-400 mb-1">Nom / Indicatif *</label>
+                    <label class="block text-[10px] text-slate-400 mb-1">Nom &amp; Titre / Indicatif *</label>
                     <input type="text" id="persName" required placeholder="ex: Dr. House ou Inf. Sarah" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[10px] text-slate-400 mb-1">Rôle *</label>
+                        <label class="block text-[10px] text-slate-400 mb-1">Spécialité / Rôle *</label>
                         <select id="persRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white font-bold">
-                            <option value="Médecin / Urgentiste">Médecin / Urgentiste</option>
+                            <option value="Médecin Urgentiste">Médecin Urgentiste</option>
+                            <option value="Médecin Régulateur CTA">Médecin Régulateur CTA</option>
                             <option value="Infirmier (IDE)">Infirmier (IDE)</option>
-                            <option value="Secouriste / TCCC">Secouriste / TCCC</option>
-                            <option value="Médecin Régulateur">Médecin Régulateur</option>
+                            <option value="Secouriste TCCC / Combat Medic">Secouriste TCCC / Combat Medic</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-[10px] text-slate-400 mb-1">Statut Initial</label>
                         <select id="persStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
-                            <option value="DISPONIBLE">🟢 Disponible</option>
-                            <option value="EN_INTERVENTION">🔴 En Intervention sur Zone</option>
+                            <option value="DISPONIBLE">🟢 Disponible au QG</option>
+                            <option value="EN_INTERVENTION">🔴 Décalé en Intervention</option>
                             <option value="EN_PAUSE">🟡 En Pause / Repos</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl cursor-pointer">Ajouter au Personnel FSF</button>
+                <button type="submit" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl cursor-pointer">Enregistrer au Registre Soignants</button>
             </form>
         </div>
     </div>
@@ -563,7 +568,7 @@
             const container = document.getElementById('medical-cards-container');
             const search = document.getElementById('searchInput').value.toLowerCase();
 
-            // CAS DE L'ONGLET PERSONNEL
+            // CAS DE L'ONGLET PERSONNEL (MÉDECINS / INFIRMIERS)
             if (activeCategory === 'PERSONNEL') {
                 const pKeys = Object.keys(rawPersonnelData).filter(k => {
                     const p = rawPersonnelData[k];
@@ -572,18 +577,18 @@
 
                 let htmlHeader = `<div class="col-span-1 md:col-span-3 flex justify-between items-center bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
                     <div>
-                        <h3 class="text-sm font-bold text-white">Gestion du Personnel &amp; Équipes Médicales</h3>
-                        <p class="text-xs text-slate-400">Modifiez en direct le statut de vos médecins et infirmiers IRL.</p>
+                        <h3 class="text-sm font-bold text-white">Personnel Soignant &amp; Décalage d'Équipes</h3>
+                        <p class="text-xs text-slate-400">Modifiez en temps réel le statut de vos médecins et infirmiers sur le terrain.</p>
                     </div>
                     <button onclick="openPersonnelModal()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold cursor-pointer">
-                        <i class="fa-solid fa-user-plus mr-1"></i> Ajouter du Personnel
+                        <i class="fa-solid fa-user-plus mr-1"></i> + Ajouter Soignant
                     </button>
                 </div>`;
 
                 if (pKeys.length === 0) {
                     container.innerHTML = htmlHeader + `<div class="col-span-1 md:col-span-3 text-center py-12 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
                         <i class="fa-solid fa-users-slash text-4xl text-slate-600 mb-3"></i>
-                        <p class="text-xs text-slate-400">Aucun personnel enregistré.</p>
+                        <p class="text-xs text-slate-400">Aucun soignant enregistré.</p>
                     </div>`;
                     return;
                 }
@@ -603,8 +608,8 @@
                                     <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold border ${statusColor}">${escapeHtml(p.status)}</span>
                                 </div>
                                 <div class="flex gap-2 pt-2">
-                                    <button onclick="updatePersonnelStatus('${pk}', 'DISPONIBLE')" class="flex-1 py-1.5 bg-emerald-600/25 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/40 rounded-xl text-[10px] font-bold cursor-pointer">Dispo</button>
-                                    <button onclick="updatePersonnelStatus('${pk}', 'EN_INTERVENTION')" class="flex-1 py-1.5 bg-rose-600/25 hover:bg-rose-600/40 text-rose-300 border border-rose-500/40 rounded-xl text-[10px] font-bold cursor-pointer">Intervention</button>
+                                    <button onclick="updatePersonnelStatus('${pk}', 'DISPONIBLE')" class="flex-1 py-1.5 bg-emerald-600/25 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/40 rounded-xl text-[10px] font-bold cursor-pointer">🟢 Dispo</button>
+                                    <button onclick="updatePersonnelStatus('${pk}', 'EN_INTERVENTION')" class="flex-1 py-1.5 bg-rose-600/25 hover:bg-rose-600/40 text-rose-300 border border-rose-500/40 rounded-xl text-[10px] font-bold cursor-pointer">🔴 Décaler</button>
                                     <button onclick="deletePersonnel('${pk}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 rounded-xl text-[10px] cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </div>
@@ -657,7 +662,7 @@
 
                             <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/50 p-3 rounded-2xl border border-slate-800/50">
                                 <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Zone (Sawang)</span> <strong class="text-sky-400">${escapeHtml(m.zone || 'Port / Docks')}</strong></div>
-                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Type Fiche</span> <strong class="text-amber-400 font-mono">${escapeHtml(m.recordType || 'SANTE')}</strong></div>
+                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Type Procédure</span> <strong class="text-amber-400 font-mono">${escapeHtml(m.recordType || 'SANTE')}</strong></div>
                             </div>
 
                             ${logsCount > 0 ? `
@@ -732,7 +737,7 @@
                             <button onclick="editMedical('${key}')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-pen mr-1"></i> Éditer</button>
                         </div>
                     </h4>
-                    ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucune étape séquentielle pour ce type de fiche.</p>'}
+                    ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucune étape séquentielle enregistrée pour ce dossier.</p>'}
                 </div>
             `;
 
