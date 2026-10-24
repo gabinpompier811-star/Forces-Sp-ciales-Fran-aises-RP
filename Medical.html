@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centre Médical Tactique &amp; Régulation - FSF</title>
+    <title>Centre Médical Tactique &amp; Régulation - FSF (Opération Typhoon)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome icons -->
@@ -82,19 +82,19 @@
             </a>
             <div>
                 <h1 class="text-xl font-black text-sky-400 tracking-wide flex items-center gap-2.5">
-                    <i class="fa-solid fa-hospital-user text-rose-500 animate-pulse"></i> Centre Médical Tactique &amp; Régulation
+                    <i class="fa-solid fa-hospital-user text-rose-500 animate-pulse"></i> Centre Médical Tactique &amp; Régulation (BRM5 - Sawang)
                 </h1>
-                <p class="text-xs text-slate-400 font-medium">Plateforme unifiée : Santé, Prise en charge &amp; Régulation</p>
+                <p class="text-xs text-slate-400 font-medium">Plateforme IRL : Bilan Séquentiel Strict, Dispatch Équipes &amp; Régulation de Transport</p>
             </div>
         </div>
 
         <button onclick="openWizard()" class="w-full md:w-auto px-5 py-2.5 bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-sky-950/60 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 cursor-pointer">
-            <i class="fa-solid fa-plus-circle text-sm"></i> + Nouvelle Fiche / Enregistrement
+            <i class="fa-solid fa-plus-circle text-sm"></i> + Nouvelle Fiche Médicale
         </button>
     </header>
 
-    <!-- NAVIGATION PAR CATÉGORIES (3 ONGLETS) -->
-    <nav class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <!-- NAVIGATION PAR CATÉGORIES (4 ONGLETS) -->
+    <nav class="grid grid-cols-1 md:grid-cols-4 gap-3">
         <button onclick="switchCategory('SANTE')" id="tab-SANTE" class="tab-active p-4 rounded-2xl border border-slate-800 font-bold text-xs flex items-center justify-center gap-3 transition-all cursor-pointer bg-slate-900/60 text-slate-400 hover:text-white">
             <i class="fa-solid fa-notes-medical text-lg"></i>
             <div class="text-left">
@@ -107,7 +107,7 @@
             <i class="fa-solid fa-truck-medical text-lg"></i>
             <div class="text-left">
                 <div class="text-sm font-extrabold">Médical Prise en Charge</div>
-                <div class="text-[10px] opacity-75 font-normal">Bilan Séquentiel Obligatoire</div>
+                <div class="text-[10px] opacity-75 font-normal">Bilan Séquentiel (1 à 5)</div>
             </div>
         </button>
 
@@ -115,7 +115,15 @@
             <i class="fa-solid fa-tower-cell text-lg"></i>
             <div class="text-left">
                 <div class="text-sm font-extrabold">Transmission &amp; Régulation</div>
-                <div class="text-[10px] opacity-75 font-normal">Appels Radio &amp; Bip MEDEVAC</div>
+                <div class="text-[10px] opacity-75 font-normal">Accords de transport &amp; Bip</div>
+            </div>
+        </button>
+
+        <button onclick="switchCategory('PERSONNEL')" id="tab-PERSONNEL" class="p-4 rounded-2xl border border-slate-800 font-bold text-xs flex items-center justify-center gap-3 transition-all cursor-pointer bg-slate-900/60 text-slate-400 hover:text-white">
+            <i class="fa-solid fa-user-doctor text-lg"></i>
+            <div class="text-left">
+                <div class="text-sm font-extrabold">Personnel &amp; Équipes</div>
+                <div class="text-[10px] opacity-75 font-normal">Médecins, Infirmiers &amp; Dispatch</div>
             </div>
         </button>
     </nav>
@@ -137,10 +145,10 @@
             </div>
         </div>
         <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
-            <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl text-lg border border-amber-500/20"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl text-lg border border-amber-500/20"><i class="fa-solid fa-user-doctor"></i></div>
             <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">En Attente Régulation</span>
-                <p id="stat-transports-attente" class="text-xl font-black text-amber-400">0</p>
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Personnel Disponible</span>
+                <p id="stat-personnel-dispo" class="text-xl font-black text-amber-400">0 / 0</p>
             </div>
         </div>
         <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
@@ -156,7 +164,7 @@
     <div class="flex flex-col sm:flex-row gap-3 bg-slate-900/40 p-3 rounded-2xl border border-slate-800">
         <div class="relative flex-1">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
-            <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule, canal, statut..." 
+            <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule, zone Sawang, statut..." 
                    class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition-colors">
         </div>
     </div>
@@ -166,13 +174,13 @@
         <!-- Rendu dynamique -->
     </main>
 
-    <!-- MODAL PRINCIPALE -->
+    <!-- MODAL PRINCIPALE FICHE MÉDICALE -->
     <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl p-6 md:p-8 shadow-2xl relative space-y-6 my-8">
             
             <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                 <h3 id="modalTitle" class="text-base font-bold text-sky-400 flex items-center gap-2.5">
-                    <i class="fa-solid fa-file-medical text-lg"></i> Fiche Opérationnelle
+                    <i class="fa-solid fa-file-medical text-lg"></i> Fiche Opérationnelle FSF
                 </h3>
                 <button onclick="closeModal()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer">
                     <i class="fa-solid fa-xmark"></i>
@@ -191,17 +199,33 @@
                     <span id="typeBadge" class="text-xs font-bold flex items-center gap-2"></span>
                 </div>
 
-                <!-- IDENTITÉ -->
+                <!-- IDENTITÉ ET ZONE SAWANG ISLAND -->
                 <div class="space-y-2">
-                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité Patient / Événement</h4>
+                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité &amp; Zone (Operation Typhoon)</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Nom / Indicatif Mission *</label>
-                            <input type="text" id="formName" required placeholder="ex: John Doe ou MEDEVAC Alpha-1" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                            <label class="block text-[10px] text-slate-400 mb-1">Nom / Indicatif Patient *</label>
+                            <input type="text" id="formName" required placeholder="ex: John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-sky-500">
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Matricule / Fréquence Radio *</label>
-                            <input type="text" id="formMat" required placeholder="ex: FSF-042 ou CH-04" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-sky-400 focus:outline-none focus:border-sky-500">
+                            <label class="block text-[10px] text-slate-400 mb-1">Matricule FSF *</label>
+                            <input type="text" id="formMat" required placeholder="ex: FSF-042" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-sky-400 focus:outline-none focus:border-sky-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Zone Tactique (Sawang Island)</label>
+                            <select id="formZone" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white">
+                                <option value="Port / Docks">Port / Docks</option>
+                                <option value="Usine Chimique (Chemical Plant)">Usine Chimique (Chemical Plant)</option>
+                                <option value="Plages & Côtes">Plages & Côtes (Zone Maritime)</option>
+                                <option value="Zone Forestière Dense">Zone Forestière Dense</option>
+                                <option value="Base Insurgée Principale">Base Insurgée Principale</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-400 mb-1">Équipe Affectée / Intervenante</label>
+                            <input type="text" id="formUnite" placeholder="ex: MEDEVAC-1 / Alpha Team" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
                         </div>
                     </div>
                 </div>
@@ -227,13 +251,13 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">VMA</label>
+                            <label class="block text-[10px] text-slate-400 mb-1">VMA / Sport</label>
                             <input type="text" id="formVma" placeholder="ex: 16 km/h" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
                         </div>
                     </div>
                 </div>
 
-                <!-- BLOC TRANSMISSION & RÉGULATION / TRANSPORT -->
+                <!-- BLOC TRANSMISSION & RÉGULATION -->
                 <div id="regulation-fields-block" class="space-y-3 pt-2 border-t border-slate-800 bg-amber-950/10 p-3.5 rounded-2xl border-amber-900/40">
                     <h4 class="text-[11px] font-bold uppercase text-amber-400 tracking-wider flex items-center justify-between">
                         <span><i class="fa-solid fa-tower-cell mr-1"></i> Régulation &amp; Avis de Transport</span>
@@ -266,10 +290,10 @@
                     </div>
                 </div>
 
-                <!-- BLOC PROTOCOLE SÉQUENTIEL (POUR PRISE EN CHARGE) -->
+                <!-- BLOC PROTOCOLE SÉQUENTIEL OBLIGATOIRE (1 À 5) -->
                 <div id="logs-module-block" class="space-y-4 pt-3 border-t border-slate-800">
                     <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider flex justify-between items-center">
-                        <span><i class="fa-solid fa-list-check mr-1"></i> Protocole Séquentiel Obligatoire</span>
+                        <span><i class="fa-solid fa-list-check mr-1"></i> Protocole Séquentiel Strict (Obligatoire)</span>
                         <span id="currentStepIndicator" class="text-[10px] text-sky-300 bg-sky-950/80 px-2 py-0.5 rounded-lg border border-sky-800">Étape 1 / 5</span>
                     </h4>
 
@@ -291,7 +315,7 @@
 
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Remarques de l'étape *</label>
-                            <textarea id="stepNotesInput" rows="2" placeholder="Constatations pour valider cette étape..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
+                            <textarea id="stepNotesInput" rows="2" placeholder="Constatations obligatoires pour valider l'étape..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
                         </div>
 
                         <button type="button" onclick="validateAndAdvanceStep()" class="w-full py-2.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/50 text-emerald-300 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
@@ -300,7 +324,7 @@
                     </div>
 
                     <div class="space-y-2">
-                        <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Étapes Validées (<span id="logCountText">0</span>)</h5>
+                        <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Étapes Validées (<span id="logCountText">0</span> / 5)</h5>
                         <div id="logs-editor-list" class="space-y-2"></div>
                     </div>
                 </div>
@@ -314,6 +338,46 @@
         </div>
     </div>
 
+    <!-- MODAL GESTION DU PERSONNEL (MÉDECINS / INFIRMIERS) -->
+    <div id="personnelModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative space-y-5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                    <i class="fa-solid fa-user-doctor"></i> Ajouter un Membre du Personnel Médical
+                </h3>
+                <button onclick="closePersonnelModal()" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="handlePersonnelSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Nom / Indicatif *</label>
+                    <input type="text" id="persName" required placeholder="ex: Dr. House ou Inf. Sarah" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Rôle *</label>
+                        <select id="persRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white font-bold">
+                            <option value="Médecin / Urgentiste">Médecin / Urgentiste</option>
+                            <option value="Infirmier (IDE)">Infirmier (IDE)</option>
+                            <option value="Secouriste / TCCC">Secouriste / TCCC</option>
+                            <option value="Médecin Régulateur">Médecin Régulateur</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Statut Initial</label>
+                        <select id="persStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                            <option value="DISPONIBLE">🟢 Disponible</option>
+                            <option value="EN_INTERVENTION">🔴 En Intervention sur Zone</option>
+                            <option value="EN_PAUSE">🟡 En Pause / Repos</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl cursor-pointer">Ajouter au Personnel FSF</button>
+            </form>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
         const currentUser = JSON.parse(localStorage.getItem('fsf_user_session')) || { isOwner: true, perms: ['MEDICAL'] };
@@ -323,6 +387,7 @@
         const db = firebase.database();
 
         let rawMedicalData = {};
+        let rawPersonnelData = {};
         let activeCategory = 'SANTE';
         let currentLogs = [];
         let currentStepNumber = 1;
@@ -335,10 +400,18 @@
             { id: 5, name: 'Suivi', title: 'Étape 5: Surveillance Régulière' }
         ];
 
+        // SYNC FIREBASE DONNÉES MÉDICALES
         db.ref('medical').on('value', snapshot => {
             rawMedicalData = snapshot.val() || {};
             updateDashboardStats();
-            renderCards();
+            if (activeCategory !== 'PERSONNEL') renderCards();
+        });
+
+        // SYNC FIREBASE PERSONNEL MÉDICAL
+        db.ref('personnel').on('value', snapshot => {
+            rawPersonnelData = snapshot.val() || {};
+            updateDashboardStats();
+            if (activeCategory === 'PERSONNEL') renderCards();
         });
 
         db.ref('medevac_alert').on('value', snapshot => {
@@ -375,7 +448,7 @@
         function triggerMedevacBip() {
             const name = document.getElementById('formName').value.trim() || 'Mission Inconnue';
             const canal = document.getElementById('formMat').value.trim() || 'CH-01';
-            const notes = document.getElementById('formRegNotes').value.trim() || 'Urgence vitale déclarée sur zone.';
+            const notes = document.getElementById('formRegNotes').value.trim() || 'Urgence vitale déclarée sur zone Sawang.';
 
             const alertPayload = {
                 active: true,
@@ -412,7 +485,7 @@
 
         function switchCategory(cat) {
             activeCategory = cat;
-            ['SANTE', 'PRISE_EN_CHARGE', 'REGULATION'].forEach(c => {
+            ['SANTE', 'PRISE_EN_CHARGE', 'REGULATION', 'PERSONNEL'].forEach(c => {
                 const btn = document.getElementById(`tab-${c}`);
                 if (c === cat) btn.classList.add('tab-active');
                 else btn.classList.remove('tab-active');
@@ -432,23 +505,83 @@
                 else attente++;
             });
 
+            const persKeys = Object.keys(rawPersonnelData);
+            let dispoCount = 0;
+            persKeys.forEach(pk => {
+                if (rawPersonnelData[pk].status === 'DISPONIBLE') dispoCount++;
+            });
+
             document.getElementById('stat-total').innerText = total;
             document.getElementById('stat-transports-accordes').innerText = accordes;
             document.getElementById('stat-transports-attente').innerText = attente;
             document.getElementById('stat-transports-refuses').innerText = refuses;
+            document.getElementById('stat-personnel-dispo').innerText = `${dispoCount} / ${persKeys.length}`;
         }
 
         function renderCards() {
             const container = document.getElementById('medical-cards-container');
             const search = document.getElementById('searchInput').value.toLowerCase();
 
+            // CAS DE L'ONGLET PERSONNEL
+            if (activeCategory === 'PERSONNEL') {
+                const pKeys = Object.keys(rawPersonnelData).filter(k => {
+                    const p = rawPersonnelData[k];
+                    return (p.name || '').toLowerCase().includes(search) || (p.role || '').toLowerCase().includes(search);
+                });
+
+                // Bouton d'ajout personnel dans le conteneur
+                let htmlHeader = `<div class="col-span-1 md:col-span-3 flex justify-between items-center bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+                    <div>
+                        <h3 class="text-sm font-bold text-white">Gestion du Personnel &amp; Équipes Médicales</h3>
+                        <p class="text-xs text-slate-400">Modifiez en direct le statut (Disponible, En intervention) de vos médecins et infirmiers IRL.</p>
+                    </div>
+                    <button onclick="openPersonnelModal()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold cursor-pointer">
+                        <i class="fa-solid fa-user-plus mr-1"></i> Ajouter du Personnel
+                    </button>
+                </div>`;
+
+                if (pKeys.length === 0) {
+                    container.innerHTML = htmlHeader + `<div class="col-span-1 md:col-span-3 text-center py-12 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
+                        <i class="fa-solid fa-users-slash text-4xl text-slate-600 mb-3"></i>
+                        <p class="text-xs text-slate-400">Aucun personnel enregistré.</p>
+                    </div>`;
+                    return;
+                }
+
+                container.innerHTML = htmlHeader + pKeys.map(pk => {
+                    const p = rawPersonnelData[pk];
+                    const statusColor = p.status === 'DISPONIBLE' ? 'text-emerald-400 bg-emerald-950/80 border-emerald-800' : (p.status === 'EN_INTERVENTION' ? 'text-rose-400 bg-rose-950/80 border-rose-800' : 'text-amber-400 bg-amber-950/80 border-amber-800');
+                    
+                    return `
+                        <div class="custom-card p-5 rounded-3xl space-y-4 shadow-xl flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-start border-b border-slate-800 pb-2">
+                                    <div>
+                                        <h3 class="font-black text-white text-sm">${escapeHtml(p.name)}</h3>
+                                        <span class="text-[11px] text-sky-400 font-semibold">${escapeHtml(p.role)}</span>
+                                    </div>
+                                    <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold border ${statusColor}">${escapeHtml(p.status)}</span>
+                                </div>
+                                <div class="flex gap-2 pt-2">
+                                    <button onclick="updatePersonnelStatus('${pk}', 'DISPONIBLE')" class="flex-1 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 rounded-xl text-[10px] font-bold cursor-pointer">Dispo</button>
+                                    <button onclick="updatePersonnelStatus('${pk}', 'EN_INTERVENTION')" class="flex-1 py-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-500/30 rounded-xl text-[10px] font-bold cursor-pointer">Intervention</button>
+                                    <button onclick="deletePersonnel('${pk}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 rounded-xl text-[10px] cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                return;
+            }
+
+            // CAS DES ONGLETS MÉDICAUX (SANTE, PRISE_EN_CHARGE, REGULATION)
             const keys = Object.keys(rawMedicalData).filter(key => {
                 const m = rawMedicalData[key];
-                // S'assure que si mainCategory n'existe pas, on le classe par défaut dans SANTE ou selon le contexte
                 const recordCat = m.mainCategory || 'SANTE';
                 const matchCategory = recordCat === activeCategory;
                 const matchSearch = (m.name || '').toLowerCase().includes(search) || 
                                     (m.mat || '').toLowerCase().includes(search) ||
+                                    (m.zone || '').toLowerCase().includes(search) ||
                                     (m.transportStatus || '').toLowerCase().includes(search);
                 return matchCategory && matchSearch;
             });
@@ -483,8 +616,8 @@
                             </div>
 
                             <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/50 p-3 rounded-2xl border border-slate-800/50">
-                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Sang</span> <strong class="text-rose-400">${escapeHtml(m.sang || 'N/A')}</strong></div>
-                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Vecteur</span> <strong class="text-amber-400 font-mono">${escapeHtml(m.vecteur || 'Non assigné')}</strong></div>
+                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Zone (Sawang)</span> <strong class="text-sky-400">${escapeHtml(m.zone || 'Port / Docks')}</strong></div>
+                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Équipe / Unité</span> <strong class="text-amber-400 font-mono">${escapeHtml(m.unite || 'N/A')}</strong></div>
                             </div>
 
                             ${logsCount > 0 ? `
@@ -541,18 +674,23 @@
             container.innerHTML = `
                 ${statusBanner}
                 <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 text-xs">
-                    <div class="flex justify-between">
-                        <span>Matricule: <strong class="text-sky-400 font-mono">${escapeHtml(data.mat)}</strong></span>
-                        <span>Sang: <strong class="text-rose-400">${escapeHtml(data.sang)}</strong></span>
-                        <span>TAP: <strong class="${data.tap ? 'text-emerald-400' : 'text-rose-400'}">${data.tap ? 'Apte' : 'Inapte'}</strong></span>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <div>Zone Sawang: <strong class="text-sky-400">${escapeHtml(data.zone)}</strong></div>
+                        <div>Unité: <strong class="text-amber-400">${escapeHtml(data.unite)}</strong></div>
+                        <div>Matricule: <strong class="text-sky-400 font-mono">${escapeHtml(data.mat)}</strong></div>
+                        <div>Sang: <strong class="text-rose-400">${escapeHtml(data.sang)}</strong></div>
+                        <div>TAP: <strong class="${data.tap ? 'text-emerald-400' : 'text-rose-400'}">${data.tap ? 'Apte' : 'Inapte'}</strong></div>
                     </div>
                     ${data.regNotes ? `<div class="pt-2 border-t border-slate-800 text-amber-300"><strong class="text-slate-400">Consignes Régulateur :</strong> "${escapeHtml(data.regNotes)}"</div>` : ''}
                 </div>
 
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex justify-between items-center">
-                        <span><i class="fa-solid fa-timeline text-sky-400 mr-1.5"></i> Étapes Validées</span>
-                        <button onclick="editMedical('${key}')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-pen mr-1"></i> Éditer</button>
+                        <span><i class="fa-solid fa-timeline text-sky-400 mr-1.5"></i> Étapes Séquentielles Validées</span>
+                        <div class="flex gap-2">
+                            <button onclick="generateMISTReport('${key}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-copy mr-1"></i> MIST</button>
+                            <button onclick="editMedical('${key}')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-pen mr-1"></i> Éditer</button>
+                        </div>
                     </h4>
                     ${logsHtml || '<p class="text-xs text-slate-500 italic text-center py-6 border border-dashed border-slate-800 rounded-2xl">Aucune étape validée.</p>'}
                 </div>
@@ -565,7 +703,7 @@
             currentLogs = [];
             currentStepNumber = 1;
             document.getElementById('recordKey').value = '';
-            document.getElementById('selectedMainCategory').value = activeCategory;
+            document.getElementById('selectedMainCategory').value = activeCategory === 'PERSONNEL' ? 'SANTE' : activeCategory;
             document.getElementById('typeBadge').innerHTML = `<i class="fa-solid fa-folder-open text-sky-400"></i> Nouvelle Fiche : ${activeCategory}`;
             
             toggleCategoryBlocks(activeCategory);
@@ -573,7 +711,7 @@
 
             document.getElementById('view-mode-container').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-plus-circle text-lg"></i> Créer Fiche (${activeCategory})`;
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-plus-circle text-lg"></i> Créer Fiche Médicale`;
             document.getElementById('medicalModal').classList.remove('hidden');
         }
 
@@ -613,15 +751,15 @@
         function renderStepFormFields(stepId) {
             const container = document.getElementById('stepFormContainer');
             if (stepId === 1) {
-                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Lieu *</label><input type="text" id="fieldLieu" placeholder="Voie Publique..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-slate-400 mb-1">Cause *</label><input type="text" id="fieldCause" placeholder="Chute, AVP..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
+                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Lieu précis *</label><input type="text" id="fieldLieu" placeholder="Bâtiment Docks, Usine..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-slate-400 mb-1">Mécanisme / Cause *</label><input type="text" id="fieldCause" placeholder="Tir ennemi, Chute..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
             } else if (stepId === 2) {
-                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Canal</label><input type="text" id="fieldCanal" placeholder="CH-04" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-1">SMUR</label><select id="fieldSmur" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"><option value="Oui">Oui</option><option value="Non">Non</option></select></div></div>`;
+                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Canal Radio</label><input type="text" id="fieldCanal" placeholder="CH-04" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-1">Demande Renfort SMUR</label><select id="fieldSmur" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"><option value="Oui">Oui</option><option value="Non">Non</option></select></div></div>`;
             } else if (stepId === 3) {
-                container.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs"><div><label class="block text-[10px] text-rose-400 font-bold mb-0.5">X</label><input type="text" id="fieldX" placeholder="Absence" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-sky-400 font-bold mb-0.5">A</label><input type="text" id="fieldA" placeholder="Libres" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-cyan-400 font-bold mb-0.5">B</label><input type="text" id="fieldB" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-amber-400 font-bold mb-0.5">C</label><input type="text" id="fieldC" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-purple-400 font-bold mb-0.5">D</label><input type="text" id="fieldD" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-emerald-400 font-bold mb-0.5">E</label><input type="text" id="fieldE" placeholder="RAS" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
+                container.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs"><div><label class="block text-[10px] text-rose-400 font-bold mb-0.5">X - Hémorragie</label><input type="text" id="fieldX" placeholder="Garrot posé" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-sky-400 font-bold mb-0.5">A - Voies Aériennes</label><input type="text" id="fieldA" placeholder="Libres" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-cyan-400 font-bold mb-0.5">B - SpO2 / FR</label><input type="text" id="fieldB" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-amber-400 font-bold mb-0.5">C - Pouls / TA</label><input type="text" id="fieldC" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-purple-400 font-bold mb-0.5">D - Glasgow</label><input type="text" id="fieldD" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-amber-300 font-bold mb-0.5">⏱️ Minuteur Garrot</label><input type="text" id="fieldGarrotTime" placeholder="Posé à 14h20" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div></div>`;
             } else if (stepId === 4) {
-                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Allergies</label><input type="text" id="fieldAllergies" placeholder="Aucune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-slate-400 mb-1">EVA</label><input type="text" id="fieldEva" placeholder="3/10" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
+                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"><div><label class="block text-[10px] text-slate-400 mb-1">Allergies</label><input type="text" id="fieldAllergies" placeholder="Aucune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div><div><label class="block text-[10px] text-slate-400 mb-1">Douleur (EVA)</label><input type="text" id="fieldEva" placeholder="3/10" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white"></div></div>`;
             } else if (stepId === 5) {
-                container.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"><div><label class="block text-[10px] text-slate-400 mb-0.5">TA</label><input type="text" id="fieldTa" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">FC</label><input type="text" id="fieldFc" placeholder="75" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">SpO2</label><input type="text" id="fieldSpo2" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">Glasgow</label><input type="text" id="fieldGlasgow" placeholder="15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div></div>`;
+                container.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"><div><label class="block text-[10px] text-slate-400 mb-0.5">TA</label><input type="text" id="fieldTa" placeholder="120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">FC</label><input type="text" id="fieldFc" placeholder="75 bpm" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">SpO2</label><input type="text" id="fieldSpo2" placeholder="98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div><div><label class="block text-[10px] text-slate-400 mb-0.5">Glasgow</label><input type="text" id="fieldGlasgow" placeholder="15/15" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white font-mono"></div></div>`;
             }
         }
 
@@ -633,7 +771,7 @@
             let fields = {};
             if (currentStepNumber === 1) fields = { Lieu: document.getElementById('fieldLieu').value.trim(), Cause: document.getElementById('fieldCause').value.trim() };
             if (currentStepNumber === 2) fields = { Canal: document.getElementById('fieldCanal').value.trim(), SMUR: document.getElementById('fieldSmur').value };
-            if (currentStepNumber === 3) fields = { X: document.getElementById('fieldX').value.trim(), A: document.getElementById('fieldA').value.trim(), B: document.getElementById('fieldB').value.trim(), C: document.getElementById('fieldC').value.trim(), D: document.getElementById('fieldD').value.trim(), E: document.getElementById('fieldE').value.trim() };
+            if (currentStepNumber === 3) fields = { X: document.getElementById('fieldX').value.trim(), A: document.getElementById('fieldA').value.trim(), B: document.getElementById('fieldB').value.trim(), C: document.getElementById('fieldC').value.trim(), D: document.getElementById('fieldD').value.trim(), Garrot: document.getElementById('fieldGarrotTime').value.trim() };
             if (currentStepNumber === 4) fields = { Allergies: document.getElementById('fieldAllergies').value.trim(), EVA: document.getElementById('fieldEva').value.trim() };
             if (currentStepNumber === 5) fields = { TA: document.getElementById('fieldTa').value.trim(), FC: document.getElementById('fieldFc').value.trim(), SpO2: document.getElementById('fieldSpo2').value.trim(), Glasgow: document.getElementById('fieldGlasgow').value.trim() };
 
@@ -661,6 +799,29 @@
         }
 
         function closeModal() { document.getElementById('medicalModal').classList.add('hidden'); }
+        function openPersonnelModal() { document.getElementById('personnelModal').classList.remove('hidden'); }
+        function closePersonnelModal() { document.getElementById('personnelModal').classList.add('hidden'); }
+
+        function handlePersonnelSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('persName').value.trim(),
+                role: document.getElementById('persRole').value,
+                status: document.getElementById('persStatus').value
+            };
+            db.ref('personnel').push(payload).then(() => {
+                closePersonnelModal();
+                document.getElementById('persName').value = '';
+            });
+        }
+
+        function updatePersonnelStatus(pk, newStatus) {
+            db.ref('personnel/' + pk).update({ status: newStatus });
+        }
+
+        function deletePersonnel(pk) {
+            if (confirm("Retirer ce membre du personnel ?")) db.ref('personnel/' + pk).remove();
+        }
 
         function editMedical(key) {
             const data = rawMedicalData[key];
@@ -673,6 +834,8 @@
             
             document.getElementById('formName').value = data.name || '';
             document.getElementById('formMat').value = data.mat || '';
+            document.getElementById('formZone').value = data.zone || 'Port / Docks';
+            document.getElementById('formUnite').value = data.unite || '';
             document.getElementById('formSang').value = data.sang || 'A+';
             document.getElementById('formTap').value = data.tap ? "true" : "false";
             document.getElementById('formTransportStatus').value = data.transportStatus || 'EN_ATTENTE';
@@ -702,6 +865,8 @@
                 mainCategory: cat,
                 name: document.getElementById('formName').value.trim(),
                 mat: document.getElementById('formMat').value.trim(),
+                zone: document.getElementById('formZone').value,
+                unite: document.getElementById('formUnite').value.trim() || 'Équipe Alpha',
                 sang: document.getElementById('formSang').value,
                 tap: document.getElementById('formTap').value === 'true',
                 transportStatus: document.getElementById('formTransportStatus').value,
@@ -721,6 +886,22 @@
 
         function deleteMedical(key) {
             if (confirm(`Supprimer définitivement ce dossier ?`)) db.ref('medical/' + key).remove();
+        }
+
+        function generateMISTReport(key) {
+            const data = rawMedicalData[key];
+            if (!data) return;
+            
+            const mistText = `--- RAPPORT MIST (OPÉRATION TYPHON) ---\n` +
+                             `• Patient / Indicatif : ${data.name} (${data.mat})\n` +
+                             `• Zone Sawang : ${data.zone || 'Inconnue'}\n` +
+                             `• Unité Engagée : ${data.unite || 'N/A'}\n` +
+                             `• Statut Transport : ${data.transportStatus} (${data.vecteur || 'Non assigné'})\n` +
+                             `• Consignes : ${data.regNotes || 'Aucune'}\n` +
+                             `---------------------------------------`;
+                             
+            navigator.clipboard.writeText(mistText);
+            alert("Rapport MIST copié dans le presse-papier ! Prêt pour le jeu ou Discord.");
         }
     </script>
 </body>
