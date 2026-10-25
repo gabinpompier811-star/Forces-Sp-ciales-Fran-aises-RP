@@ -166,54 +166,62 @@
     </main>
 
     <!-- MODAL PRINCIPALE -->
-    <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl p-5 md:p-8 shadow-2xl relative space-y-6 my-auto">
+    <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-3 sm:p-5 overflow-y-auto bg-slate-950/80 backdrop-blur-md transition-all duration-300">
+        <div class="bg-slate-900/95 border border-slate-800/80 rounded-3xl w-full max-w-3xl p-5 md:p-8 shadow-2xl shadow-black/50 relative space-y-6 my-auto transform transition-all">
             
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                <h3 id="modalTitle" class="text-base font-bold text-sky-400 flex items-center gap-2.5">
-                    <i class="fa-solid fa-file-medical text-lg"></i> Prise en Charge Médicale
+            <!-- EN-TÊTE DE LA MODAL -->
+            <div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
+                <h3 id="modalTitle" class="text-base font-bold text-sky-400 flex items-center gap-3">
+                    <span class="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                        <i class="fa-solid fa-file-medical text-base"></i>
+                    </span>
+                    Prise en Charge Médicale
                 </h3>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer">
-                    <i class="fa-solid fa-xmark"></i>
+                <button onclick="closeModal()" aria-label="Fermer la modale" class="w-9 h-9 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95">
+                    <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
-
+    
             <!-- MODE CONSULTATION (READ ONLY) -->
-            <div id="view-mode-container" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-1"></div>
-
+            <div id="view-mode-container" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-1 custom-scrollbar"></div>
+    
             <!-- FORMULAIRE DE CRÉATION & ÉDITION -->
-            <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+            <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-5 max-h-[70vh] overflow-y-auto pr-1 custom-scrollbar">
                 <input type="hidden" id="recordKey">
                 <input type="hidden" id="selectedMainCategory">
-
-                <!-- Badge Categorie Active -->
-                <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 sticky top-0 z-10">
+    
+                <!-- BADGE CATÉGORIE ACTIVE (Sticky) -->
+                <div class="flex items-center justify-between bg-slate-950/90 backdrop-blur-sm p-3.5 rounded-2xl border border-slate-800/80 sticky top-0 z-20 shadow-lg">
                     <span id="typeBadge" class="text-xs font-bold flex items-center gap-2"></span>
-                    <span id="transportStatusBadge" class="text-[10px] font-extrabold px-2.5 py-1 rounded-lg border"></span>
+                    <span id="transportStatusBadge" class="text-[10px] font-extrabold px-3 py-1 rounded-xl border shadow-sm"></span>
                 </div>
-
+    
                 <!-- IDENTITÉ DU PATIENT -->
-                <div class="space-y-2">
-                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Identité Patient / Victime</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="space-y-2.5">
+                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-id-card"></i> Identité Patient / Victime
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Nom & Prénom *</label>
-                            <input type="text" id="formName" required placeholder="ex: John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                            <label for="formName" class="block text-[10px] font-medium text-slate-400 mb-1.5">Nom & Prénom *</label>
+                            <input type="text" id="formName" required placeholder="ex: John Doe" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/50 transition-all">
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Matricule / Identifiant *</label>
-                            <input type="text" id="formMat" required placeholder="ex: FSF-042" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-sky-400 focus:outline-none focus:border-sky-500">
+                            <label for="formMat" class="block text-[10px] font-medium text-slate-400 mb-1.5">Matricule / Identifiant *</label>
+                            <input type="text" id="formMat" required placeholder="ex: FSF-042" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs font-mono text-sky-400 placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/50 transition-all">
                         </div>
                     </div>
                 </div>
-
+    
                 <!-- BLOC SANTÉ SPÉCIFIQUE -->
-                <div id="sante-fields-block" class="space-y-3 pt-2 border-t border-slate-800">
-                    <h4 class="text-[11px] font-bold uppercase text-emerald-400 tracking-wider"><i class="fa-solid fa-notes-medical mr-1"></i> Données de Santé & Aptitude</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div id="sante-fields-block" class="space-y-3 pt-3 border-t border-slate-800/80">
+                    <h4 class="text-[11px] font-bold uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-notes-medical"></i> Données de Santé & Aptitude
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Groupe Sanguin</label>
-                            <select id="formSang" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white">
+                            <label for="formSang" class="block text-[10px] font-medium text-slate-400 mb-1.5">Groupe Sanguin</label>
+                            <select id="formSang" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-all">
                                 <option value="A+">A+</option><option value="A-">A-</option>
                                 <option value="B+">B+</option><option value="B-">B-</option>
                                 <option value="AB+">AB+</option><option value="AB-">AB-</option>
@@ -221,97 +229,100 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Aptitude TAP</label>
-                            <select id="formTap" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white">
+                            <label for="formTap" class="block text-[10px] font-medium text-slate-400 mb-1.5">Aptitude TAP</label>
+                            <select id="formTap" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-all">
                                 <option value="true">Apte</option>
                                 <option value="false">Inapte</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">VMA (km/h)</label>
-                            <input type="text" id="formVma" placeholder="ex: 16 km/h" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
+                            <label for="formVma" class="block text-[10px] font-medium text-slate-400 mb-1.5">VMA (km/h)</label>
+                            <input type="text" id="formVma" placeholder="ex: 16 km/h" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-all">
                         </div>
                     </div>
                 </div>
-
+    
                 <!-- BLOC RÉGULATION -->
-                <div id="regulation-fields-block" class="space-y-3 pt-2 border-t border-slate-800 bg-amber-950/10 p-3.5 rounded-2xl border border-amber-900/40">
+                <div id="regulation-fields-block" class="space-y-3.5 pt-3 border-t border-slate-800/80 bg-amber-950/10 p-4 rounded-2xl border border-amber-900/30">
                     <h4 class="text-[11px] font-bold uppercase text-amber-400 tracking-wider flex items-center justify-between">
-                        <span><i class="fa-solid fa-tower-cell mr-1"></i> Décision de Régulation & Accord de Transport</span>
-                        <span class="text-[10px] text-amber-500 font-bold">Poste Régulateur</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-tower-cell"></i> Décision de Régulation & Transport</span>
+                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-lg border border-amber-500/20 font-bold">Poste Régulateur</span>
                     </h4>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1 font-bold">Décision Transport Médicalisé *</label>
-                            <select id="formTransportStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-bold">
+                            <label for="formTransportStatus" class="block text-[10px] font-bold text-slate-300 mb-1.5">Décision Transport Médicalisé *</label>
+                            <select id="formTransportStatus" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white font-bold focus:outline-none focus:border-amber-500 transition-all">
                                 <option value="EN_ATTENTE" class="text-amber-400">⏳ En Attente d'Avis Régulation</option>
                                 <option value="ACCORDE" class="text-emerald-400">✅ Transport ACCORDÉ par Régulateur</option>
                                 <option value="REFUSE" class="text-rose-400">❌ Transport REFUSÉ / Laissé sur place</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Vecteur d'Évacuation Attribué</label>
-                            <input type="text" id="formVecteur" placeholder="ex: Héli / UMH / DRAGON 25" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono">
+                            <label for="formVecteur" class="block text-[10px] font-medium text-slate-400 mb-1.5">Vecteur d'Évacuation Attribué</label>
+                            <input type="text" id="formVecteur" placeholder="ex: Héli / UMH / DRAGON 25" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-all">
                         </div>
                     </div>
-
+    
                     <div>
-                        <label class="block text-[10px] text-slate-400 mb-1">Consignes Régulation / Destination</label>
-                        <textarea id="formRegNotes" rows="2" placeholder="Consignes transmises aux secouristes par le médecin régulateur..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
+                        <label for="formRegNotes" class="block text-[10px] font-medium text-slate-400 mb-1.5">Consignes Régulation / Destination</label>
+                        <textarea id="formRegNotes" rows="2" placeholder="Consignes transmises aux secouristes par le médecin régulateur..." class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 text-xs text-white placeholder-slate-600 resize-none focus:outline-none focus:border-amber-500 transition-all"></textarea>
                     </div>
                 </div>
-
+    
                 <!-- WORKFLOW ÉTAPE PAR ÉTAPE (PRISE EN CHARGE) -->
-                <div id="logs-module-block" class="space-y-4 pt-3 border-t border-slate-800">
+                <div id="logs-module-block" class="space-y-4 pt-3 border-t border-slate-800/80">
                     <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider flex justify-between items-center">
-                        <span><i class="fa-solid fa-list-check mr-1"></i> Protocole Séquentiel Obligatoire</span>
-                        <span id="currentStepIndicator" class="text-[10px] text-sky-300 bg-sky-950/80 px-2 py-0.5 rounded-lg border border-sky-800">Étape 1 / 5</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-list-check"></i> Protocole Séquentiel Obligatoire</span>
+                        <span id="currentStepIndicator" class="text-[10px] text-sky-300 bg-sky-950/80 px-2.5 py-1 rounded-xl border border-sky-800/80 font-mono shadow-sm">Étape 1 / 5</span>
                     </h4>
-
+    
                     <!-- BARRE DE PROGRESSION PAR ÉTAPES -->
-                    <div class="grid grid-cols-5 gap-1.5 text-[10px] font-bold text-center">
-                        <div id="step-btn-1" class="p-2 rounded-xl border transition-all step-active">1. Circonst.</div>
-                        <div id="step-btn-2" class="p-2 rounded-xl border transition-all step-locked">2. CTA</div>
-                        <div id="step-btn-3" class="p-2 rounded-xl border transition-all step-locked">3. Primaire</div>
-                        <div id="step-btn-4" class="p-2 rounded-xl border transition-all step-locked">4. Second.</div>
-                        <div id="step-btn-5" class="p-2 rounded-xl border transition-all step-locked">5. Surveill.</div>
+                    <div class="grid grid-cols-5 gap-2 text-[10px] font-bold text-center">
+                        <div id="step-btn-1" class="p-2.5 rounded-xl border transition-all duration-200 step-active shadow-sm">1. Circonst.</div>
+                        <div id="step-btn-2" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">2. CTA</div>
+                        <div id="step-btn-3" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">3. Primaire</div>
+                        <div id="step-btn-4" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">4. Second.</div>
+                        <div id="step-btn-5" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">5. Surveill.</div>
                     </div>
-
+    
                     <!-- FORMULAIRE D'ÉTAPE ACTUELLE -->
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="bg-slate-950/70 p-4.5 rounded-2xl border border-slate-800/80 space-y-3.5 shadow-inner">
                         <div class="flex justify-between items-center">
                             <span id="stepTitleDisplay" class="text-xs font-bold text-sky-400">Étape 1: Bilan Circonstanciel</span>
-                            <span class="text-[10px] font-mono text-slate-500" id="stepTimeDisplay">--:--</span>
+                            <span class="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800" id="stepTimeDisplay">--:--</span>
                         </div>
-
+    
                         <div id="stepFormContainer" class="space-y-3">
                             <!-- Champs générés selon l'étape -->
                         </div>
-
+    
                         <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Remarques de l'étape *</label>
-                            <textarea id="stepNotesInput" rows="2" placeholder="Notez les constatations précises pour valider cette étape..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white resize-none"></textarea>
+                            <label for="stepNotesInput" class="block text-[10px] font-medium text-slate-400 mb-1.5">Remarques de l'étape *</label>
+                            <textarea id="stepNotesInput" rows="2" placeholder="Notez les constatations précises pour valider cette étape..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-600 resize-none focus:outline-none focus:border-sky-500 transition-all"></textarea>
                         </div>
-
-                        <button type="button" onclick="validateAndAdvanceStep()" class="w-full py-2.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/50 text-emerald-300 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-circle-check"></i> Valider l'Étape et Passer à la Suivante
+    
+                        <button type="button" onclick="validateAndAdvanceStep()" class="w-full py-3 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/20 active:scale-[0.99]">
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i> Valider l'Étape et Passer à la Suivante
                         </button>
                     </div>
-
+    
                     <!-- RELEVÉS ENREGISTRÉS -->
                     <div class="space-y-2">
                         <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Étapes Validées dans ce dossier</h5>
                         <div id="logs-editor-list" class="space-y-2"></div>
                     </div>
                 </div>
-
-                <div class="flex justify-end gap-3 pt-4 border-t border-slate-800 sticky bottom-0 bg-slate-900 pb-2">
-                    <button type="button" onclick="closeModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold cursor-pointer">Annuler</button>
-                    <button type="submit" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-950/60 cursor-pointer">Enregistrer le Dossier</button>
+    
+                <!-- BOUTONS D'ACTION FINAUX -->
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-800/80 sticky bottom-0 bg-slate-900/95 backdrop-blur-sm pb-2 z-20">
+                    <button type="button" onclick="closeModal()" class="px-5 py-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95">Annuler</button>
+                    <button type="submit" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-950/80 transition-all cursor-pointer active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i> Enregistrer le Dossier
+                    </button>
                 </div>
             </form>
-
+    
         </div>
     </div>
 
