@@ -93,78 +93,96 @@
     </header>
 
     <!-- NAVIGATION PAR CATÉGORIES PRINCIPALES -->
-    <nav class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <button onclick="switchCategory('SANTE')" id="tab-SANTE" class="p-4 rounded-2xl border border-slate-800 font-bold text-xs flex items-center justify-center gap-3 transition-all cursor-pointer bg-slate-900/60 text-slate-400 hover:text-white">
-            <i class="fa-solid fa-notes-medical text-lg"></i>
+    <nav class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <button onclick="switchCategory('SANTE')" id="tab-SANTE" class="group p-4 rounded-2xl border border-slate-800/80 font-bold text-xs flex items-center justify-start gap-3.5 transition-all duration-200 cursor-pointer bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 text-slate-400 hover:text-white shadow-lg shadow-black/20 active:scale-[0.98]">
+            <span class="w-11 h-11 rounded-xl bg-slate-800/60 group-hover:bg-sky-500/10 group-hover:border-sky-500/20 group-hover:text-sky-400 flex items-center justify-center text-slate-400 text-base transition-all border border-slate-700/50">
+                <i class="fa-solid fa-notes-medical"></i>
+            </span>
             <div class="text-left">
-                <div class="text-sm font-extrabold">Service Médical & Santé</div>
-                <div class="text-[10px] opacity-75 font-normal">Visites d'aptitude, TAP & Effectif</div>
+                <div class="text-xs sm:text-sm font-extrabold text-slate-200 group-hover:text-white transition-colors">Service Médical & Santé</div>
+                <div class="text-[10px] text-slate-500 group-hover:text-slate-400 font-normal transition-colors">Visites d'aptitude, TAP & Effectif</div>
             </div>
         </button>
-
-        <button onclick="switchCategory('PRISE_EN_CHARGE')" id="tab-PRISE_EN_CHARGE" class="tab-active p-4 rounded-2xl border border-slate-800 font-bold text-xs flex items-center justify-center gap-3 transition-all cursor-pointer bg-slate-900/60 text-slate-400 hover:text-white">
-            <i class="fa-solid fa-truck-medical text-lg"></i>
+    
+        <button onclick="switchCategory('PRISE_EN_CHARGE')" id="tab-PRISE_EN_CHARGE" class="tab-active group p-4 rounded-2xl border border-slate-800/80 font-bold text-xs flex items-center justify-start gap-3.5 transition-all duration-200 cursor-pointer bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 text-slate-400 hover:text-white shadow-lg shadow-black/20 active:scale-[0.98]">
+            <span class="w-11 h-11 rounded-xl bg-slate-800/60 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20 group-hover:text-emerald-400 flex items-center justify-center text-slate-400 text-base transition-all border border-slate-700/50">
+                <i class="fa-solid fa-truck-medical"></i>
+            </span>
             <div class="text-left">
-                <div class="text-sm font-extrabold">Médical Prise en Charge</div>
-                <div class="text-[10px] opacity-75 font-normal">Bilan Séquentiel Obligatoire & XABCDE</div>
+                <div class="text-xs sm:text-sm font-extrabold text-slate-200 group-hover:text-white transition-colors">Médical Prise en Charge</div>
+                <div class="text-[10px] text-slate-500 group-hover:text-slate-400 font-normal transition-colors">Bilan Séquentiel Obligatoire & XABCDE</div>
             </div>
         </button>
-
-        <button onclick="switchCategory('REGULATION')" id="tab-REGULATION" class="p-4 rounded-2xl border border-slate-800 font-bold text-xs flex items-center justify-center gap-3 transition-all cursor-pointer bg-slate-900/60 text-slate-400 hover:text-white">
-            <i class="fa-solid fa-tower-cell text-lg"></i>
+    
+        <button onclick="switchCategory('REGULATION')" id="tab-REGULATION" class="group p-4 rounded-2xl border border-slate-800/80 font-bold text-xs flex items-center justify-start gap-3.5 transition-all duration-200 cursor-pointer bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 text-slate-400 hover:text-white shadow-lg shadow-black/20 active:scale-[0.98]">
+            <span class="w-11 h-11 rounded-xl bg-slate-800/60 group-hover:bg-amber-500/10 group-hover:border-amber-500/20 group-hover:text-amber-400 flex items-center justify-center text-slate-400 text-base transition-all border border-slate-700/50">
+                <i class="fa-solid fa-tower-cell"></i>
+            </span>
             <div class="text-left">
-                <div class="text-sm font-extrabold">Transmission & Régulation</div>
-                <div class="text-[10px] opacity-75 font-normal">Accord / Refus de Transport & Vecteurs</div>
+                <div class="text-xs sm:text-sm font-extrabold text-slate-200 group-hover:text-white transition-colors">Transmission & Régulation</div>
+                <div class="text-[10px] text-slate-500 group-hover:text-slate-400 font-normal transition-colors">Accord / Refus de Transport & Vecteurs</div>
             </div>
         </button>
     </nav>
-
+    
     <!-- DASHBOARD STATS -->
     <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
-            <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl text-lg border border-sky-500/20"><i class="fa-solid fa-folder-open"></i></div>
-            <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Dossiers</span>
-                <p id="stat-total" class="text-xl font-black text-white">0</p>
+        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-sky-500/30">
+            <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl text-base border border-sky-500/20 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">Total Dossiers</span>
+                <p id="stat-total" class="text-xl font-black text-white font-mono">0</p>
             </div>
         </div>
-        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
-            <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-lg border border-emerald-500/20"><i class="fa-solid fa-truck-arrow-right"></i></div>
-            <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Transports Validés</span>
-                <p id="stat-transports-accordes" class="text-xl font-black text-emerald-400">0</p>
+    
+        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-emerald-500/30">
+            <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-truck-arrow-right"></i>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">Transports Validés</span>
+                <p id="stat-transports-accordes" class="text-xl font-black text-emerald-400 font-mono">0</p>
             </div>
         </div>
-        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
-            <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl text-lg border border-amber-500/20"><i class="fa-solid fa-clock-rotate-left"></i></div>
-            <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">En Attente Régulation</span>
-                <p id="stat-transports-attente" class="text-xl font-black text-amber-400">0</p>
+    
+        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-amber-500/30">
+            <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl text-base border border-amber-500/20 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">En Attente Régulation</span>
+                <p id="stat-transports-attente" class="text-xl font-black text-amber-400 font-mono">0</p>
             </div>
         </div>
-        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl flex items-center gap-3.5 shadow-inner">
-            <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl text-lg border border-rose-500/20"><i class="fa-solid fa-ban"></i></div>
-            <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Refus / Sur Place</span>
-                <p id="stat-transports-refuses" class="text-xl font-black text-rose-400">0</p>
+    
+        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-rose-500/30">
+            <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl text-base border border-rose-500/20 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-ban"></i>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">Refus / Sur Place</span>
+                <p id="stat-transports-refuses" class="text-xl font-black text-rose-400 font-mono">0</p>
             </div>
         </div>
     </section>
-
+    
     <!-- SEARCH BAR -->
-    <div class="flex flex-col sm:flex-row gap-3 bg-slate-900/40 p-3 rounded-2xl border border-slate-800">
+    <div class="flex flex-col sm:flex-row gap-3 bg-slate-900/60 backdrop-blur-sm p-3.5 rounded-2xl border border-slate-800/80 shadow-xl shadow-black/20">
         <div class="relative flex-1">
-            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </span>
             <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule, vecteur, statut..." 
-                   class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition-colors">
+                   class="w-full bg-slate-950/80 border border-slate-800/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/50 transition-all">
         </div>
     </div>
-
+    
     <!-- CARDS CONTAINER -->
     <main id="medical-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <!-- Rendu dynamique -->
     </main>
-
     <!-- MODAL PRINCIPALE -->
     <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-3 sm:p-5 overflow-y-auto bg-slate-950/80 backdrop-blur-md transition-all duration-300">
         <div class="bg-slate-900/95 border border-slate-800/80 rounded-3xl w-full max-w-3xl p-5 md:p-8 shadow-2xl shadow-black/50 relative space-y-6 my-auto transform transition-all">
