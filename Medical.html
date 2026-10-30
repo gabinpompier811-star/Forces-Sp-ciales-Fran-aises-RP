@@ -1,854 +1,1219 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" class="h-full bg-[#080b11] text-slate-100 selection:bg-blue-600 selection:text-white">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centre Médical Tactique & Régulation - FSF</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase JS SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forces Spéciales Françaises RP - Centre Médical Tactique</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Inter Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
 
-    <style>
-        body { 
-            background-color: #060911; 
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            tactical: {
+              bg: '#080b11',
+              card: '#0f172a',
+              cardHover: '#1e293b',
+              border: '#1e293b',
+              accent: '#3b82f6',
+              danger: '#ef4444',
+              warning: '#f59e0b',
+              success: '#10b981',
+              neon: '#00f0ff'
+            }
+          }
         }
-        .custom-card { 
-            background: linear-gradient(145deg, #0d1527 0%, #080e1a 100%);
-            border: 1px solid #1e293b;
-            transition: all 0.2s ease-in-out;
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #080b11; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+    .glow-blue { box-shadow: 0 0 20px -5px rgba(59, 130, 246, 0.3); }
+    .glow-red { box-shadow: 0 0 25px -3px rgba(239, 68, 68, 0.5); }
+    @keyframes pulse-fast {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .animate-alarm { animation: pulse-fast 0.6s infinite; }
+  </style>
+
+  <!-- FIREBASE IMPORTS -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+      getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, 
+      onSnapshot, collection, query, addDoc 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Global variables provided by environment or default fallback
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'fsf-rp-medical-app';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+      apiKey: "demo-api-key",
+      authDomain: "demo.firebaseapp.com",
+      projectId: "demo-project",
+      storageBucket: "demo.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:demo"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.appId = appId;
+    window.auth = auth;
+
+    // Authenticate user
+    async function initAuth() {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
         }
-        .custom-card:hover {
-            border-color: #38bdf855;
-            box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.15);
-            transform: translateY(-2px);
-        }
-        .modal-backdrop {
-            background-color: rgba(3, 7, 18, 0.88);
-            backdrop-filter: blur(12px);
-        }
-        .tab-active {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            color: #ffffff !important;
-            border-color: #38bdf8 !important;
-            box-shadow: 0 4px 20px -5px rgba(56, 189, 248, 0.4);
-        }
-        .step-active {
-            border-color: #38bdf8;
-            background-color: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-        }
-        .step-completed {
-            border-color: #10b981;
-            background-color: rgba(16, 185, 129, 0.15);
-            color: #10b981;
-        }
-        .step-locked {
-            border-color: #1e293b;
-            background-color: rgba(15, 23, 42, 0.5);
-            color: #475569;
-            cursor: not-allowed;
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #060911; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+      } catch (e) {
+        console.warn("Auth fallback to anonymous", e);
+        await signInAnonymously(auth);
+      }
+    }
 
-        @keyframes alertFlash {
-            0%, 100% { background-color: rgba(225, 29, 72, 0.1); border-color: rgba(225, 29, 72, 0.8); }
-            50% { background-color: rgba(225, 29, 72, 0.3); border-color: rgba(244, 63, 94, 1); }
-        }
-        .medevac-alert-card {
-            animation: alertFlash 1.2s infinite;
-        }
-    </style>
-</head>
-<body class="text-slate-100 min-h-screen flex flex-col p-3 sm:p-5 md:p-8 max-w-7xl mx-auto space-y-6">
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.currentUser = user;
+        document.getElementById('currentUserIdDisplay').innerText = `ID Connecté: ${user.uid.substring(0, 8)}...`;
+        initRealtimeListeners();
+      }
+    });
 
-    <!-- HEADER PRINCIPAL -->
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/80 p-4 sm:p-5 rounded-2xl border border-slate-800 backdrop-blur-md shadow-2xl">
-        <div class="flex items-center gap-3 sm:gap-4 w-full md:w-auto justify-between md:justify-start">
-            <a href="index.html" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2 transition-all hover:scale-105">
-                <i class="fa-solid fa-arrow-left"></i> QG
-            </a>
-            <div>
-                <h1 class="text-base sm:text-xl font-black text-sky-400 tracking-wide flex items-center gap-2">
-                    <i class="fa-solid fa-hospital-user text-rose-500 animate-pulse"></i> Centre Médical Tactique & Régulation
-                </h1>
-                <p class="text-[10px] sm:text-xs text-slate-400 font-medium">Plateforme FSF : Bilan Séquentiel, Santé & Déclenchement MEDEVAC</p>
-            </div>
-        </div>
+    initAuth();
 
-        <div class="flex items-center gap-2 w-full md:w-auto">
-            <button onclick="triggerMedevacAlert()" class="flex-1 md:flex-none px-4 py-2.5 bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/50 text-rose-300 font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg">
-                <i class="fa-solid fa-triangle-exclamation text-rose-400 animate-bounce"></i> BIP MEDEVAC
-            </button>
-            <button onclick="openWizard()" class="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-sky-950/60 flex items-center justify-center gap-2 transition-all cursor-pointer">
-                <i class="fa-solid fa-plus-circle text-sm"></i> + Nouvelle Prise en Charge
-            </button>
-        </div>
-    </header>
+    // ==========================================
+    // FIRESTORE REALTIME SYNC LISTENERS
+    // ==========================================
+    function initRealtimeListeners() {
+      if (!window.currentUser) return;
 
-    <!-- NAVIGATION PAR CATÉGORIES PRINCIPALES -->
-    <nav class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <button onclick="switchCategory('SANTE')" id="tab-SANTE" class="group p-4 rounded-2xl border border-slate-800/80 font-bold text-xs flex items-center justify-start gap-3.5 transition-all duration-200 cursor-pointer bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 text-slate-400 hover:text-white shadow-lg shadow-black/20 active:scale-[0.98]">
-            <span class="w-11 h-11 rounded-xl bg-slate-800/60 group-hover:bg-sky-500/10 group-hover:border-sky-500/20 group-hover:text-sky-400 flex items-center justify-center text-slate-400 text-base transition-all border border-slate-700/50">
-                <i class="fa-solid fa-notes-medical"></i>
-            </span>
-            <div class="text-left">
-                <div class="text-xs sm:text-sm font-extrabold text-slate-200 group-hover:text-white transition-colors">Service Médical & Santé</div>
-                <div class="text-[10px] text-slate-500 group-hover:text-slate-400 font-normal transition-colors">Visites d'aptitude, TAP & Effectif</div>
-            </div>
-        </button>
-    
-        <button onclick="switchCategory('PRISE_EN_CHARGE')" id="tab-PRISE_EN_CHARGE" class="tab-active group p-4 rounded-2xl border border-slate-800/80 font-bold text-xs flex items-center justify-start gap-3.5 transition-all duration-200 cursor-pointer bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 text-slate-400 hover:text-white shadow-lg shadow-black/20 active:scale-[0.98]">
-            <span class="w-11 h-11 rounded-xl bg-slate-800/60 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20 group-hover:text-emerald-400 flex items-center justify-center text-slate-400 text-base transition-all border border-slate-700/50">
-                <i class="fa-solid fa-truck-medical"></i>
-            </span>
-            <div class="text-left">
-                <div class="text-xs sm:text-sm font-extrabold text-slate-200 group-hover:text-white transition-colors">Médical Prise en Charge</div>
-                <div class="text-[10px] text-slate-500 group-hover:text-slate-400 font-normal transition-colors">Bilan Séquentiel Obligatoire & XABCDE</div>
-            </div>
-        </button>
-    
-        <button onclick="switchCategory('REGULATION')" id="tab-REGULATION" class="group p-4 rounded-2xl border border-slate-800/80 font-bold text-xs flex items-center justify-start gap-3.5 transition-all duration-200 cursor-pointer bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 text-slate-400 hover:text-white shadow-lg shadow-black/20 active:scale-[0.98]">
-            <span class="w-11 h-11 rounded-xl bg-slate-800/60 group-hover:bg-amber-500/10 group-hover:border-amber-500/20 group-hover:text-amber-400 flex items-center justify-center text-slate-400 text-base transition-all border border-slate-700/50">
-                <i class="fa-solid fa-tower-cell"></i>
-            </span>
-            <div class="text-left">
-                <div class="text-xs sm:text-sm font-extrabold text-slate-200 group-hover:text-white transition-colors">Transmission & Régulation</div>
-                <div class="text-[10px] text-slate-500 group-hover:text-slate-400 font-normal transition-colors">Accord / Refus de Transport & Vecteurs</div>
-            </div>
-        </button>
-    </nav>
-    
-    <!-- DASHBOARD STATS -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-sky-500/30">
-            <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl text-base border border-sky-500/20 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-folder-open"></i>
-            </div>
-            <div class="min-w-0">
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">Total Dossiers</span>
-                <p id="stat-total" class="text-xl font-black text-white font-mono">0</p>
-            </div>
-        </div>
-    
-        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-emerald-500/30">
-            <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-truck-arrow-right"></i>
-            </div>
-            <div class="min-w-0">
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">Transports Validés</span>
-                <p id="stat-transports-accordes" class="text-xl font-black text-emerald-400 font-mono">0</p>
-            </div>
-        </div>
-    
-        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-amber-500/30">
-            <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl text-base border border-amber-500/20 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-            </div>
-            <div class="min-w-0">
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">En Attente Régulation</span>
-                <p id="stat-transports-attente" class="text-xl font-black text-amber-400 font-mono">0</p>
-            </div>
-        </div>
-    
-        <div class="bg-slate-900/60 backdrop-blur-sm border border-slate-800/80 p-4 rounded-2xl flex items-center gap-3.5 shadow-xl shadow-black/20 transition-all hover:border-rose-500/30">
-            <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl text-base border border-rose-500/20 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-ban"></i>
-            </div>
-            <div class="min-w-0">
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block truncate">Refus / Sur Place</span>
-                <p id="stat-transports-refuses" class="text-xl font-black text-rose-400 font-mono">0</p>
-            </div>
-        </div>
-    </section>
-    
-    <!-- SEARCH BAR -->
-    <div class="flex flex-col sm:flex-row gap-3 bg-slate-900/60 backdrop-blur-sm p-3.5 rounded-2xl border border-slate-800/80 shadow-xl shadow-black/20">
-        <div class="relative flex-1">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <i class="fa-solid fa-magnifying-glass text-xs"></i>
-            </span>
-            <input type="text" id="searchInput" oninput="renderCards()" placeholder="Rechercher par nom, matricule, vecteur, statut..." 
-                   class="w-full bg-slate-950/80 border border-slate-800/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/50 transition-all">
-        </div>
-    </div>
-    
-    <!-- CARDS CONTAINER -->
-    <main id="medical-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Rendu dynamique -->
-    </main>
-    <!-- MODAL PRINCIPALE -->
-    <div id="medicalModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-3 sm:p-5 overflow-y-auto bg-slate-950/80 backdrop-blur-md transition-all duration-300">
-        <div class="bg-slate-900/95 border border-slate-800/80 rounded-3xl w-full max-w-3xl p-5 md:p-8 shadow-2xl shadow-black/50 relative space-y-6 my-auto transform transition-all">
-            
-            <!-- EN-TÊTE DE LA MODAL -->
-            <div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
-                <h3 id="modalTitle" class="text-base font-bold text-sky-400 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
-                        <i class="fa-solid fa-file-medical text-base"></i>
-                    </span>
-                    Prise en Charge Médicale
-                </h3>
-                <button onclick="closeModal()" aria-label="Fermer la modale" class="w-9 h-9 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
-    
-            <!-- MODE CONSULTATION (READ ONLY) -->
-            <div id="view-mode-container" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-1 custom-scrollbar"></div>
-    
-            <!-- FORMULAIRE DE CRÉATION & ÉDITION -->
-            <form id="step-2" onsubmit="handleFormSubmit(event)" class="hidden space-y-5 max-h-[70vh] overflow-y-auto pr-1 custom-scrollbar">
-                <input type="hidden" id="recordKey">
-                <input type="hidden" id="selectedMainCategory">
-    
-                <!-- BADGE CATÉGORIE ACTIVE (Sticky) -->
-                <div class="flex items-center justify-between bg-slate-950/90 backdrop-blur-sm p-3.5 rounded-2xl border border-slate-800/80 sticky top-0 z-20 shadow-lg">
-                    <span id="typeBadge" class="text-xs font-bold flex items-center gap-2"></span>
-                    <span id="transportStatusBadge" class="text-[10px] font-extrabold px-3 py-1 rounded-xl border shadow-sm"></span>
-                </div>
-    
-                <!-- IDENTITÉ DU PATIENT -->
-                <div class="space-y-2.5">
-                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-id-card"></i> Identité Patient / Victime
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div>
-                            <label for="formName" class="block text-[10px] font-medium text-slate-400 mb-1.5">Nom & Prénom *</label>
-                            <input type="text" id="formName" required placeholder="ex: John Doe" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/50 transition-all">
-                        </div>
-                        <div>
-                            <label for="formMat" class="block text-[10px] font-medium text-slate-400 mb-1.5">Matricule / Identifiant *</label>
-                            <input type="text" id="formMat" required placeholder="ex: FSF-042" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs font-mono text-sky-400 placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/50 transition-all">
-                        </div>
-                    </div>
-                </div>
-    
-                <!-- BLOC SANTÉ SPÉCIFIQUE -->
-                <div id="sante-fields-block" class="space-y-3 pt-3 border-t border-slate-800/80">
-                    <h4 class="text-[11px] font-bold uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-notes-medical"></i> Données de Santé & Aptitude
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                        <div>
-                            <label for="formSang" class="block text-[10px] font-medium text-slate-400 mb-1.5">Groupe Sanguin</label>
-                            <select id="formSang" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-all">
-                                <option value="A+">A+</option><option value="A-">A-</option>
-                                <option value="B+">B+</option><option value="B-">B-</option>
-                                <option value="AB+">AB+</option><option value="AB-">AB-</option>
-                                <option value="O+">O+</option><option value="O-">O-</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="formTap" class="block text-[10px] font-medium text-slate-400 mb-1.5">Aptitude TAP</label>
-                            <select id="formTap" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-all">
-                                <option value="true">Apte</option>
-                                <option value="false">Inapte</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="formVma" class="block text-[10px] font-medium text-slate-400 mb-1.5">VMA (km/h)</label>
-                            <input type="text" id="formVma" placeholder="ex: 16 km/h" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-all">
-                        </div>
-                    </div>
-                </div>
-    
-                <!-- BLOC RÉGULATION -->
-                <div id="regulation-fields-block" class="space-y-3.5 pt-3 border-t border-slate-800/80 bg-amber-950/10 p-4 rounded-2xl border border-amber-900/30">
-                    <h4 class="text-[11px] font-bold uppercase text-amber-400 tracking-wider flex items-center justify-between">
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-tower-cell"></i> Décision de Régulation & Transport</span>
-                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-lg border border-amber-500/20 font-bold">Poste Régulateur</span>
-                    </h4>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div>
-                            <label for="formTransportStatus" class="block text-[10px] font-bold text-slate-300 mb-1.5">Décision Transport Médicalisé *</label>
-                            <select id="formTransportStatus" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white font-bold focus:outline-none focus:border-amber-500 transition-all">
-                                <option value="EN_ATTENTE" class="text-amber-400">⏳ En Attente d'Avis Régulation</option>
-                                <option value="ACCORDE" class="text-emerald-400">✅ Transport ACCORDÉ par Régulateur</option>
-                                <option value="REFUSE" class="text-rose-400">❌ Transport REFUSÉ / Laissé sur place</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="formVecteur" class="block text-[10px] font-medium text-slate-400 mb-1.5">Vecteur d'Évacuation Attribué</label>
-                            <input type="text" id="formVecteur" placeholder="ex: Héli / UMH / DRAGON 25" class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-all">
-                        </div>
-                    </div>
-    
-                    <div>
-                        <label for="formRegNotes" class="block text-[10px] font-medium text-slate-400 mb-1.5">Consignes Régulation / Destination</label>
-                        <textarea id="formRegNotes" rows="2" placeholder="Consignes transmises aux secouristes par le médecin régulateur..." class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 text-xs text-white placeholder-slate-600 resize-none focus:outline-none focus:border-amber-500 transition-all"></textarea>
-                    </div>
-                </div>
-    
-                <!-- WORKFLOW ÉTAPE PAR ÉTAPE (PRISE EN CHARGE) -->
-                <div id="logs-module-block" class="space-y-4 pt-3 border-t border-slate-800/80">
-                    <h4 class="text-[11px] font-bold uppercase text-sky-400 tracking-wider flex justify-between items-center">
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-list-check"></i> Protocole Séquentiel Obligatoire</span>
-                        <span id="currentStepIndicator" class="text-[10px] text-sky-300 bg-sky-950/80 px-2.5 py-1 rounded-xl border border-sky-800/80 font-mono shadow-sm">Étape 1 / 5</span>
-                    </h4>
-    
-                    <!-- BARRE DE PROGRESSION PAR ÉTAPES -->
-                    <div class="grid grid-cols-5 gap-2 text-[10px] font-bold text-center">
-                        <div id="step-btn-1" class="p-2.5 rounded-xl border transition-all duration-200 step-active shadow-sm">1. Circonst.</div>
-                        <div id="step-btn-2" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">2. CTA</div>
-                        <div id="step-btn-3" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">3. Primaire</div>
-                        <div id="step-btn-4" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">4. Second.</div>
-                        <div id="step-btn-5" class="p-2.5 rounded-xl border transition-all duration-200 step-locked">5. Surveill.</div>
-                    </div>
-    
-                    <!-- FORMULAIRE D'ÉTAPE ACTUELLE -->
-                    <div class="bg-slate-950/70 p-4.5 rounded-2xl border border-slate-800/80 space-y-3.5 shadow-inner">
-                        <div class="flex justify-between items-center">
-                            <span id="stepTitleDisplay" class="text-xs font-bold text-sky-400">Étape 1: Bilan Circonstanciel</span>
-                            <span class="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800" id="stepTimeDisplay">--:--</span>
-                        </div>
-    
-                        <div id="stepFormContainer" class="space-y-3">
-                            <!-- Champs générés selon l'étape -->
-                        </div>
-    
-                        <div>
-                            <label for="stepNotesInput" class="block text-[10px] font-medium text-slate-400 mb-1.5">Remarques de l'étape *</label>
-                            <textarea id="stepNotesInput" rows="2" placeholder="Notez les constatations précises pour valider cette étape..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-600 resize-none focus:outline-none focus:border-sky-500 transition-all"></textarea>
-                        </div>
-    
-                        <button type="button" onclick="validateAndAdvanceStep()" class="w-full py-3 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/20 active:scale-[0.99]">
-                            <i class="fa-solid fa-circle-check text-emerald-400"></i> Valider l'Étape et Passer à la Suivante
-                        </button>
-                    </div>
-    
-                    <!-- RELEVÉS ENREGISTRÉS -->
-                    <div class="space-y-2">
-                        <h5 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Étapes Validées dans ce dossier</h5>
-                        <div id="logs-editor-list" class="space-y-2"></div>
-                    </div>
-                </div>
-    
-                <!-- BOUTONS D'ACTION FINAUX -->
-                <div class="flex justify-end gap-3 pt-4 border-t border-slate-800/80 sticky bottom-0 bg-slate-900/95 backdrop-blur-sm pb-2 z-20">
-                    <button type="button" onclick="closeModal()" class="px-5 py-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95">Annuler</button>
-                    <button type="submit" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-950/80 transition-all cursor-pointer active:scale-95 flex items-center gap-2">
-                        <i class="fa-solid fa-floppy-disk text-xs"></i> Enregistrer le Dossier
-                    </button>
-                </div>
-            </form>
-    
-        </div>
-    </div>
-
-    <!-- MODAL D'ALERTE TACTIQUE MEDEVAC -->
-    <div id="medevacAlertModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
-        <div class="medevac-alert-card bg-slate-950 border-2 border-rose-600 rounded-3xl w-full max-w-lg p-6 shadow-2xl text-center space-y-4">
-            <div class="w-16 h-16 bg-rose-600/20 text-rose-500 rounded-full flex items-center justify-center mx-auto text-3xl animate-bounce">
-                <i class="fa-solid fa-truck-medical"></i>
-            </div>
-            <h3 class="text-xl font-black text-rose-500 tracking-wider uppercase">ALERTE MEDEVAC DÉCLENCHÉE</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">
-                Une demande d'évacuation médicale prioritaire a été transmise au Centre Régulateur FSF. Prévenir les vecteurs d'intervention immédiatement.
-            </p>
-            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs font-mono text-amber-400">
-                STATUT : REGULATION HÉLI / UMH EN COURS
-            </div>
-            <button onclick="closeMedevacAlert()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all cursor-pointer">
-                ACKNOWLEDGE / REÇU
-            </button>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // Session utilisateur
-        const currentUser = JSON.parse(localStorage.getItem('fsf_user_session')) || { isOwner: true, perms: ['MEDICAL'] };
-
-        const firebaseConfig = { databaseURL: "https://fsf-rp-default-rtdb.europe-west1.firebasedatabase.app" };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        let rawMedicalData = {};
-        let activeCategory = 'PRISE_EN_CHARGE';
-        let currentLogs = [];
-        let currentStepNumber = 1;
-
-        const STEPS_CONFIG = [
-            { id: 1, name: 'Circonstanciel', title: 'Étape 1: Bilan Circonstanciel (Secteur & Mécanisme)' },
-            { id: 2, name: 'Transmission CTA', title: 'Étape 2: Transmission Radio initiale CTA / Régulation' },
-            { id: 3, name: 'Primaire XABCDE', title: 'Étape 3: Bilan Primaire Vitale (XABCDE)' },
-            { id: 4, name: 'Secondaire', title: 'Étape 4: Bilan Secondaire & Anamnèse' },
-            { id: 5, name: 'Surveillance', title: 'Étape 5: Surveillance Régulière des Constantes' }
-        ];
-
-        // Sync realtime Firebase
-        db.ref('medical').on('value', snapshot => {
-            rawMedicalData = snapshot.val() || {};
-            updateDashboardStats();
-            renderCards();
+      // 1. Listen for Public Records / Bilans
+      const recordsCol = collection(db, 'artifacts', appId, 'public', 'data', 'medicalRecords');
+      onSnapshot(recordsCol, (snapshot) => {
+        const records = [];
+        snapshot.forEach(docSnap => {
+          records.push({ id: docSnap.id, ...docSnap.data() });
         });
+        window.medicalRecords = records;
+        window.renderTabContent();
+      }, (err) => console.error("Records snapshot error:", err));
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      // 2. Listen for Staff / Personnel
+      const staffCol = collection(db, 'artifacts', appId, 'public', 'data', 'staffMembers');
+      onSnapshot(staffCol, (snapshot) => {
+        const staff = [];
+        snapshot.forEach(docSnap => {
+          staff.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        window.staffMembers = staff;
+        window.checkIncomingBips();
+        window.renderTabContent();
+      }, (err) => console.error("Staff snapshot error:", err));
+
+      // 3. Listen for Global Bips / MEDEVAC
+      const bipsCol = collection(db, 'artifacts', appId, 'public', 'data', 'activeBips');
+      onSnapshot(bipsCol, (snapshot) => {
+        const bips = [];
+        snapshot.forEach(docSnap => {
+          bips.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        window.activeBips = bips;
+        window.checkIncomingBips();
+      }, (err) => console.error("Bips snapshot error:", err));
+    }
+
+    // Helper functions exported to window
+    window.dbAddRecord = async (data) => {
+      const col = collection(db, 'artifacts', appId, 'public', 'data', 'medicalRecords');
+      await addDoc(col, { ...data, createdAt: Date.now() });
+    };
+
+    window.dbUpdateRecord = async (docId, data) => {
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'medicalRecords', docId);
+      await updateDoc(docRef, data);
+    };
+
+    window.dbDeleteRecord = async (docId) => {
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'medicalRecords', docId);
+      await deleteDoc(docRef);
+    };
+
+    window.dbSaveStaff = async (staffId, data) => {
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'staffMembers', staffId);
+      await setDoc(docRef, data, { merge: true });
+    };
+
+    window.dbDeleteStaff = async (staffId) => {
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'staffMembers', staffId);
+      await deleteDoc(docRef);
+    };
+
+    window.dbSendBip = async (bipData) => {
+      const col = collection(db, 'artifacts', appId, 'public', 'data', 'activeBips');
+      await addDoc(col, { ...bipData, active: true, timestamp: Date.now() });
+    };
+
+    window.dbClearBip = async (bipId) => {
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'activeBips', bipId);
+      await deleteDoc(docRef);
+    };
+  </script>
+</head>
+
+<body class="h-full flex flex-col font-sans bg-[#080b11] text-slate-200 overflow-x-hidden">
+
+  <!-- BANNIÈRE ALERTE BIP CONTINU / OVERLAY -->
+  <div id="beepAlertOverlay" class="hidden fixed top-4 right-4 sm:right-6 z-50 max-w-lg w-full bg-red-950/95 border-2 border-red-500 rounded-2xl p-5 shadow-2xl backdrop-blur-md animate-alarm glow-red">
+    <div class="flex items-start gap-4">
+      <div class="p-3.5 bg-red-600/30 text-red-400 rounded-xl animate-bounce">
+        <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-mono font-bold uppercase tracking-wider bg-red-600 text-white px-2 py-0.5 rounded">ALERTE SONORE EN COURS</span>
+          <span id="beepAlertTime" class="text-xs font-mono text-red-300">19:42</span>
+        </div>
+        <h4 id="beepAlertTitle" class="font-extrabold text-white text-lg mt-1">BIP INDIVIDUEL REÇU</h4>
+        <p id="beepAlertMessage" class="text-sm text-red-100 mt-1">Message d'intervention tactique...</p>
+        <div class="text-xs font-mono text-red-300/80 mt-2">
+          <span id="beepAlertTarget" class="font-bold text-white">Destinataire: Agent Cdt Miller</span>
+        </div>
+        <button onclick="stopAndClearCurrentBip()" class="mt-4 w-full bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/50">
+          <i class="fa-solid fa-bell-slash text-base"></i>
+          <span>ACQUITTER & ARRÊTER LE BIP SONORE</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="p-4 sm:p-6 space-y-5 max-w-[1700px] mx-auto w-full">
+
+    <!-- HEADER BAR -->
+    <div class="bg-[#0f172a]/90 backdrop-blur border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-xl">
+      <div class="flex items-center gap-4 w-full lg:w-auto">
+        <a href="#" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 border border-slate-700">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>QG</span>
+        </a>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-red-600/20 border border-red-500/30 rounded-xl flex items-center justify-center text-red-500 text-2xl shadow-inner">
+            <i class="fa-solid fa-hospital-user"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg sm:text-xl font-extrabold text-white tracking-wide">Centre Médical Tactique & Régulation</h1>
+              <span class="bg-blue-500/10 text-blue-400 text-xs px-2 py-0.5 rounded border border-blue-500/20 font-mono font-semibold">FSF RP SYNC</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-2">
+              <span>Plateforme FSF : Bilans, Dossiers Médicaux & Bips Directs</span>
+              <span id="currentUserIdDisplay" class="font-mono text-[10px] text-blue-400 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">Connexion...</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEADER BUTTONS -->
+      <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+        <button onclick="triggerGeneralMedevacBip()" class="flex-1 lg:flex-none bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/50 px-4 py-2.5 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 shadow-lg glow-red">
+          <i class="fa-solid fa-bell animate-pulse text-red-500"></i>
+          <span>BIP MEDEVAC GÉNÉRAL</span>
+        </button>
+        <button onclick="openNewRecordChoiceModal()" class="flex-1 lg:flex-none bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 glow-blue">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>+ Créer un Bilan / Dossier</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN NAVIGATION TABS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <button onclick="switchTab('dossiers')" id="tab-btn-dossiers" class="tab-btn bg-blue-600/20 border-2 border-blue-500 p-3.5 rounded-xl text-left transition flex items-center gap-3 glow-blue">
+        <div class="w-10 h-10 rounded-lg bg-blue-600/30 flex items-center justify-center text-blue-400">
+          <i class="fa-solid fa-folder-user text-lg"></i>
+        </div>
+        <div>
+          <div class="font-bold text-sm text-white">Dossiers Médicaux</div>
+          <div class="text-[11px] text-blue-300/80">Fiches Opérateurs & Bilans</div>
+        </div>
+      </button>
+
+      <button onclick="switchTab('regulation')" id="tab-btn-regulation" class="tab-btn bg-[#0f172a] hover:bg-[#1e293b] border border-slate-800 p-3.5 rounded-xl text-left transition flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-blue-400 transition">
+          <i class="fa-solid fa-tower-cell text-lg"></i>
+        </div>
+        <div>
+          <div class="font-bold text-sm text-slate-200">Transmission & Régulation</div>
+          <div class="text-[11px] text-slate-400">Suivi des Transports</div>
+        </div>
+      </button>
+
+      <button onclick="switchTab('personnel')" id="tab-btn-personnel" class="tab-btn bg-[#0f172a] hover:bg-[#1e293b] border border-slate-800 p-3.5 rounded-xl text-left transition flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-blue-400 transition">
+          <i class="fa-solid fa-user-doctor text-lg"></i>
+        </div>
+        <div>
+          <div class="font-bold text-sm text-slate-200">Personnel & Bip Cible</div>
+          <div class="text-[11px] text-slate-400">Effectifs & Bips Individuels</div>
+        </div>
+      </button>
+
+      <button onclick="switchTab('settings')" id="tab-btn-settings" class="tab-btn bg-[#0f172a] hover:bg-[#1e293b] border border-slate-800 p-3.5 rounded-xl text-left transition flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-blue-400 transition">
+          <i class="fa-solid fa-sliders text-lg"></i>
+        </div>
+        <div>
+          <div class="font-bold text-sm text-slate-200">Paramètres Sonores</div>
+          <div class="text-[11px] text-slate-400">Fréquence, Vitesse, Volume</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- METRICS CARDS ROW -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-notes-medical"></i>
+        </div>
+        <div>
+          <div class="text-xs uppercase text-slate-400 font-bold tracking-wider">Total Bilans</div>
+          <div id="stat-total" class="text-2xl font-extrabold text-white font-mono">0</div>
+        </div>
+      </div>
+
+      <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-truck-fast"></i>
+        </div>
+        <div>
+          <div class="text-xs uppercase text-slate-400 font-bold tracking-wider">Transports Validés</div>
+          <div id="stat-transports" class="text-2xl font-extrabold text-emerald-400 font-mono">0</div>
+        </div>
+      </div>
+
+      <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+        <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <div>
+          <div class="text-xs uppercase text-slate-400 font-bold tracking-wider">En Attente Régulation</div>
+          <div id="stat-attente" class="text-2xl font-extrabold text-amber-400 font-mono">0</div>
+        </div>
+      </div>
+
+      <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+        <div class="w-12 h-12 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center text-xl">
+          <i class="fa-solid fa-users text-xl"></i>
+        </div>
+        <div>
+          <div class="text-xs uppercase text-slate-400 font-bold tracking-wider">Personnel Médical</div>
+          <div id="stat-staff" class="text-2xl font-extrabold text-purple-400 font-mono">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH & FILTER BAR -->
+    <div class="bg-[#0f172a] border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row items-center gap-3">
+      <div class="relative w-full flex-1">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+        <input type="text" id="searchInput" oninput="renderTabContent()" placeholder="Rechercher par nom, matricule, vecteur, statut..." class="w-full bg-[#080b11] border border-slate-800 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+      </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <select id="filterCategory" onchange="renderTabContent()" class="bg-[#080b11] border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+          <option value="ALL">Toutes les catégories</option>
+          <option value="BILAN_COMPLET">Bilan Complet</option>
+          <option value="URGENCE">Urgence / TCCC</option>
+          <option value="VISITE_APTITUDE">Visite Aptitude / TAP</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TAB CONTENT CONTAINER -->
+    <div id="tabContent" class="space-y-4"></div>
+
+  </div>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- MODAL: CHOIX DU TYPE DE CRÉATION -->
+  <div id="modalSelectRecordType" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-6">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 bg-blue-600/20 text-blue-400 rounded-lg">
+            <i class="fa-solid fa-folder-plus text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">Créer un Nouvel Elément Médical</h3>
+            <p class="text-xs text-slate-400">Choisissez le type de formulaire vierge à enregistrer</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalSelectRecordType')" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <button onclick="openFormModal('BILAN_COMPLET')" class="bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-blue-500 rounded-xl p-5 text-left transition space-y-3 group">
+          <div class="w-10 h-10 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-stethoscope"></i>
+          </div>
+          <h4 class="font-bold text-slate-100 text-sm">Bilan Complet</h4>
+          <p class="text-xs text-slate-400">Examen complet XABCDE, constantes vitales, symptômes et traitements.</p>
+        </button>
+
+        <button onclick="openFormModal('URGENCE')" class="bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-red-500 rounded-xl p-5 text-left transition space-y-3 group">
+          <div class="w-10 h-10 rounded-lg bg-red-600/20 text-red-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-kit-medical"></i>
+          </div>
+          <h4 class="font-bold text-slate-100 text-sm">Urgence / TCCC</h4>
+          <p class="text-xs text-slate-400">Soins sous le feu, poses de garrots (MARCH) et évacuation MEDEVAC.</p>
+        </button>
+
+        <button onclick="openFormModal('VISITE_APTITUDE')" class="bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-xl p-5 text-left transition space-y-3 group">
+          <div class="w-10 h-10 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+          <h4 class="font-bold text-slate-100 text-sm">Visite & Aptitude</h4>
+          <p class="text-xs text-slate-400">Profil SIGYCOP, contrôle TAP, tir de combat et aptitudes générales.</p>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FORMULAIRE CREATION / EDITION (SANS PRE-REMPLISSAGE) -->
+  <div id="modalFormRecord" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-[#0f172a] border border-slate-700 rounded-2xl max-w-3xl w-full p-6 shadow-2xl my-8 space-y-5">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <div>
+          <h3 id="formModalTitle" class="text-lg font-bold text-white">Nouveau Dossier / Bilan</h3>
+          <span id="formModalTypeBadge" class="inline-block mt-1 text-xs px-2.5 py-0.5 rounded font-mono font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">BILAN</span>
+        </div>
+        <button onclick="closeModal('modalFormRecord')" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <form id="medicalForm" onsubmit="saveRecordSubmit(event)" class="space-y-4">
+        <input type="hidden" id="editingRecordId" value="">
+        <input type="hidden" id="formType" value="BILAN_COMPLET">
+
+        <!-- INFOS OPERATEUR -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Nom / Pseudonyme <span class="text-red-400">*</span></label>
+            <input type="text" id="patientName" required placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Matricule <span class="text-red-400">*</span></label>
+            <input type="text" id="patientMatricule" required placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 font-mono focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Unité / Section</label>
+            <input type="text" id="patientUnit" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <!-- DYNAMIC FIELDS -->
+        <div id="dynamicFormFields" class="space-y-4"></div>
+
+        <!-- REGULATION ET STATUT -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Décision Régulation / Statut</label>
+            <select id="recordStatus" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+              <option value="EN_ATTENTE">En attente de Régulation</option>
+              <option value="MEDEVAC_VALIDEE">Transport MEDEVAC Validé</option>
+              <option value="REFUS_SUR_PLACE">Refus / Soins sur Place</option>
+              <option value="APTE">Apte au Service</option>
+              <option value="INAPTE_TEMPORAIRE">Inapte Temporaire</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Vecteur / Médecin Traitant</label>
+            <input type="text" id="recordVector" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeModal('modalFormRecord')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition">
+            Annuler
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition shadow-lg shadow-blue-600/30">
+            Enregistrer dans la Base
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CREATION / EDITION PERSONNEL -->
+  <div id="modalStaffForm" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 id="staffModalTitle" class="text-base font-bold text-white">Ajouter un Agent Médical</h3>
+        <button onclick="closeModal('modalStaffForm')" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="staffForm" onsubmit="saveStaffSubmit(event)" class="space-y-3">
+        <input type="hidden" id="staffEditId" value="">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Nom & Prénom <span class="text-red-400">*</span></label>
+          <input type="text" id="staffName" required placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Grade / Titre <span class="text-red-400">*</span></label>
+          <input type="text" id="staffRank" required placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Rôle / Spécialité</label>
+          <input type="text" id="staffRole" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Statut Initial</label>
+          <select id="staffStatus" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100">
+            <option value="DISPONIBLE">Disponible</option>
+            <option value="EN_INTERVENTION">En Intervention</option>
+            <option value="DE_GARDE">De Garde</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('modalStaffForm')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold">Annuler</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold">Enregistrer Agent</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: BIP CIBLÉ AGENT -->
+  <div id="modalBipAgent" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#0f172a] border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2 text-red-400 font-bold">
+          <i class="fa-solid fa-pager text-lg"></i>
+          <span>Biper Uniquement cet Agent</span>
+        </div>
+        <button onclick="closeModal('modalBipAgent')" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Agent Destinataire (Seul bipé)</label>
+          <input type="text" id="bipTargetAgent" readonly class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-sm font-bold text-slate-200">
+          <input type="hidden" id="bipTargetAgentId" value="">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Message d'Urgence Tactique</label>
+          <textarea id="bipCustomMessage" rows="3" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-red-500"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal('modalBipAgent')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold">Annuler</button>
+        <button onclick="sendTargetedAgentBip()" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-2 glow-red">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Déclencher le Bip Sonore</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Global State arrays (synchronized via Firebase)
+    window.medicalRecords = [];
+    window.staffMembers = [];
+    window.activeBips = [];
+
+    let activeTab = 'dossiers';
+
+    // Audio & Beep Loop Settings
+    let audioSettings = {
+      volume: 0.8,
+      frequency: 900,
+      repeatIntervalMs: 800
+    };
+
+    let audioCtx = null;
+    let beepIntervalId = null;
+    let isBeepingNow = false;
+    let currentActiveBipObj = null;
+
+    // Web Audio API Sound Generation
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSingleSoundPulse() {
+      try {
+        const ctx = getAudioContext();
+        const masterGain = ctx.createGain();
+        masterGain.gain.value = audioSettings.volume;
+        masterGain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(audioSettings.frequency, now);
+        osc.frequency.exponentialRampToValueAtTime(audioSettings.frequency * 1.3, now + 0.15);
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } catch (err) {
+        console.error("Audio error:", err);
+      }
+    }
+
+    // CONTINUOUS BEEP LOOP
+    function startContinuousBeep(bipData) {
+      if (isBeepingNow) return;
+      isBeepingNow = true;
+      currentActiveBipObj = bipData;
+
+      const overlay = document.getElementById('beepAlertOverlay');
+      document.getElementById('beepAlertTitle').innerText = bipData.targetAgent ? `BIP CIBLÉ : ${bipData.targetAgent}` : "BIP MEDEVAC GÉNÉRAL";
+      document.getElementById('beepAlertMessage').innerText = bipData.message || "Intervention requise immédiatement !";
+      document.getElementById('beepAlertTarget').innerText = bipData.targetAgent ? `Émis pour: ${bipData.targetAgent}` : "Diffusion à tous les effectifs";
+      document.getElementById('beepAlertTime').innerText = new Date(bipData.timestamp || Date.now()).toLocaleTimeString();
+
+      overlay.classList.remove('hidden');
+
+      // Play first pulse
+      playSingleSoundPulse();
+
+      // Loop sound constantly until stop button pressed
+      clearInterval(beepIntervalId);
+      beepIntervalId = setInterval(() => {
+        playSingleSoundPulse();
+      }, audioSettings.repeatIntervalMs);
+    }
+
+    function stopAndClearCurrentBip() {
+      isBeepingNow = false;
+      clearInterval(beepIntervalId);
+      document.getElementById('beepAlertOverlay').classList.add('hidden');
+
+      if (currentActiveBipObj && currentActiveBipObj.id) {
+        window.dbClearBip(currentActiveBipObj.id);
+      }
+      currentActiveBipObj = null;
+    }
+
+    // Check incoming bips from Firebase Realtime stream
+    window.checkIncomingBips = function() {
+      if (!window.activeBips || window.activeBips.length === 0) {
+        if (isBeepingNow) {
+          stopAndClearCurrentBip();
         }
+        return;
+      }
 
-        function switchCategory(cat) {
-            activeCategory = cat;
-            ['SANTE', 'PRISE_EN_CHARGE', 'REGULATION'].forEach(c => {
-                const btn = document.getElementById(`tab-${c}`);
-                if (c === cat) btn.classList.add('tab-active');
-                else btn.classList.remove('tab-active');
-            });
-            renderCards();
-        }
+      // Check for targeted bip or general bip
+      const latestBip = window.activeBips[window.activeBips.length - 1];
+      if (latestBip && latestBip.active) {
+        // If bip is targeted to a specific staff member or general
+        startContinuousBeep(latestBip);
+      }
+    };
 
-        function updateDashboardStats() {
-            const keys = Object.keys(rawMedicalData);
-            const total = keys.length;
+    // Trigger General MEDEVAC Bip to Firebase
+    window.triggerGeneralMedevacBip = function() {
+      window.dbSendBip({
+        targetAgent: null, // null = General for everyone
+        message: "URGENCE MEDEVAC GENERALE DÉCLENCHÉE - TOUT LE PERSONNEL EN REPLI / PRISE EN CHARGE",
+        sender: window.currentUser ? window.currentUser.uid : 'QG'
+      });
+    };
 
-            let accordes = 0, attente = 0, refuses = 0;
-            keys.forEach(k => {
-                const status = rawMedicalData[k].transportStatus || 'EN_ATTENTE';
-                if (status === 'ACCORDE') accordes++;
-                else if (status === 'REFUSE') refuses++;
-                else attente++;
-            });
+    // UI Tab Navigation
+    window.switchTab = function(tabKey) {
+      activeTab = tabKey;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600/20', 'border-2', 'border-blue-500', 'glow-blue');
+        btn.classList.add('bg-[#0f172a]', 'border-slate-800');
+      });
 
-            document.getElementById('stat-total').innerText = total;
-            document.getElementById('stat-transports-accordes').innerText = accordes;
-            document.getElementById('stat-transports-attente').innerText = attente;
-            document.getElementById('stat-transports-refuses').innerText = refuses;
-        }
+      const activeBtn = document.getElementById(`tab-btn-${tabKey}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-[#0f172a]', 'border-slate-800');
+        activeBtn.classList.add('bg-blue-600/20', 'border-2', 'border-blue-500', 'glow-blue');
+      }
 
-        function renderCards() {
-            const container = document.getElementById('medical-cards-container');
-            const search = document.getElementById('searchInput').value.toLowerCase();
+      window.renderTabContent();
+    };
 
-            const keys = Object.keys(rawMedicalData).filter(key => {
-                const m = rawMedicalData[key];
-                const matchCategory = (m.mainCategory || 'PRISE_EN_CHARGE') === activeCategory;
-                const matchSearch = (m.name || '').toLowerCase().includes(search) || 
-                                    (m.mat || '').toLowerCase().includes(search) ||
-                                    (m.vecteur || '').toLowerCase().includes(search) ||
-                                    (m.transportStatus || '').toLowerCase().includes(search);
-                return matchCategory && matchSearch;
-            });
+    window.renderTabContent = function() {
+      const container = document.getElementById('tabContent');
+      if (!container) return;
 
-            if (keys.length === 0) {
-                container.innerHTML = `<div class="col-span-1 md:col-span-3 text-center py-16 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
-                    <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-3"></i>
-                    <p class="text-xs text-slate-400">Aucun dossier trouvé dans cette section.</p>
-                </div>`;
-                return;
-            }
+      const searchQuery = (document.getElementById('searchInput')?.value || '').toLowerCase();
+      const filterCat = document.getElementById('filterCategory')?.value || 'ALL';
 
-            container.innerHTML = keys.map(key => {
-                const m = rawMedicalData[key];
-                const status = m.transportStatus || 'EN_ATTENTE';
-                
-                let statusBadge = '<span class="bg-amber-950/80 text-amber-400 border-amber-800/80 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-clock mr-1"></i>Attente Régulation</span>';
-                if (status === 'ACCORDE') statusBadge = '<span class="bg-emerald-950/80 text-emerald-300 border-emerald-800/80 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-circle-check mr-1"></i>Transport ACCORDÉ</span>';
-                if (status === 'REFUSE') statusBadge = '<span class="bg-rose-950/80 text-rose-300 border-rose-800/80 px-2.5 py-1 rounded-xl text-[10px] font-bold border"><i class="fa-solid fa-circle-xmark mr-1"></i>Refus / Sur place</span>';
+      // Update counters
+      document.getElementById('stat-total').innerText = window.medicalRecords.length;
+      document.getElementById('stat-transports').innerText = window.medicalRecords.filter(r => r.status === 'MEDEVAC_VALIDEE').length;
+      document.getElementById('stat-attente').innerText = window.medicalRecords.filter(r => r.status === 'EN_ATTENTE').length;
+      document.getElementById('stat-staff').innerText = window.staffMembers.length;
 
-                const logsCount = (m.logs || []).length;
+      if (activeTab === 'dossiers') {
+        renderRecordsTab(container, searchQuery, filterCat);
+      } else if (activeTab === 'regulation') {
+        renderRegulationOnlyTab(container, searchQuery);
+      } else if (activeTab === 'personnel') {
+        renderPersonnelTab(container, searchQuery);
+      } else if (activeTab === 'settings') {
+        renderSettingsTab(container);
+      }
+    };
 
-                return `
-                    <div class="custom-card p-5 rounded-3xl space-y-4 shadow-xl flex flex-col justify-between">
-                        <div class="space-y-3 cursor-pointer" onclick="viewRecord('${key}')">
-                            <div class="flex justify-between items-start border-b border-slate-800/80 pb-3">
-                                <div>
-                                    <h3 class="font-black text-white text-sm tracking-wide">${escapeHtml(m.name)}</h3>
-                                    <span class="text-[11px] text-sky-400 font-mono font-semibold">MAT : ${escapeHtml(m.mat)}</span>
-                                </div>
-                                ${statusBadge}
-                            </div>
+    // RENDER RECORDS / DOSSIERS
+    function renderRecordsTab(container, search, catFilter) {
+      let items = window.medicalRecords.filter(r => {
+        const matchSearch = (r.patientName || '').toLowerCase().includes(search) ||
+                            (r.patientMatricule || '').toLowerCase().includes(search) ||
+                            (r.patientUnit || '').toLowerCase().includes(search);
+        const matchCat = (catFilter === 'ALL') || (r.type === catFilter);
+        
+        if (activeTab === 'dossiers') return matchSearch;
+        return matchSearch && matchCat;
+      });
 
-                            <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/50 p-3 rounded-2xl border border-slate-800/50">
-                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Sang</span> <strong class="text-rose-400">${escapeHtml(m.sang || 'N/A')}</strong></div>
-                                <div><span class="text-[10px] text-slate-500 font-bold uppercase block">Vecteur</span> <strong class="text-amber-400 font-mono">${escapeHtml(m.vecteur || 'Non assigné')}</strong></div>
-                            </div>
+      if (activeTab === 'regulation') {
+        renderRegulationOnlyTab(container, search);
+        return;
+      }
 
-                            ${logsCount > 0 ? `
-                                <div class="text-[11px] bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-slate-300">
-                                    <span><i class="fa-solid fa-list-check text-sky-400 mr-1.5"></i> Étapes validées :</span>
-                                    <strong class="text-white bg-sky-500/20 px-2 py-0.5 rounded-lg border border-sky-500/30">${logsCount} / 5</strong>
-                                </div>
-                            ` : ''}
-                        </div>
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-12 text-center">
+            <div class="w-14 h-14 mx-auto bg-slate-800/80 rounded-full flex items-center justify-center text-slate-500 text-xl mb-3">
+              <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <h3 class="text-slate-300 font-bold text-sm">Aucun dossier ou bilan enregistré dans la base</h3>
+            <p class="text-slate-500 text-xs mt-1">Cliquez sur "+ Créer un Bilan / Dossier" pour ajouter un élément vierge.</p>
+          </div>
+        `;
+        return;
+      }
 
-                        <div class="pt-3 border-t border-slate-800/80 flex justify-between items-center text-[10px] text-slate-500">
-                            <span>MÀJ : ${escapeHtml(m.date || 'Récemment')}</span>
-                            <div class="flex items-center gap-1.5">
-                                <button onclick="viewRecord('${key}')" title="Consulter" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-emerald-400 transition-colors">
-                                    <i class="fa-solid fa-eye"></i>
-                                </button>
-                                <button onclick="editMedical('${key}')" title="Modifier / Réguler" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-sky-400 transition-colors">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button onclick="deleteMedical('${key}')" title="Supprimer" class="p-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-rose-400 transition-colors">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+      let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+      items.forEach(rec => {
+        let typeBadge = rec.type === 'URGENCE' ? 
+          '<span class="text-red-400 bg-red-950/60 border border-red-800/50 text-[10px] px-2 py-0.5 rounded font-mono font-bold">URGENCE / TCCC</span>' :
+          rec.type === 'VISITE_APTITUDE' ?
+          '<span class="text-emerald-400 bg-emerald-950/60 border border-emerald-800/50 text-[10px] px-2 py-0.5 rounded font-mono font-bold">APTITUDE / TAP</span>' :
+          '<span class="text-blue-400 bg-blue-950/60 border border-blue-800/50 text-[10px] px-2 py-0.5 rounded font-mono font-bold">BILAN COMPLET</span>';
 
-        // --- MODE CONSULTATION EN LECTURE SEULE ---
-        function viewRecord(key) {
-            const data = rawMedicalData[key];
-            if (!data) return;
-
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-eye text-emerald-400"></i> Consultation : ${escapeHtml(data.name)}`;
-            document.getElementById('step-2').classList.add('hidden');
-            
-            const container = document.getElementById('view-mode-container');
-            container.classList.remove('hidden');
-
-            const status = data.transportStatus || 'EN_ATTENTE';
-            let statusBanner = '<div class="p-3 bg-amber-950/40 border border-amber-800/80 rounded-2xl text-amber-400 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-clock text-lg"></i> Transport en attente d\'arbitrage par la Régulation</div>';
-            if (status === 'ACCORDE') statusBanner = '<div class="p-3 bg-emerald-950/40 border border-emerald-800/80 rounded-2xl text-emerald-300 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-circle-check text-lg"></i> Transport ACCORDÉ — Vecteur : ' + escapeHtml(data.vecteur || 'Standard') + '</div>';
-            if (status === 'REFUSE') statusBanner = '<div class="p-3 bg-rose-950/40 border border-rose-800/80 rounded-2xl text-rose-300 text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-lg"></i> Transport REFUSÉ — Laissé sur place</div>';
-
-            const logsHtml = (data.logs || []).map((log, index) => `
-                <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <span class="text-xs font-bold text-sky-400"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> [${escapeHtml(log.time)}] ${escapeHtml(log.stepName)}</span>
-                        <span class="text-[10px] text-slate-500 font-mono">Étape #${index + 1}</span>
-                    </div>
-                    ${log.fields ? `
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
-                            ${Object.keys(log.fields).map(k => `<div><span class="text-[10px] text-slate-500 font-bold uppercase block">${k}:</span> <strong class="text-white font-mono">${escapeHtml(log.fields[k])}</strong></div>`).join('')}
-                        </div>
-                    ` : ''}
-                    ${log.details ? `<p class="text-xs text-slate-300 italic bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">"${escapeHtml(log.details)}"</p>` : ''}
+        html += `
+          <div class="bg-[#0f172a] hover:bg-[#1e293b]/70 border border-slate-800 hover:border-slate-700 rounded-xl p-4 transition shadow-lg flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                ${typeBadge}
+                <span class="text-[10px] font-mono text-slate-400">${rec.date || ''}</span>
+              </div>
+              <div class="mt-2">
+                <h4 class="font-bold text-slate-100 text-base">${rec.patientName || 'Sans Nom'}</h4>
+                <div class="text-xs text-slate-400 font-mono mt-0.5">
+                  Matricule: <strong class="text-slate-200">${rec.patientMatricule || 'N/A'}</strong> | ${rec.patientUnit || 'N/A'}
                 </div>
-            `).join('');
+              </div>
+              <div class="mt-3 p-2.5 rounded-lg bg-[#080b11] border border-slate-800/80 text-xs space-y-1">
+                ${renderDetailsBlock(rec)}
+              </div>
+            </div>
 
-            container.innerHTML = `
-                ${statusBanner}
+            <div class="flex items-center justify-between border-t border-slate-800 pt-2.5 text-xs">
+              <span class="text-blue-400 font-semibold text-[11px]"><i class="fa-solid fa-truck-medical mr-1"></i>${rec.recordVector || 'Aucun vecteur'}</span>
+              <div class="flex items-center gap-2">
+                <button onclick="editRecord('${rec.id}')" class="text-slate-400 hover:text-blue-400 transition p-1">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onclick="deleteRecord('${rec.id}')" class="text-slate-400 hover:text-red-400 transition p-1">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
 
-                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 text-xs">
-                    <div class="grid grid-cols-3 gap-2 border-b border-slate-800/80 pb-2">
-                        <div><span class="text-slate-500 block text-[10px]">MATRICULE</span><strong class="text-sky-400 font-mono">${escapeHtml(data.mat)}</strong></div>
-                        <div><span class="text-slate-500 block text-[10px]">SANG</span><strong class="text-rose-400">${escapeHtml(data.sang || 'N/A')}</strong></div>
-                        <div><span class="text-slate-500 block text-[10px]">TAP</span><strong class="${data.tap === 'true' || data.tap === true ? 'text-emerald-400' : 'text-rose-400'}">${data.tap === 'true' || data.tap === true ? 'Apte' : 'Inapte'}</strong></div>
-                    </div>
-                    ${data.regNotes ? `<div class="pt-2 text-amber-300"><strong class="text-slate-400 block text-[10px]">CONSIGNES REGULATION :</strong> ${escapeHtml(data.regNotes)}</div>` : ''}
+    // RENDER TRANSMISSION & RÉGULATION (STRICTLY DEDICATED TO TRANSPORT DECISIONS)
+    function renderRegulationOnlyTab(container, search) {
+      let filtered = window.medicalRecords.filter(r => 
+        (r.patientName || '').toLowerCase().includes(search) ||
+        (r.patientMatricule || '').toLowerCase().includes(search) ||
+        (r.recordVector || '').toLowerCase().includes(search)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-12 text-center">
+            <div class="w-14 h-14 mx-auto bg-slate-800/80 rounded-full flex items-center justify-center text-amber-500 text-xl mb-3">
+              <i class="fa-solid fa-tower-cell"></i>
+            </div>
+            <h3 class="text-slate-300 font-bold text-sm">Aucune demande de transport en régulation</h3>
+            <p class="text-slate-500 text-xs mt-1">Créez un bilan ou dossier pour réguler le vecteur sanitaire.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="border-b border-slate-800 pb-3">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <i class="fa-solid fa-tower-cell text-blue-400"></i>
+              <span>Console de Régulation Sanitaire & Transports</span>
+            </h3>
+            <p class="text-xs text-slate-400">Validez, refusez ou réorientez le vecteur d'évacuation sanitaire en un clic</p>
+          </div>
+
+          <div class="space-y-3">
+      `;
+
+      filtered.forEach(rec => {
+        let statusBadge = '';
+        let statusBorder = 'border-slate-800';
+
+        if (rec.status === 'MEDEVAC_VALIDEE') {
+          statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold px-2.5 py-1 rounded-lg"><i class="fa-solid fa-circle-check mr-1"></i>TRANSPORT ACCEPTÉ</span>';
+          statusBorder = 'border-emerald-500/40 bg-emerald-950/10';
+        } else if (rec.status === 'REFUS_SUR_PLACE') {
+          statusBadge = '<span class="bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-bold px-2.5 py-1 rounded-lg"><i class="fa-solid fa-ban mr-1"></i>TRANSPORT REFUSÉ</span>';
+          statusBorder = 'border-red-500/40 bg-red-950/10';
+        } else if (rec.status === 'EN_ATTENTE') {
+          statusBadge = '<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold px-2.5 py-1 rounded-lg animate-pulse"><i class="fa-solid fa-clock mr-1"></i>EN ATTENTE DE RÉGULATION</span>';
+          statusBorder = 'border-amber-500/40 bg-amber-950/10';
+        } else {
+          statusBadge = `<span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs font-bold px-2.5 py-1 rounded-lg"><i class="fa-solid fa-shield mr-1"></i>AUTRE : ${rec.status || 'AUTRE'}</span>`;
+        }
+
+        html += `
+          <div class="bg-[#080b11] border ${statusBorder} rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition">
+            <div class="space-y-1">
+              <div class="flex items-center gap-3">
+                <span class="font-extrabold text-slate-100 text-base">${rec.patientName || 'Sans Nom'}</span>
+                <span class="font-mono text-xs text-slate-400">Matricule: ${rec.patientMatricule || 'N/A'}</span>
+              </div>
+              <div class="text-xs text-slate-400 flex items-center gap-3">
+                <span><i class="fa-solid fa-truck-medical text-blue-400 mr-1"></i>Vecteur: <strong class="text-slate-200">${rec.recordVector || 'Non attribué'}</strong></span>
+                <span>• Unité: ${rec.patientUnit || 'N/A'}</span>
+              </div>
+              <div class="pt-1">${statusBadge}</div>
+            </div>
+
+            <!-- REGULATION DIRECT ACTIONS -->
+            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+              <button onclick="updateTransportStatus('${rec.id}', 'MEDEVAC_VALIDEE')" class="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-600/20">
+                <i class="fa-solid fa-check"></i>
+                <span>ACCEPTER TRANSPORT</span>
+              </button>
+
+              <button onclick="updateTransportStatus('${rec.id}', 'REFUS_SUR_PLACE')" class="flex-1 md:flex-none bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-lg shadow-red-600/20">
+                <i class="fa-solid fa-xmark"></i>
+                <span>REFUSER</span>
+              </button>
+
+              <button onclick="updateTransportStatus('${rec.id}', 'EN_ATTENTE')" class="flex-1 md:flex-none bg-amber-600/30 hover:bg-amber-600/50 text-amber-300 border border-amber-500/40 font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>EN ATTENTE</span>
+              </button>
+
+              <button onclick="promptOtherStatus('${rec.id}')" class="flex-1 md:flex-none bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+                <span>AUTRE</span>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div></div>`;
+      container.innerHTML = html;
+    }
+
+    // Direct Status Update for Transmission/Regulation
+    window.updateTransportStatus = async function(docId, newStatus) {
+      await window.dbUpdateRecord(docId, { status: newStatus });
+    };
+
+    window.promptOtherStatus = function(docId) {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4';
+      modal.id = 'tempOtherStatusModal';
+      modal.innerHTML = `
+        <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-5 max-w-sm w-full space-y-4">
+          <h4 class="text-sm font-bold text-white">Saisir un Autre Statut de Transport</h4>
+          <input type="text" id="customStatusInput" placeholder="Ex: Evacuation terrestre, Rapatriement..." class="w-full bg-[#080b11] border border-slate-700 rounded-lg p-2 text-xs text-slate-100">
+          <div class="flex justify-end gap-2">
+            <button onclick="document.getElementById('tempOtherStatusModal').remove()" class="px-3 py-1.5 bg-slate-800 text-xs text-slate-300 rounded-lg">Annuler</button>
+            <button onclick="confirmCustomStatus('${docId}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs text-white font-bold rounded-lg">Valider</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    };
+
+    window.confirmCustomStatus = async function(docId) {
+      const val = document.getElementById('customStatusInput')?.value || 'AUTRE';
+      await window.dbUpdateRecord(docId, { status: val });
+      document.getElementById('tempOtherStatusModal')?.remove();
+    };
+
+    function renderDetailsBlock(rec) {
+      if (rec.type === 'URGENCE') {
+        return `
+          <div class="text-red-300 font-bold">${rec.urgency || 'Urgence non spécifiée'}</div>
+          <div>Garrot: ${rec.march || 'N/A'}</div>
+          <div class="text-slate-400">${rec.trauma || ''}</div>
+        `;
+      } else if (rec.type === 'VISITE_APTITUDE') {
+        return `
+          <div class="text-emerald-300 font-bold">${rec.aptitudeTap || 'Visite d\'aptitude'}</div>
+          <div class="font-mono">SIGYCOP: ${rec.sigycop || 'N/A'}</div>
+          <div class="text-slate-400">${rec.notes || ''}</div>
+        `;
+      } else {
+        return `
+          <div class="text-blue-300 font-mono">${rec.vitals || 'Constantes vitales'}</div>
+          <div class="text-slate-300">${rec.symptoms || ''}</div>
+        `;
+      }
+    }
+
+    // RENDER PERSONNEL TAB
+    function renderPersonnelTab(container, search) {
+      let filtered = window.staffMembers.filter(s => (s.name || '').toLowerCase().includes(search) || (s.rank || '').toLowerCase().includes(search));
+
+      let html = `
+        <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-4">
+            <div>
+              <h3 class="font-bold text-white text-base">Gestion de l'Effectif Médical & Bips Ciblés</h3>
+              <p class="text-xs text-slate-400">Biper un agent spécifique déclenchera le bip continu UNIQUEMENT sur son interface</p>
+            </div>
+            <button onclick="openStaffModal()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3.5 py-2 rounded-lg font-bold flex items-center gap-2 transition">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>+ Ajouter un Agent</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      `;
+
+      if (filtered.length === 0) {
+        html += `<div class="col-span-full text-center py-8 text-slate-500 text-xs">Aucun membre du personnel enregistré.</div>`;
+      }
+
+      filtered.forEach(staff => {
+        html += `
+          <div class="bg-[#080b11] border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-3 hover:border-slate-700 transition">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center text-slate-300 font-bold">
+                  <i class="fa-solid fa-user-doctor"></i>
                 </div>
-
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider">Historique Séquentiel du Bilan</h4>
-                    ${logsHtml || '<p class="text-xs text-slate-500 italic">Aucune étape enregistrée pour le moment.</p>'}
+                <div>
+                  <h4 class="font-bold text-slate-100 text-sm">${staff.name}</h4>
+                  <div class="text-xs text-blue-400 font-semibold">${staff.rank}</div>
+                  <div class="text-[11px] text-slate-400">${staff.role || 'Personnel Médical'}</div>
                 </div>
-            `;
+              </div>
+              <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono">${staff.status}</span>
+            </div>
 
-            document.getElementById('medicalModal').classList.remove('hidden');
-        }
+            <div class="flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs">
+              <button onclick="deleteStaff('${staff.id}')" class="text-slate-500 hover:text-red-400 transition text-xs">
+                <i class="fa-solid fa-trash-can mr-1"></i>Supprimer
+              </button>
+              <button onclick="openTargetedBipModal('${staff.id}', '${staff.name}')" class="bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/40 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition glow-red">
+                <i class="fa-solid fa-bell text-xs"></i>
+                <span>Biper Seul</span>
+              </button>
+            </div>
+          </div>
+        `;
+      });
 
-        // --- GESTION DES MODALES ET ÉTAPES DE FORMULAIRE ---
-        function openWizard() {
-            document.getElementById('recordKey').value = '';
-            document.getElementById('selectedMainCategory').value = activeCategory;
-            document.getElementById('formName').value = '';
-            document.getElementById('formMat').value = '';
-            document.getElementById('formSang').value = 'A+';
-            document.getElementById('formTap').value = 'true';
-            document.getElementById('formVma').value = '';
-            document.getElementById('formTransportStatus').value = 'EN_ATTENTE';
-            document.getElementById('formVecteur').value = '';
-            document.getElementById('formRegNotes').value = '';
+      html += `</div></div>`;
+      container.innerHTML = html;
+    }
 
-            currentLogs = [];
-            currentStepNumber = 1;
+    // RENDER SETTINGS TAB
+    function renderSettingsTab(container) {
+      container.innerHTML = `
+        <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 space-y-6 max-w-2xl mx-auto">
+          <div class="border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white text-lg flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-blue-400"></i>
+              <span>Paramètres du Bip Sonore Continu</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Personnalisez la fréquence sonore et la vitesse du bip en boucle</p>
+          </div>
 
-            setupFormForCategory(activeCategory);
-            updateStepUI();
+          <div class="space-y-5">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-bold uppercase text-slate-300">Volume sonore</label>
+                <span id="volDisp" class="text-xs font-mono font-bold text-blue-400">${Math.round(audioSettings.volume * 100)}%</span>
+              </div>
+              <input type="range" min="0" max="1" step="0.05" value="${audioSettings.volume}" oninput="audioSettings.volume = parseFloat(this.value); document.getElementById('volDisp').innerText = Math.round(this.value*100)+'%'" class="w-full accent-blue-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+            </div>
 
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-plus-circle text-sky-400"></i> Nouvelle Prise en Charge Médicale`;
-            document.getElementById('view-mode-container').classList.add('hidden');
-            document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('medicalModal').classList.remove('hidden');
-        }
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-bold uppercase text-slate-300">Fréquence du Son (Hz)</label>
+                <span id="freqDisp" class="text-xs font-mono font-bold text-blue-400">${audioSettings.frequency} Hz</span>
+              </div>
+              <input type="range" min="400" max="1800" step="50" value="${audioSettings.frequency}" oninput="audioSettings.frequency = parseInt(this.value); document.getElementById('freqDisp').innerText = this.value+' Hz'" class="w-full accent-blue-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+            </div>
 
-        function editMedical(key) {
-            const data = rawMedicalData[key];
-            if (!data) return;
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-bold uppercase text-slate-300">Intervalle de Répétition (ms)</label>
+                <span id="speedDisp" class="text-xs font-mono font-bold text-blue-400">${audioSettings.repeatIntervalMs} ms</span>
+              </div>
+              <input type="range" min="300" max="1500" step="50" value="${audioSettings.repeatIntervalMs}" oninput="audioSettings.repeatIntervalMs = parseInt(this.value); document.getElementById('speedDisp').innerText = this.value+' ms'" class="w-full accent-blue-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+            </div>
 
-            document.getElementById('recordKey').value = key;
-            document.getElementById('selectedMainCategory').value = data.mainCategory || activeCategory;
-            document.getElementById('formName').value = data.name || '';
-            document.getElementById('formMat').value = data.mat || '';
-            document.getElementById('formSang').value = data.sang || 'A+';
-            document.getElementById('formTap').value = data.tap !== undefined ? String(data.tap) : 'true';
-            document.getElementById('formVma').value = data.vma || '';
-            document.getElementById('formTransportStatus').value = data.transportStatus || 'EN_ATTENTE';
-            document.getElementById('formVecteur').value = data.vecteur || '';
-            document.getElementById('formRegNotes').value = data.regNotes || '';
+            <div class="pt-4 border-t border-slate-800 flex justify-end">
+              <button onclick="playSingleSoundPulse()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-2">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Tester une Impulsion Sonore</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
-            currentLogs = data.logs || [];
-            currentStepNumber = Math.min(currentLogs.length + 1, 5);
+    // FORM MODAL OPEN / SAVE LOGIC
+    window.openNewRecordChoiceModal = function() {
+      document.getElementById('modalSelectRecordType').classList.remove('hidden');
+    };
 
-            setupFormForCategory(data.mainCategory || activeCategory);
-            updateStepUI();
+    window.closeModal = function(id) {
+      document.getElementById(id).classList.add('hidden');
+    };
 
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen text-sky-400"></i> Édition / Régulation : ${escapeHtml(data.name)}`;
-            document.getElementById('view-mode-container').classList.add('hidden');
-            document.getElementById('step-2').classList.remove('hidden');
-            document.getElementById('medicalModal').classList.remove('hidden');
-        }
+    window.openFormModal = function(recordType, existingData = null) {
+      window.closeModal('modalSelectRecordType');
 
-        function closeModal() {
-            document.getElementById('medicalModal').classList.add('hidden');
-        }
+      const modal = document.getElementById('modalFormRecord');
+      const title = document.getElementById('formModalTitle');
+      const dynamicFields = document.getElementById('dynamicFormFields');
+      document.getElementById('formType').value = recordType;
+      document.getElementById('editingRecordId').value = existingData ? existingData.id : '';
 
-        function setupFormForCategory(cat) {
-            const badge = document.getElementById('typeBadge');
-            const santeBlock = document.getElementById('sante-fields-block');
-            const regBlock = document.getElementById('regulation-fields-block');
-            const logsBlock = document.getElementById('logs-module-block');
+      document.getElementById('patientName').value = existingData ? existingData.patientName || '' : '';
+      document.getElementById('patientMatricule').value = existingData ? existingData.patientMatricule || '' : '';
+      document.getElementById('patientUnit').value = existingData ? existingData.patientUnit || '' : '';
+      document.getElementById('recordStatus').value = existingData ? existingData.status || 'EN_ATTENTE' : 'EN_ATTENTE';
+      document.getElementById('recordVector').value = existingData ? existingData.recordVector || '' : '';
 
-            if (cat === 'SANTE') {
-                badge.className = "text-xs font-bold text-emerald-400 flex items-center gap-2";
-                badge.innerHTML = `<i class="fa-solid fa-notes-medical"></i> Fiche Service Médical & Santé`;
-                santeBlock.classList.remove('hidden');
-                regBlock.classList.add('hidden');
-                logsBlock.classList.add('hidden');
-            } else if (cat === 'REGULATION') {
-                badge.className = "text-xs font-bold text-amber-400 flex items-center gap-2";
-                badge.innerHTML = `<i class="fa-solid fa-tower-cell"></i> Transmission & régulation`;
-                santeBlock.classList.add('hidden');
-                regBlock.classList.remove('hidden');
-                logsBlock.classList.remove('hidden');
-            } else {
-                badge.className = "text-xs font-bold text-sky-400 flex items-center gap-2";
-                badge.innerHTML = `<i class="fa-solid fa-truck-medical"></i> Prise en Charge Séquentielle`;
-                santeBlock.classList.remove('hidden');
-                regBlock.classList.remove('hidden');
-                logsBlock.classList.remove('hidden');
-            }
-        }
+      title.innerText = existingData ? "Modifier le Dossier Médical" : "Nouveau Dossier / Bilan Vierge";
 
-        function updateStepUI() {
-            const stepConfig = STEPS_CONFIG.find(s => s.id === currentStepNumber) || STEPS_CONFIG[0];
-            document.getElementById('stepTitleDisplay').innerText = stepConfig.title;
-            document.getElementById('currentStepIndicator').innerText = `Étape ${currentStepNumber} / 5`;
-            document.getElementById('stepTimeDisplay').innerText = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      if (recordType === 'BILAN_COMPLET') {
+        dynamicFields.innerHTML = `
+          <div class="space-y-3 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+            <h4 class="text-xs font-bold uppercase text-blue-400">Constantes Vitales & XABCDE</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Constantes Vitales (TA / BPM / SpO2)</label>
+                <input type="text" id="fieldVitals" value="${existingData ? existingData.vitals || '' : ''}" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100">
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Symptômes & Motif</label>
+                <input type="text" id="fieldSymptoms" value="${existingData ? existingData.symptoms || '' : ''}" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100">
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (recordType === 'URGENCE') {
+        dynamicFields.innerHTML = `
+          <div class="space-y-3 bg-red-950/20 p-3.5 rounded-xl border border-red-900/40">
+            <h4 class="text-xs font-bold uppercase text-red-400">Soins Sous le Feu (TCCC / MARCH)</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Niveau d'Urgence</label>
+                <input type="text" id="fieldUrgency" value="${existingData ? existingData.urgency || '' : ''}" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100">
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Poses de Garrot (MEMBRE & HEURE)</label>
+                <input type="text" id="fieldMarch" value="${existingData ? existingData.march || '' : ''}" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100">
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Traumatismes de Combat</label>
+              <textarea id="fieldTrauma" rows="2" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg p-2 text-xs text-slate-100">${existingData ? existingData.trauma || '' : ''}</textarea>
+            </div>
+          </div>
+        `;
+      } else {
+        dynamicFields.innerHTML = `
+          <div class="space-y-3 bg-emerald-950/20 p-3.5 rounded-xl border border-emerald-900/40">
+            <h4 class="text-xs font-bold uppercase text-emerald-400">Aptitude & Profil Médical</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Décision Aptitude TAP / Tir</label>
+                <input type="text" id="fieldAptitudeTap" value="${existingData ? existingData.aptitudeTap || '' : ''}" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100">
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Profil SIGYCOP</label>
+                <input type="text" id="fieldSigycop" value="${existingData ? existingData.sigycop || '' : ''}" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100 font-mono">
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Notes / Remarques</label>
+              <textarea id="fieldNotes" rows="2" placeholder="" class="w-full bg-[#080b11] border border-slate-700 rounded-lg p-2 text-xs text-slate-100">${existingData ? existingData.notes || '' : ''}</textarea>
+            </div>
+          </div>
+        `;
+      }
 
-            // Mise à jour de la barre d'étapes
-            for (let i = 1; i <= 5; i++) {
-                const btn = document.getElementById(`step-btn-${i}`);
-                btn.className = 'p-2 rounded-xl border transition-all text-[10px] font-bold ';
-                if (i < currentStepNumber) {
-                    btn.classList.add('step-completed');
-                } else if (i === currentStepNumber) {
-                    btn.classList.add('step-active');
-                } else {
-                    btn.classList.add('step-locked');
-                }
-            }
+      modal.classList.remove('hidden');
+    };
 
-            // Ingestion dynamique des champs d'étape
-            const formContainer = document.getElementById('stepFormContainer');
-            if (currentStepNumber === 1) {
-                formContainer.innerHTML = `
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Type d'incident</label>
-                            <input type="text" id="step_f1" placeholder="ex: Blast, TLE, Chute" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Lieu / Zone</label>
-                            <input type="text" id="step_f2" placeholder="ex: Secteur Nord / Point Bravo" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                    </div>
-                `;
-            } else if (currentStepNumber === 2) {
-                formContainer.innerHTML = `
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Fréquence Radio CTA</label>
-                            <input type="text" id="step_f1" placeholder="ex: Canal 3 - Médical" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Heure Transmission</label>
-                            <input type="text" id="step_f2" value="${new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})}" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                    </div>
-                `;
-            } else if (currentStepNumber === 3) {
-                formContainer.innerHTML = `
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Pouls (BPM)</label>
-                            <input type="text" id="step_f1" placeholder="ex: 88" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Tension (mmHg)</label>
-                            <input type="text" id="step_f2" placeholder="ex: 120/80" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">SpO2 (%)</label>
-                            <input type="text" id="step_f3" placeholder="ex: 98%" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                    </div>
-                `;
-            } else if (currentStepNumber === 4) {
-                formContainer.innerHTML = `
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Allergies / Antécédents</label>
-                            <input type="text" id="step_f1" placeholder="ex: Pénicilline, Aucune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Traitements en cours</label>
-                            <input type="text" id="step_f2" placeholder="ex: Morphine administrée 10mg" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                    </div>
-                `;
-            } else {
-                formContainer.innerHTML = `
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Évolution Constantes</label>
-                            <input type="text" id="step_f1" placeholder="ex: Stable, Amélioration, Dégradation" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-400 mb-1">Prochain Relevé Prévu</label>
-                            <input type="text" id="step_f2" placeholder="ex: Dans 15 minutes" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-white">
-                        </div>
-                    </div>
-                `;
-            }
+    window.saveRecordSubmit = async function(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editingRecordId').value;
+      const type = document.getElementById('formType').value;
 
-            renderLogsList();
-        }
+      const recordData = {
+        type: type,
+        patientName: document.getElementById('patientName').value,
+        patientMatricule: document.getElementById('patientMatricule').value,
+        patientUnit: document.getElementById('patientUnit').value,
+        status: document.getElementById('recordStatus').value,
+        recordVector: document.getElementById('recordVector').value,
+        date: new Date().toLocaleString()
+      };
 
-        function validateAndAdvanceStep() {
-            const notes = document.getElementById('stepNotesInput').value.trim();
-            if (!notes) {
-                alert("Veuillez saisir les remarques relatives à cette étape.");
-                return;
-            }
+      if (type === 'BILAN_COMPLET') {
+        recordData.vitals = document.getElementById('fieldVitals')?.value || '';
+        recordData.symptoms = document.getElementById('fieldSymptoms')?.value || '';
+      } else if (type === 'URGENCE') {
+        recordData.urgency = document.getElementById('fieldUrgency')?.value || '';
+        recordData.march = document.getElementById('fieldMarch')?.value || '';
+        recordData.trauma = document.getElementById('fieldTrauma')?.value || '';
+      } else {
+        recordData.aptitudeTap = document.getElementById('fieldAptitudeTap')?.value || '';
+        recordData.sigycop = document.getElementById('fieldSigycop')?.value || '';
+        recordData.notes = document.getElementById('fieldNotes')?.value || '';
+      }
 
-            const stepConfig = STEPS_CONFIG.find(s => s.id === currentStepNumber);
-            const fieldsData = {};
+      if (editId) {
+        await window.dbUpdateRecord(editId, recordData);
+      } else {
+        await window.dbAddRecord(recordData);
+      }
 
-            const f1 = document.getElementById('step_f1');
-            const f2 = document.getElementById('step_f2');
-            const f3 = document.getElementById('step_f3');
+      window.closeModal('modalFormRecord');
+    };
 
-            if (f1) fieldsData['Donnée 1'] = f1.value;
-            if (f2) fieldsData['Donnée 2'] = f2.value;
-            if (f3) fieldsData['Donnée 3'] = f3.value;
+    window.editRecord = function(id) {
+      const rec = window.medicalRecords.find(r => r.id === id);
+      if (rec) {
+        window.openFormModal(rec.type, rec);
+      }
+    };
 
-            currentLogs.push({
-                stepId: currentStepNumber,
-                stepName: stepConfig.name,
-                time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-                details: notes,
-                fields: fieldsData
-            });
+    window.deleteRecord = async function(id) {
+      await window.dbDeleteRecord(id);
+    };
 
-            document.getElementById('stepNotesInput').value = '';
+    // STAFF MODAL ACTIONS
+    window.openStaffModal = function() {
+      document.getElementById('staffEditId').value = '';
+      document.getElementById('staffName').value = '';
+      document.getElementById('staffRank').value = '';
+      document.getElementById('staffRole').value = '';
+      document.getElementById('modalStaffForm').classList.remove('hidden');
+    };
 
-            if (currentStepNumber < 5) {
-                currentStepNumber++;
-            }
-            updateStepUI();
-        }
+    window.saveStaffSubmit = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('staffEditId').value || `STAFF-${Date.now()}`;
+      const staffData = {
+        name: document.getElementById('staffName').value,
+        rank: document.getElementById('staffRank').value,
+        role: document.getElementById('staffRole').value,
+        status: document.getElementById('staffStatus').value
+      };
 
-        function renderLogsList() {
-            const container = document.getElementById('logs-editor-list');
-            if (currentLogs.length === 0) {
-                container.innerHTML = `<p class="text-[11px] text-slate-500 italic">Aucune étape validée dans ce dossier.</p>`;
-                return;
-            }
+      await window.dbSaveStaff(id, staffData);
+      window.closeModal('modalStaffForm');
+    };
 
-            container.innerHTML = currentLogs.map((log, idx) => `
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 flex justify-between items-center text-xs">
-                    <div>
-                        <span class="font-bold text-sky-400">[${escapeHtml(log.time)}] ${escapeHtml(log.stepName)}</span>
-                        <p class="text-[11px] text-slate-400 italic font-sans">${escapeHtml(log.details)}</p>
-                    </div>
-                    <span class="text-[10px] text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded-lg">Validée</span>
-                </div>
-            `).join('');
-        }
+    window.deleteStaff = async function(id) {
+      await window.dbDeleteStaff(id);
+    };
 
-        function handleFormSubmit(e) {
-            e.preventDefault();
+    // TARGETED BIP MODAL
+    window.openTargetedBipModal = function(staffId, staffName) {
+      document.getElementById('bipTargetAgent').value = staffName;
+      document.getElementById('bipTargetAgentId').value = staffId;
+      document.getElementById('bipCustomMessage').value = '';
+      document.getElementById('modalBipAgent').classList.remove('hidden');
+    };
 
-            const key = document.getElementById('recordKey').value;
-            const recordData = {
-                mainCategory: document.getElementById('selectedMainCategory').value || activeCategory,
-                name: document.getElementById('formName').value,
-                mat: document.getElementById('formMat').value,
-                sang: document.getElementById('formSang').value,
-                tap: document.getElementById('formTap').value,
-                vma: document.getElementById('formVma').value,
-                transportStatus: document.getElementById('formTransportStatus').value,
-                vecteur: document.getElementById('formVecteur').value,
-                regNotes: document.getElementById('formRegNotes').value,
-                logs: currentLogs,
-                date: new Date().toLocaleDateString('fr-FR') + ' à ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-            };
+    window.sendTargetedAgentBip = function() {
+      const targetName = document.getElementById('bipTargetAgent').value;
+      const msg = document.getElementById('bipCustomMessage').value || "Intervention requise immédiatement !";
 
-            if (key) {
-                db.ref('medical/' + key).update(recordData, err => {
-                    if (!err) closeModal();
-                });
-            } else {
-                db.ref('medical').push(recordData, err => {
-                    if (!err) closeModal();
-                });
-            }
-        }
+      window.dbSendBip({
+        targetAgent: targetName,
+        message: msg,
+        sender: window.currentUser ? window.currentUser.uid : 'QG'
+      });
 
-        function deleteMedical(key) {
-            if (confirm("Confirmez-vous la suppression définitive de cette fiche médicale FSF ?")) {
-                db.ref('medical/' + key).remove();
-            }
-        }
-
-        // --- DÉCLENCHEMENT D'ALERTE TACTIQUE MEDEVAC ---
-        function triggerMedevacAlert() {
-            document.getElementById('medevacAlertModal').classList.remove('hidden');
-            playBipSound();
-        }
-
-        function closeMedevacAlert() {
-            document.getElementById('medevacAlertModal').classList.add('hidden');
-        }
-
-        function playBipSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Note A5
-                osc.frequency.setValueAtTime(440, audioCtx.currentTime + 0.15); // Pulsation
-                
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.4);
-            } catch (e) {
-                console.log("Audio Web-API non disponible ou bloquée par le navigateur.");
-            }
-        }
-    </script>
+      window.closeModal('modalBipAgent');
+    };
+  </script>
 </body>
 </html>
