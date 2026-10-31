@@ -79,6 +79,20 @@
 
         <!-- SECTION 2 : MEMBRES & PERMISSIONS -->
         <div id="tab-members" class="hidden space-y-4">
+            <div class="custom-card p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-users-gear text-cyan-400"></i> Personnel Habilité & Bip Tactique
+                        </h3>
+                        <p class="text-xs text-slate-400">Sélectionnez un opérateur habilité pour déclencher un bip individuel immédiat.</p>
+                    </div>
+                    <div id="medical-count-badge" class="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full text-xs font-mono">
+                        0 Habilités
+                    </div>
+                </div>
+                <div id="medical-staff-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2"></div>
+            </div>
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-black text-white">Répertoire des Membres Actifs</h2>
