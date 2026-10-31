@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF pour le téléchargement PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -39,50 +41,53 @@
                 <i class="fa-solid fa-gear"></i> Paramètres Bip
             </button>
             <button onclick="openNewRecordModal()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-600/20">
-                <i class="fa-solid fa-plus"></i> Nouveau Bilan / Dossier
+                <i class="fa-solid fa-plus"></i> Créer Fiche Médicale
             </button>
         </div>
     </header>
 
     <!-- NAVIGATION PAR ONGLET -->
-    <nav class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <nav class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <button onclick="switchTab('dossiers')" id="nav-dossiers" class="p-4 rounded-2xl text-left font-bold text-sm transition custom-card border-cyan-500/50 text-white flex items-center gap-3">
-            <i class="fa-solid fa-folder-open text-cyan-400"></i> Registre des Dossiers & Bilans
+            <i class="fa-solid fa-folder-open text-cyan-400"></i> Dossiers Médicaux
         </button>
         <button onclick="switchTab('transmission')" id="nav-transmission" class="p-4 rounded-2xl text-left font-bold text-sm transition custom-card text-slate-400 hover:text-white flex items-center gap-3">
-            <i class="fa-solid fa-tower-broadcast text-purple-400"></i> Transmission & Régulation (Transport)
+            <i class="fa-solid fa-tower-broadcast text-purple-400"></i> Transmission & Transport
         </button>
         <button onclick="switchTab('personnel')" id="nav-personnel" class="p-4 rounded-2xl text-left font-bold text-sm transition custom-card text-slate-400 hover:text-white flex items-center gap-3">
-            <i class="fa-solid fa-users-gear text-emerald-400"></i> Personnel & Bip Tactique
+            <i class="fa-solid fa-users-gear text-emerald-400"></i> Personnel & Bip
+        </button>
+        <button onclick="switchTab('notes')" id="nav-notes" class="p-4 rounded-2xl text-left font-bold text-sm transition custom-card text-slate-400 hover:text-white flex items-center gap-3">
+            <i class="fa-solid fa-clipboard text-amber-400"></i> Notes & Blocs
         </button>
     </nav>
 
     <!-- CONTENEUR DES ONGLETS -->
     <main class="flex-1 space-y-6">
 
-        <!-- ONGLET 1 : DOSSIERS & BILANS -->
+        <!-- ONGLET 1 : DOSSIERS MÉDICAUX -->
         <div id="tab-dossiers" class="space-y-4">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <div>
-                    <h2 class="text-base font-bold text-white">Registre des Dossiers Médicaux & Bilans</h2>
-                    <p class="text-xs text-slate-400">Consultez, modifiez ou supprimez les fiches créées en temps réel.</p>
+                    <h2 class="text-base font-bold text-white">Registre des Dossiers Médicaux Militaires</h2>
+                    <p class="text-xs text-slate-400">Consultez, modifiez, téléchargez en PDF ou supprimez les fiches.</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <input type="text" id="search-dossier" oninput="filterDossiers()" placeholder="Rechercher par nom, matricule..." class="bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl text-xs text-white w-64">
+                    <input type="text" id="search-dossier" oninput="filterDossiers()" placeholder="Rechercher nom, matricule..." class="bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl text-xs text-white w-64">
                     <div class="text-xs text-slate-400 font-mono px-3 py-2 bg-slate-900 rounded-xl border border-slate-800" id="total-dossiers-count">Total : 0</div>
                 </div>
             </div>
             <div id="dossiers-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Injection dynamique -->
+                <!-- Injection dynamique des cartes -->
             </div>
         </div>
 
-        <!-- ONGLET 2 : TRANSMISSION & REGULATION (Transport Exclusif) -->
+        <!-- ONGLET 2 : TRANSMISSION & REGULATION -->
         <div id="tab-transmission" class="hidden space-y-4">
             <div class="custom-card p-6 rounded-2xl space-y-4">
                 <div>
                     <h2 class="text-base font-bold text-white">Console de Régulation & Transport Sanitaire</h2>
-                    <p class="text-xs text-slate-400">Décisions unifiées de transport : Accepter, Refuser, Mettre en attente ou Autre (sans confirmation).</p>
+                    <p class="text-xs text-slate-400">Décisions unifiées de transport : Accepter, Refuser, Mettre en attente ou Autre.</p>
                 </div>
                 <div id="transmission-list-container" class="space-y-3">
                     <!-- Injection dynamique -->
@@ -90,77 +95,129 @@
             </div>
         </div>
 
-        <!-- ONGLET 3 : PERSONNEL & ACCÈS -->
+        <!-- ONGLET 3 : PERSONNEL AUTOMATIQUE & BIPS CIBLÉS -->
         <div id="tab-personnel" class="hidden space-y-4">
             <div class="custom-card p-6 rounded-2xl space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-base font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-users-gear text-cyan-400"></i> Personnel Habilité & Bip Tactique Ciblé
+                            <i class="fa-solid fa-users-gear text-cyan-400"></i> Personnel Habilité au Service Médical
                         </h3>
-                        <p class="text-xs text-slate-400">Cliquez sur "BIPER" pour déclencher une alarme sonore continue uniquement sur l'agent ciblé.</p>
+                        <p class="text-xs text-slate-400">Liste automatique des opérateurs ayant l'accès médical avec leurs coordonnées (Email, Matricule) et déclenchement du bip.</p>
                     </div>
                     <div id="medical-count-badge" class="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-full text-xs font-mono">
-                        0 Habilités
+                        0 Opérateurs
                     </div>
                 </div>
                 <div id="medical-staff-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                    <!-- Injection dynamique -->
+                    <!-- Injection automatique du personnel -->
                 </div>
+            </div>
+        </div>
+
+        <!-- ONGLET 4 : NOTES & DIRECTIVES -->
+        <div id="tab-notes" class="hidden space-y-4">
+            <div class="custom-card p-6 rounded-2xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard text-amber-400"></i> Bloc-Notes & Consignes Médicales
+                        </h3>
+                        <p class="text-xs text-slate-400">Rédigez des consignes partagées ou garde-fous pour le service en temps réel.</p>
+                    </div>
+                    <button onclick="saveNote()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold">
+                        Sauvegarder Note
+                    </button>
+                </div>
+                <textarea id="medical-shared-note" rows="12" placeholder="Écrivez vos notes de service, transmissions oralisées, rappels de gardes..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-xs text-white leading-relaxed focus:outline-none focus:border-amber-500/50"></textarea>
             </div>
         </div>
 
     </main>
 
-    <!-- MODAL : CREATION DE BILAN / DOSSIER -->
+    <!-- MODAL : CRÉER / MODIFIER UN DOSSIER MÉDICAL -->
     <div id="modal-new-record" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="custom-card max-w-4xl w-full p-6 rounded-3xl space-y-4 border border-slate-700 max-h-[90vh] overflow-y-auto">
+        <div class="custom-card max-w-3xl w-full p-6 rounded-3xl space-y-4 border border-slate-700 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-file-medical text-blue-400"></i> Fiche d'Intervention & Bilan Médical
+                <h3 class="text-lg font-bold text-white flex items-center gap-2" id="modal-record-title">
+                    <i class="fa-solid fa-file-medical text-blue-400"></i> Dossier Médical Militaire
                 </h3>
                 <button onclick="closeNewRecordModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
             <form id="form-new-record" onsubmit="saveNewRecord(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="editing-record-id" value="">
+
                 <div>
-                    <label class="block font-bold text-slate-300 mb-1">Type de Document / Bilan</label>
+                    <label class="block font-bold text-slate-300 mb-1">Type de Procédure / Bilan</label>
                     <select id="record-type" required onchange="toggleFormFields()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
-                        <option value="">-- Sélectionner le Bilan --</option>
-                        <option value="Bilan Complet Séquentiel">Bilan Complet Séquentiel (SMI / SMUR / SDIS)</option>
-                        <option value="Bilan d'Urgence (TCCC)">Bilan d'Urgence (TCCC / MARCHE / ABCDE)</option>
-                        <option value="Visite Médicale / Aptitude">Visite Médicale / Aptitude TAP</option>
+                        <option value="">-- Sélectionner le Type --</option>
+                        <option value="Bilan Complet Séquentiel">Bilan Complet Séquentiel (XABCDE / SMUR / SDIS)</option>
+                        <option value="Bilan d'Urgence (TCCC)">Bilan d'Urgence Tactique (TCCC / MARCHE)</option>
+                        <option value="Visite Médicale / Aptitude">Visite Médicale & Aptitude TAP</option>
                     </select>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-300 mb-1">Nom / Matricule Victime</label>
-                        <input type="text" id="patient-name" required placeholder="ex: Nom / Matricule" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                        <label class="block font-bold text-slate-300 mb-1">Nom</label>
+                        <input type="text" id="patient-lastname" required placeholder="ex: Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-300 mb-1">Unité / Affectation</label>
-                        <input type="text" id="patient-unit" required placeholder="ex: FSF Alpha" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                        <label class="block font-bold text-slate-300 mb-1">Prénom</label>
+                        <input type="text" id="patient-firstname" required placeholder="ex: John" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-300 mb-1">Âge / Sexe</label>
-                        <input type="text" id="patient-age-sex" placeholder="ex: 28 ans / M" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                        <label class="block font-bold text-slate-300 mb-1">Matricule / Grade</label>
+                        <input type="text" id="patient-matricule" placeholder="ex: MAT-9842 / Caporal" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
                     </div>
                 </div>
 
-                <!-- CONTENEUR DYNAMIQUE -->
-                <div id="dynamic-fields-container" class="space-y-4 pt-2 border-t border-slate-800"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Unité / Compagnie</label>
+                        <input type="text" id="patient-unit" required placeholder="ex: 1er RPIMA / Alpha" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">Âge & Sexe</label>
+                        <input type="text" id="patient-age-sex" placeholder="ex: 29 ans / H" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
+                    </div>
+                </div>
+
+                <!-- CONTENEUR DES CHAMPS SPÉCIFIQUES -->
+                <div id="dynamic-fields-container" class="space-y-3 pt-2 border-t border-slate-800"></div>
 
                 <div>
-                    <label class="block font-bold text-slate-300 mb-1">Traitements Administrés & Trajectoire / Devenir</label>
-                    <textarea id="patient-notes" rows="3" placeholder="Saisissez les observations cliniques, soins apportés..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white"></textarea>
+                    <label class="block font-bold text-slate-300 mb-1">Observations, Traitements & Conclusions</label>
+                    <textarea id="patient-notes" rows="3" placeholder="Saisissez les informations complémentaires..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white"></textarea>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeNewRecordModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Annuler</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold">Enregistrer Fiche</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold">Enregistrer Dossier</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL : VOIR EN DÉTAIL UN DOSSIER -->
+    <div id="modal-view-record" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="custom-card max-w-2xl w-full p-6 rounded-3xl space-y-4 border border-slate-700 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div>
+                    <span id="view-record-type" class="text-[10px] font-mono text-cyan-400 font-bold uppercase"></span>
+                    <h3 class="text-lg font-bold text-white" id="view-record-name"></h3>
+                </div>
+                <button onclick="closeViewRecordModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div id="view-record-content" class="space-y-3 text-xs text-slate-300">
+                <!-- Inséré dynamiquement -->
+            </div>
+
+            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                <button onclick="closeViewRecordModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Fermer</button>
+            </div>
         </div>
     </div>
 
@@ -169,7 +226,7 @@
         <div class="custom-card max-w-md w-full p-6 rounded-3xl space-y-4 border border-slate-700">
             <div class="flex justify-between items-center">
                 <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-cyan-400"></i> Paramètres du Bip Sonore
+                    <i class="fa-solid fa-sliders text-cyan-400"></i> Réglages Bip Tactique
                 </h3>
                 <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
@@ -180,7 +237,7 @@
                     <span id="freq-val" class="text-slate-400 font-mono">800 Hz</span>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-300 mb-1">Type de Signal</label>
+                    <label class="block font-bold text-slate-300 mb-1">Signal Sonore</label>
                     <select id="bip-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white">
                         <option value="sine">Doux (Sine)</option>
                         <option value="square" selected>Tactique (Square)</option>
@@ -199,15 +256,15 @@
     <div id="bip-alert-banner" class="hidden fixed bottom-6 right-6 z-50 bg-red-600 text-white p-5 rounded-2xl shadow-2xl border-4 border-white animate-bounce flex items-center gap-4">
         <i class="fa-solid fa-bell text-3xl animate-spin"></i>
         <div>
-            <h4 class="font-black text-sm uppercase">ALERTE BIP TACTIQUE REÇUE !</h4>
-            <p class="text-xs">Régulation médicale urgente requise.</p>
+            <h4 class="font-black text-sm uppercase">BIP TACTIQUE REÇU !</h4>
+            <p class="text-xs">Régulation médicale requise immédiatement.</p>
         </div>
         <button onclick="acknowledgeBip()" class="px-4 py-2.5 bg-white text-red-600 rounded-xl font-bold text-xs hover:bg-slate-100 shadow-lg">
-            ACQUITTER
+            ACQUITTER / COUPER
         </button>
     </div>
 
-    <!-- FIREBASE & SCRIPT METIER -->
+    <!-- SCRIPT FIREBASE & LOGIQUE METIER -->
     <script>
         const firebaseConfig = {
             apiKey: "VOTRE_API_KEY",
@@ -223,9 +280,10 @@
 
         let audioCtx = null;
         let bipInterval = null;
+        let currentRecords = [];
 
         function switchTab(tabId) {
-            ['dossiers', 'transmission', 'personnel'].forEach(t => {
+            ['dossiers', 'transmission', 'personnel', 'notes'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).className = "p-4 rounded-2xl text-left font-bold text-sm transition custom-card text-slate-400 hover:text-white flex items-center gap-3";
             });
@@ -233,10 +291,34 @@
             document.getElementById(`nav-${tabId}`).className = "p-4 rounded-2xl text-left font-bold text-sm transition custom-card border-cyan-500/50 text-white flex items-center gap-3";
         }
 
-        function openNewRecordModal() { document.getElementById('modal-new-record').classList.remove('hidden'); }
-        function closeNewRecordModal() { document.getElementById('modal-new-record').classList.add('hidden'); document.getElementById('form-new-record').reset(); document.getElementById('dynamic-fields-container').innerHTML = ''; }
+        function openNewRecordModal(recordId = null) {
+            document.getElementById('form-new-record').reset();
+            document.getElementById('dynamic-fields-container').innerHTML = '';
+            document.getElementById('editing-record-id').value = recordId || '';
+
+            if (recordId) {
+                document.getElementById('modal-record-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-amber-400"></i> Modifier le Dossier';
+                const rec = currentRecords.find(r => r.id === recordId);
+                if (rec) {
+                    document.getElementById('record-type').value = rec.type || '';
+                    document.getElementById('patient-lastname').value = rec.lastName || '';
+                    document.getElementById('patient-firstname').value = rec.firstName || '';
+                    document.getElementById('patient-matricule').value = rec.matricule || '';
+                    document.getElementById('patient-unit').value = rec.unit || '';
+                    document.getElementById('patient-age-sex').value = rec.ageSex || '';
+                    document.getElementById('patient-notes').value = rec.notes || '';
+                    toggleFormFields();
+                }
+            } else {
+                document.getElementById('modal-record-title').innerHTML = '<i class="fa-solid fa-file-medical text-blue-400"></i> Créer Fiche Médicale';
+            }
+            document.getElementById('modal-new-record').classList.remove('hidden');
+        }
+
+        function closeNewRecordModal() { document.getElementById('modal-new-record').classList.add('hidden'); }
         function openSettingsModal() { document.getElementById('modal-settings').classList.remove('hidden'); }
         function closeSettingsModal() { document.getElementById('modal-settings').classList.add('hidden'); }
+        function closeViewRecordModal() { document.getElementById('modal-view-record').classList.add('hidden'); }
 
         function updateSettings() {
             document.getElementById('freq-val').innerText = document.getElementById('bip-freq').value + ' Hz';
@@ -250,130 +332,89 @@
 
             if (type === "Bilan Complet Séquentiel") {
                 container.innerHTML = `
-                    <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-3">
-                        <h4 class="font-bold text-cyan-400 text-xs uppercase"><i class="fa-solid fa-car-crash"></i> Circonstances & Cinématique</h4>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                            <input type="text" id="c-lieu" placeholder="Lieu (VP, Travail...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="c-evenement" placeholder="Événement (AVP, Chute...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="c-cinematique" placeholder="Cinématique / Vitesse" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="c-protection" placeholder="Protection (Casque, Ceinture...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-3">
-                        <h4 class="font-bold text-rose-400 text-xs uppercase"><i class="fa-solid fa-heart-pulse"></i> Bilan Primaire XABCDE</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            <div><label class="text-slate-400">X - Hémorragie massive</label><input type="text" id="x-hemorragie" placeholder="Tourniquet / Pansement" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"></div>
-                            <div><label class="text-slate-400">A - Voies Aériennes</label><input type="text" id="a-airway" placeholder="Libres / Obstruées / Collier" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"></div>
-                            <div><label class="text-slate-400">B - Ventilation (FR / SpO2 / O2)</label><input type="text" id="b-ventilation" placeholder="ex: FR 16/mn | SpO2 98% | O2 3L" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"></div>
-                            <div><label class="text-slate-400">C - Circulation (Pouls / TA / TRC)</label><input type="text" id="c-circulation" placeholder="ex: FC 85 | TA 120/80 | Marbrure" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"></div>
-                            <div><label class="text-slate-400">D - Neurologique (Glasgow / Pupilles)</label><input type="text" id="d-neuro" placeholder="ex: GCS 15 | Pupilles réactives" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"></div>
-                            <div><label class="text-slate-400">E - Exposition (T° / Brûlures)</label><input type="text" id="e-expo" placeholder="ex: Temp 36.8°C | Brûlure 2nd degré" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"></div>
-                        </div>
-                    </div>
-
                     <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
-                        <h4 class="font-bold text-emerald-400 text-xs uppercase"><i class="fa-solid fa-notes-medical"></i> SAMPLE & Douleur EN</h4>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                            <input type="text" id="s-antecedents" placeholder="Antécédents / Traitements" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="s-allergies" placeholder="Allergies" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="s-douleur" placeholder="Douleur EN (0 à 10)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                        <h4 class="font-bold text-rose-400 text-xs uppercase"><i class="fa-solid fa-heart-pulse"></i> Bilan XABCDE</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <input type="text" id="f-x" placeholder="X - Hémorragie (Pose Tourniquet...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <input type="text" id="f-a" placeholder="A - Airway (Canule / Collier...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <input type="text" id="f-b" placeholder="B - Ventilation (SpO2 / FR / O2...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <input type="text" id="f-c" placeholder="C - Circulation (FC / TA / TRC...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <input type="text" id="f-d" placeholder="D - Neurologique (Glasgow GCS...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <input type="text" id="f-e" placeholder="E - Exposition (Température / Brûlure...)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
                         </div>
                     </div>
                 `;
             } else if (type === "Bilan d'Urgence (TCCC)") {
                 container.innerHTML = `
                     <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
-                        <h4 class="font-bold text-rose-500 text-xs uppercase"><i class="fa-solid fa-person-military-rifle"></i> Évaluation TCCC / Triage</h4>
+                        <h4 class="font-bold text-rose-500 text-xs uppercase"><i class="fa-solid fa-shield-cat"></i> Prise en Charge Tactique</h4>
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="text" id="t-garrot" placeholder="Pose Garrot (Heure / Membre)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="t-voies" placeholder="Dégagement Voies Aériennes" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="t-exsufflation" placeholder="Exsufflation / Pansement Thoracique" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                            <input type="text" id="t-perfusion" placeholder="Voie Venieuse / Perfusions" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <input type="text" id="f-tccc-garrot" placeholder="Pose Garrot (Heure / Emplacement)" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <input type="text" id="f-tccc-morphine" placeholder="Analgésie / Morphine administée" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
                         </div>
                     </div>
                 `;
             } else if (type === "Visite Médicale / Aptitude") {
                 container.innerHTML = `
                     <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
-                        <h4 class="font-bold text-emerald-400 text-xs uppercase"><i class="fa-solid fa-user-check"></i> Profil d'Aptitude Opérationnelle</h4>
-                        <div class="grid grid-cols-2 gap-2">
-                            <select id="v-aptitude" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                                <option value="APTE TAP / OPÉRATIONNEL">APTE TAP / OPÉRATIONNEL</option>
-                                <option value="INAPTE TEMPORAIRE">INAPTE TEMPORAIRE</option>
-                                <option value="INAPTE DÉFINITIF">INAPTE DÉFINITIF</option>
-                            </select>
-                            <input type="text" id="v-limitation" placeholder="Restrictions particulières..." class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
-                        </div>
+                        <h4 class="font-bold text-emerald-400 text-xs uppercase"><i class="fa-solid fa-user-check"></i> Statut d'Aptitude TAP</h4>
+                        <select id="f-aptitude-status" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                            <option value="APTE TAP / OPÉRATIONNEL">APTE TAP / OPÉRATIONNEL</option>
+                            <option value="INAPTE TEMPORAIRE">INAPTE TEMPORAIRE</option>
+                            <option value="INAPTE DÉFINITIF">INAPTE DÉFINITIF</option>
+                        </select>
                     </div>
                 `;
             }
         }
 
-        // ENREGISTREMENT EN BASE DE DONNÉES
+        // CREER OU METTRE A JOUR UN DOSSIER
         function saveNewRecord(e) {
             e.preventDefault();
+            const recordId = document.getElementById('editing-record-id').value;
             const type = document.getElementById('record-type').value;
-            const name = document.getElementById('patient-name').value;
+            const lastName = document.getElementById('patient-lastname').value;
+            const firstName = document.getElementById('patient-firstname').value;
+            const matricule = document.getElementById('patient-matricule').value;
             const unit = document.getElementById('patient-unit').value;
             const ageSex = document.getElementById('patient-age-sex').value;
             const notes = document.getElementById('patient-notes').value;
 
-            let details = {};
-            if (type === "Bilan Complet Séquentiel") {
-                details = {
-                    lieu: document.getElementById('c-lieu')?.value || '',
-                    evenement: document.getElementById('c-evenement')?.value || '',
-                    hemorragie: document.getElementById('x-hemorragie')?.value || '',
-                    airway: document.getElementById('a-airway')?.value || '',
-                    ventilation: document.getElementById('b-ventilation')?.value || '',
-                    circulation: document.getElementById('c-circulation')?.value || '',
-                    neuro: document.getElementById('d-neuro')?.value || '',
-                    expo: document.getElementById('e-expo')?.value || '',
-                    douleur: document.getElementById('s-douleur')?.value || ''
-                };
-            } else if (type === "Bilan d'Urgence (TCCC)") {
-                details = {
-                    garrot: document.getElementById('t-garrot')?.value || '',
-                    voies: document.getElementById('t-voies')?.value || '',
-                    exsufflation: document.getElementById('t-exsufflation')?.value || ''
-                };
-            } else if (type === "Visite Médicale / Aptitude") {
-                details = {
-                    aptitude: document.getElementById('v-aptitude')?.value || '',
-                    limitation: document.getElementById('v-limitation')?.value || ''
-                };
-            }
+            const payload = {
+                type, lastName, firstName, matricule, unit, ageSex, notes,
+                fullName: `${lastName.toUpperCase()} ${firstName}`,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
 
-            db.collection('medical_records').add({
-                type, name, unit, ageSex, notes, details,
-                transportStatus: 'EN_ATTENTE',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                closeNewRecordModal();
-            });
+            if (recordId) {
+                db.collection('medical_records').doc(recordId).update(payload).then(() => closeNewRecordModal());
+            } else {
+                payload.transportStatus = 'EN_ATTENTE';
+                payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                db.collection('medical_records').add(payload).then(() => closeNewRecordModal());
+            }
         }
 
-        // SYNCHRONISATION TEMPS RÉEL (DOSSIERS + TRANSMISSION)
+        // SYNCHRONISATION EN TEMPS RÉEL
         db.collection('medical_records').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
             const dossiersContainer = document.getElementById('dossiers-list-container');
             const transmissionContainer = document.getElementById('transmission-list-container');
             dossiersContainer.innerHTML = '';
             transmissionContainer.innerHTML = '';
-            let count = 0;
+            currentRecords = [];
 
             snapshot.forEach(doc => {
-                count++;
                 const data = doc.data();
                 const id = doc.id;
+                currentRecords.push({ id, ...data });
 
                 let badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
-                let badgeText = 'En Attente Régulation';
-                if(data.transportStatus === 'ACCEPTE') { badgeColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'; badgeText = 'Transport Accordé'; }
-                else if(data.transportStatus === 'REFUSE') { badgeColor = 'bg-rose-500/10 text-rose-400 border-rose-500/30'; badgeText = 'Refusé / Laissé sur place'; }
+                let badgeText = 'En Attente';
+                if(data.transportStatus === 'ACCEPTE') { badgeColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'; badgeText = 'Transport Validé'; }
+                else if(data.transportStatus === 'REFUSE') { badgeColor = 'bg-rose-500/10 text-rose-400 border-rose-500/30'; badgeText = 'Refus / Laissé sur place'; }
                 else if(data.transportStatus === 'AUTRE') { badgeColor = 'bg-purple-500/10 text-purple-400 border-purple-500/30'; badgeText = 'Autre Vectorisation'; }
 
-                // Carte Registre
+                // Rendu Dossiers
                 dossiersContainer.innerHTML += `
                     <div class="custom-card p-4 rounded-2xl space-y-3 border border-slate-800 flex flex-col justify-between">
                         <div class="space-y-1">
@@ -381,45 +422,85 @@
                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">${data.type}</span>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeColor}">${badgeText}</span>
                             </div>
-                            <h4 class="font-bold text-white text-sm pt-1">${data.name} <span class="text-xs font-normal text-slate-400">(${data.ageSex || 'N/A'})</span></h4>
-                            <p class="text-xs text-slate-400">Unité : ${data.unit}</p>
-                            <p class="text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded-xl mt-2 border border-slate-900">${data.notes || 'Aucune note.'}</p>
+                            <h4 class="font-bold text-white text-base pt-1">${data.fullName || 'Victime'}</h4>
+                            <p class="text-xs text-slate-400">Matricule : <span class="text-white font-mono">${data.matricule || 'N/A'}</span> | Unité : ${data.unit}</p>
+                            <p class="text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded-xl mt-2 border border-slate-900">${data.notes || 'Aucune consigne.'}</p>
                         </div>
                         <div class="flex justify-between items-center pt-2 border-t border-slate-800/60">
-                            <button onclick="deleteRecord('${id}')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold"><i class="fa-solid fa-trash"></i> Supprimer</button>
+                            <div class="flex gap-2">
+                                <button onclick="viewRecord('${id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-lg text-xs font-bold"><i class="fa-solid fa-eye"></i> Voir</button>
+                                <button onclick="openNewRecordModal('${id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg text-xs font-bold"><i class="fa-solid fa-pen"></i> Modifier</button>
+                                <button onclick="downloadPDF('${id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-lg text-xs font-bold"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                            </div>
+                            <button onclick="deleteRecord('${id}')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
 
-                // Console Transmission
+                // Rendu Transmission
                 transmissionContainer.innerHTML += `
                     <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div>
                             <span class="text-[10px] font-mono text-cyan-400">${data.type}</span>
-                            <h4 class="font-bold text-white text-sm">${data.name} (${data.unit})</h4>
-                            <p class="text-xs text-slate-400">Décision actuelle : <strong class="text-white">${badgeText}</strong></p>
+                            <h4 class="font-bold text-white text-sm">${data.fullName} (${data.unit})</h4>
+                            <p class="text-xs text-slate-400">Décision : <strong class="text-white">${badgeText}</strong></p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <button onclick="updateTransportStatus('${id}', 'ACCEPTE')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition">ACCEPTER</button>
-                            <button onclick="updateTransportStatus('${id}', 'REFUSE')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition">REFUSER</button>
-                            <button onclick="updateTransportStatus('${id}', 'AUTRE')" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition">AUTRE</button>
+                            <button onclick="updateTransportStatus('${id}', 'ACCEPTE')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold">ACCEPTER</button>
+                            <button onclick="updateTransportStatus('${id}', 'REFUSE')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold">REFUSER</button>
+                            <button onclick="updateTransportStatus('${id}', 'AUTRE')" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold">AUTRE</button>
                         </div>
                     </div>
                 `;
             });
-            document.getElementById('total-dossiers-count').innerText = `Total : ${count}`;
+            document.getElementById('total-dossiers-count').innerText = `Total : ${currentRecords.length}`;
         });
 
-        // MODIFICATION DIRECTE SANS CONFIRMATION
-        function updateTransportStatus(id, status) {
-            db.collection('medical_records').doc(id).update({ transportStatus: status });
+        function viewRecord(id) {
+            const rec = currentRecords.find(r => r.id === id);
+            if (!rec) return;
+            document.getElementById('view-record-type').innerText = rec.type;
+            document.getElementById('view-record-name').innerText = rec.fullName;
+            document.getElementById('view-record-content').innerHTML = `
+                <div class="p-3 bg-slate-950 rounded-xl space-y-1">
+                    <p><strong>Matricule / Grade :</strong> ${rec.matricule || 'Non précisé'}</p>
+                    <p><strong>Unité / Compagnie :</strong> ${rec.unit}</p>
+                    <p><strong>Âge / Sexe :</strong> ${rec.ageSex || 'N/A'}</p>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl space-y-1">
+                    <p class="font-bold text-white mb-1">Observations & Bilan :</p>
+                    <p class="text-slate-300 leading-relaxed">${rec.notes || 'Aucune note supplémentaire.'}</p>
+                </div>
+            `;
+            document.getElementById('modal-view-record').classList.remove('hidden');
         }
 
-        function deleteRecord(id) {
-            db.collection('medical_records').doc(id).delete();
+        // TÉLÉCHARGEMENT PDF EN UN CLIC
+        function downloadPDF(id) {
+            const rec = currentRecords.find(r => r.id === id);
+            if (!rec) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(16);
+            doc.text("CENTRE MÉDICAL TACTIQUE - FSF RP", 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Document : ${rec.type}`, 20, 30);
+            doc.text(`Nom de la Victime : ${rec.fullName}`, 20, 40);
+            doc.text(`Matricule : ${rec.matricule || 'N/A'}`, 20, 50);
+            doc.text(`Unité : ${rec.unit}`, 20, 60);
+            doc.text(`Statut Transport : ${rec.transportStatus || 'EN ATTENTE'}`, 20, 70);
+            doc.text("Observations :", 20, 85);
+            doc.setFontSize(10);
+            doc.text(rec.notes || "Aucune note.", 20, 95);
+
+            doc.save(`Fiche_Medicale_${rec.lastName || 'Victime'}.pdf`);
         }
 
-        // --- GESTION PERSONNEL & BIP CIBLÉ EN DIRECT ---
+        function updateTransportStatus(id, status) { db.collection('medical_records').doc(id).update({ transportStatus: status }); }
+        function deleteRecord(id) { db.collection('medical_records').doc(id).delete(); }
+
+        // --- INSCRIPTION AUTOMATIQUE DU PERSONNEL & BIP ---
         db.collection('users').onSnapshot((snapshot) => {
             const staffList = document.getElementById('medical-staff-list');
             const badge = document.getElementById('medical-count-badge');
@@ -449,15 +530,14 @@
                             <div class="flex items-center gap-3">
                                 <div class="relative">
                                     <div class="w-3 h-3 rounded-full ${user.isOnline ? 'bg-emerald-500' : 'bg-slate-600'}"></div>
-                                    ${isBiping ? '<span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span></span>' : ''}
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-white">${user.displayName || user.matricule || 'Opérateur'}</p>
-                                    <p class="text-[10px] text-slate-400 font-mono">${user.grade || 'Service Médical'}</p>
+                                    <p class="text-[10px] text-slate-400 font-mono">${user.email || 'Pas d\'email renseigné'}</p>
                                 </div>
                             </div>
                             <button onclick="triggerTargetedBip('${userId}', ${!isBiping})" 
-                                    class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${isBiping ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' : 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                                    class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${isBiping ? 'bg-red-600 text-white animate-pulse' : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'}">
                                 <i class="fa-solid ${isBiping ? 'fa-bell-slash' : 'fa-bell'}"></i>
                                 ${isBiping ? 'COUPER' : 'BIPER'}
                             </button>
@@ -468,58 +548,47 @@
             if (badge) badge.innerText = `${totalAuthorized} Habilité(s)`;
         });
 
-        function triggerTargetedBip(userId, state) {
-            db.collection('users').doc(userId).update({ bipActive: state });
-        }
-
+        function triggerTargetedBip(userId, state) { db.collection('users').doc(userId).update({ bipActive: state }); }
         function acknowledgeBip() {
             document.getElementById('bip-alert-banner').classList.add('hidden');
             stopContinuousAlarm();
-            if (auth.currentUser) {
-                db.collection('users').doc(auth.currentUser.uid).update({ bipActive: false });
-            }
+            if (auth.currentUser) { db.collection('users').doc(auth.currentUser.uid).update({ bipActive: false }); }
         }
 
-        // SONNERIE BIP CONTINU VIA WEB AUDIO API
+        // --- GESTION DES NOTES EN TEMPS RÉEL ---
+        db.collection('medical_settings').doc('shared_notes').onSnapshot(doc => {
+            if (doc.exists) {
+                document.getElementById('medical-shared-note').value = doc.data().content || '';
+            }
+        });
+
+        function saveNote() {
+            const content = document.getElementById('medical-shared-note').value;
+            db.collection('medical_settings').doc('shared_notes').set({ content }, { merge: true });
+        }
+
+        // SONNERIE BIP
         function playBeepSound() {
             try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
+                if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
                 const freq = parseFloat(document.getElementById('bip-freq')?.value || 800);
                 const type = document.getElementById('bip-type')?.value || 'square';
-
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
                 gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.4);
             } catch (e) { console.error("Audio error:", e); }
         }
 
         function testBipSound() { playBeepSound(); }
-
-        function startContinuousAlarm() {
-            if (!bipInterval) {
-                playBeepSound();
-                bipInterval = setInterval(playBeepSound, 800);
-            }
-        }
-
-        function stopContinuousAlarm() {
-            if (bipInterval) {
-                clearInterval(bipInterval);
-                bipInterval = null;
-            }
-        }
+        function startContinuousAlarm() { if (!bipInterval) { playBeepSound(); bipInterval = setInterval(playBeepSound, 800); } }
+        function stopContinuousAlarm() { if (bipInterval) { clearInterval(bipInterval); bipInterval = null; } }
     </script>
 </body>
 </html>
