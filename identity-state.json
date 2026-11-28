@@ -1,0 +1,170 @@
+{
+  "configurations": {
+    "1411600382177579091": {
+      "guildId": "1411600382177579091",
+      "instructorRoleId": "1575598524526108875",
+      "panelChannelId": "1416353756634939402",
+      "panelMessageId": "1575957923639721986",
+      "reviewChannelId": "1416352712295055390",
+      "configuredAt": "2026-11-27T19:34:09.937Z"
+    }
+  },
+  "requests": {
+    "cfb65b27-0ea7-49e2-a3d8-d6275e4f3ff3": {
+      "id": "cfb65b27-0ea7-49e2-a3d8-d6275e4f3ff3",
+      "guildId": "1411600382177579091",
+      "applicantId": "754738446291173487",
+      "submittedAt": "2026-11-26T19:48:36.660Z",
+      "status": "completed",
+      "identity": {
+        "lastName": "m",
+        "firstNames": "m",
+        "birthDate": "01/10/2000",
+        "birthPlace": "m",
+        "nationality": "m",
+        "sex": "m",
+        "address": ".",
+        "engagementDate": "20/11/2026",
+        "motto": "."
+      },
+      "dossier": {
+        "grade": "Soldat",
+        "mat": "MAT-052",
+        "aff": "CPA 10",
+        "notesPerso": "N/A"
+      },
+      "reviewChannelId": "1416352712295055390",
+      "reviewMessageId": "1575599173783257169",
+      "reviewedBy": "754738446291173487",
+      "reviewedAt": "2026-11-26T19:49:24.689Z"
+    },
+    "b479b3ac-ae35-4570-b9de-bc76f7bde723": {
+      "id": "b479b3ac-ae35-4570-b9de-bc76f7bde723",
+      "guildId": "1411600382177579091",
+      "applicantId": "754738446291173487",
+      "submittedAt": "2026-11-26T20:05:36.234Z",
+      "status": "completed",
+      "identity": {
+        "lastName": "m",
+        "firstNames": "ù",
+        "birthDate": "01/02/2026",
+        "birthPlace": "m",
+        "nationality": "m",
+        "sex": "m",
+        "address": "m",
+        "engagementDate": "20/11/2026",
+        "motto": "toujours à fond"
+      },
+      "dossier": {
+        "grade": "Soldat",
+        "mat": "TR-025-FR",
+        "aff": "4e RHFS",
+        "notesPerso": "."
+      },
+      "reviewChannelId": "1416352712295055390",
+      "reviewMessageId": "1575603450622910577",
+      "reviewedBy": "754738446291173487",
+      "reviewedAt": "2026-11-26T20:06:19.025Z",
+      "firebaseIdentityKey": "b479b3ac-ae35-4570-b9de-bc76f7bde723",
+      "firebaseEffectifKeys": [
+        "b479b3ac-ae35-4570-b9de-bc76f7bde723"
+      ]
+    },
+    "2c19d8cf-b07c-4dfb-adea-608fee94a1d8": {
+      "id": "2c19d8cf-b07c-4dfb-adea-608fee94a1d8",
+      "guildId": "1411600382177579091",
+      "applicantId": "754738446291173487",
+      "submittedAt": "2026-11-27T16:51:48.124Z",
+      "status": "completed",
+      "identity": {
+        "lastName": "G",
+        "firstNames": "G",
+        "birthDate": "02/02/2026",
+        "birthPlace": "A",
+        "nationality": "M",
+        "sex": "M",
+        "address": ".",
+        "engagementDate": "20/11/2026",
+        "motto": "."
+      },
+      "dossier": {
+        "grade": "Soldat",
+        "mat": "M",
+        "aff": "N/A",
+        "notesPerso": "."
+      },
+      "reviewChannelId": "1416352712295055390",
+      "reviewMessageId": "1575917069541838849",
+      "reviewedBy": "754738446291173487",
+      "reviewedAt": "2026-11-27T16:52:21.948Z",
+      "firebaseIdentityKey": "2c19d8cf-b07c-4dfb-adea-608fee94a1d8",
+      "firebaseEffectifKeys": [
+        "2c19d8cf-b07c-4dfb-adea-608fee94a1d8"
+      ]
+    },
+    "f6eef8b2-cf68-4161-ba97-f983ff5c00bd": {
+      "id": "f6eef8b2-cf68-4161-ba97-f983ff5c00bd",
+      "guildId": "1411600382177579091",
+      "applicantId": "754738446291173487",
+      "submittedAt": "2026-11-27T18:16:08.117Z",
+      "status": "completed",
+      "identity": {
+        "lastName": "m",
+        "firstNames": "m",
+        "birthDate": "02/02/2026",
+        "birthPlace": "m",
+        "nationality": "m",
+        "sex": "m",
+        "address": "m",
+        "engagementDate": "20/11/2026",
+        "motto": "m"
+      },
+      "dossier": {
+        "grade": "Soldat",
+        "mat": "M",
+        "aff": "N/A",
+        "notesPerso": "."
+      },
+      "reviewChannelId": "1416352712295055390",
+      "reviewMessageId": "1575938288898809989",
+      "reviewedBy": "754738446291173487",
+      "reviewedAt": "2026-11-27T18:16:38.592Z",
+      "firebaseIdentityKey": "2c19d8cf-b07c-4dfb-adea-608fee94a1d8",
+      "firebaseEffectifKeys": [
+        "2c19d8cf-b07c-4dfb-adea-608fee94a1d8"
+      ]
+    },
+    "9f9ef8f6-4db4-4e7d-b8d2-9da90f7b5b35": {
+      "id": "9f9ef8f6-4db4-4e7d-b8d2-9da90f7b5b35",
+      "guildId": "1411600382177579091",
+      "applicantId": "754738446291173487",
+      "submittedAt": "2026-11-27T19:34:47.038Z",
+      "status": "completed",
+      "identity": {
+        "lastName": "M",
+        "firstNames": "m",
+        "birthDate": "02/02/2000",
+        "birthPlace": "m",
+        "nationality": "m",
+        "sex": "m",
+        "address": "m",
+        "engagementDate": "20/11/2026",
+        "motto": "."
+      },
+      "dossier": {
+        "grade": "Soldat",
+        "mat": "M",
+        "aff": "N/A",
+        "notesPerso": "."
+      },
+      "reviewChannelId": "1416352712295055390",
+      "reviewMessageId": "1575958091281998026",
+      "reviewedBy": "754738446291173487",
+      "reviewedAt": "2026-11-27T19:35:23.717Z",
+      "firebaseIdentityKey": "9f9ef8f6-4db4-4e7d-b8d2-9da90f7b5b35",
+      "firebaseEffectifKeys": [
+        "9f9ef8f6-4db4-4e7d-b8d2-9da90f7b5b35"
+      ]
+    }
+  }
+}

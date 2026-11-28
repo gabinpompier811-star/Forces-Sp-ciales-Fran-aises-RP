@@ -1,0 +1,13 @@
+{
+  "name": "bot-forces-speciales",
+  "version": "1.0.0",
+  "description": "Bot Discord RP",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.28.1",
+    "dotenv": "^18.0.10"
+  }
+}
