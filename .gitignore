@@ -1,9 +1,0 @@
-.env
-.env.*
-!.env.example
-service-account*.json
-firebase-service-account*.json
-*-firebase-adminsdk-*.json
-identity-state.json
-identity-state.json.tmp
-node_modules/
